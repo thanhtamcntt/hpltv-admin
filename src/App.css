@@ -1,38 +1,111 @@
 .App {
+  height: 100%;
+}
+
+/* layout */
+
+.menu-sider-web {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.menu-sider-web > .ant-layout-sider-children {
+  flex: 15;
+}
+
+.layout-content-web {
+  overflow-y: auto;
+}
+
+.ant-layout-sider-trigger {
+  background-color: var(--layout-trigger-bg);
+  color: var(--white);
+  text-align: center;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: width 0.3s cubic-bezier(0.2, 0, 0, 1) 0s;
+}
+
+/* form add series */
+#FilmForm > div {
+  margin-bottom: 10px;
+}
+
+#FilmForm .add-film-button {
+  margin: 40px 0 10px;
+}
+
+:root {
+  --color-action: #1677ff;
+  --color-action-hover: #69b1ff;
+  --color-error: #ff4d4f;
+}
+
+#FilmForm .add-film-button button {
+  font-weight: 500;
+  font-size: 20px;
+  padding: 20px 20px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+}
+
+.ant-input-number-in-form-item,
+.ant-picker {
+  width: 100%;
+}
+.ant-upload {
+  width: 100%;
+}
+
+.ant-upload button {
+  width: 100%;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* loading component */
+
+.loading-component {
+  height: 100vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.loading-component div {
+  position: relative;
+  top: 50%;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.loading-component div .content {
+  padding: 50px;
+  border-radius: 4px;
 }
 
-.App-link {
-  color: #61dafb;
+/* form */
+.button-form {
+  margin-top: 50px;
+  margin-bottom: 0;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.button-form button {
+  width: 100%;
+  background-color: var(--btn-form);
+  padding: 5px 10px;
+  height: 40px;
+  font-size: 16px;
+  border-radius: 20px;
+}
+
+.ant-form-item-control-input > div > input,
+.ant-form-item-control-input > div > span {
+  border-radius: 20px;
+  height: 40px;
+}
+
+.ant-form-item-explain-error {
+  text-align: left;
+  margin-left: 12px;
+  margin-top: 4px;
 }
