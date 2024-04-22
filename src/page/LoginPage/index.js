@@ -11,7 +11,7 @@ import {
   ImageLogin,
   ErrorMessage,
 } from './styles';
-import ItemForm from '../../Common/ItemForm';
+import ItemFormLogin from '../../components/Common/ItemFormLogin';
 import { Button, Form, Input } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -37,9 +37,9 @@ function LoginPage() {
     const responseJson = await response.json();
     console.log(responseJson);
     if (responseJson.success) {
-      await localStorage.setItem('token', responseJson.token);
+      await localStorage.setItem('tokenManager', responseJson.token);
 
-      if (localStorage.getItem('token')) {
+      if (localStorage.getItem('tokenManager')) {
         navigate('/');
       }
     } else {
@@ -76,18 +76,25 @@ function LoginPage() {
               onFinish={onFinish}
               onFinishFailed={onFinishFailed}
               autoComplete="off">
-              <ItemForm
+              <ItemFormLogin
                 label="Email"
                 name="email"
                 message="Please input your email!"
-                input={<Input onFocus={handleFocus} />}
+                input={
+                  <Input onFocus={handleFocus} className="form-add-modal" />
+                }
               />
 
-              <ItemForm
+              <ItemFormLogin
                 label="Password"
                 name="password"
                 message="Please input your password!"
-                input={<Input.Password onFocus={handleFocus} />}
+                input={
+                  <Input.Password
+                    onFocus={handleFocus}
+                    className="form-add-modal"
+                  />
+                }
               />
 
               <Form.Item

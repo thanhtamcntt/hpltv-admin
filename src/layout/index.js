@@ -5,11 +5,11 @@ import {
   LogoutOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
-import { Layout, Menu, theme } from 'antd';
-import HeaderAdmin from '../components/Header';
-import FooterAdmin from '../components/Footer';
+import { Layout, theme } from 'antd';
+import HeaderAdmin from '../components/HeaderComponent';
+import FooterAdmin from '../components/FooterComponent';
 import SiderAdmin from './SiderLayout';
-import ChildrenContext from './ChildrenContext';
+import ChildrenContext from '../contexts/ChildrenContext';
 import { useNavigate } from 'react-router-dom';
 import { Spin } from 'antd';
 import { DivContainerWeb, DivSider } from './styles';
@@ -39,7 +39,7 @@ const items = [
 ];
 
 function LayoutAdmin({ children }) {
-  const [select, setSelect] = useState(window.location.pathname.slice(1));
+  const [select, setSelect] = useState(window.location.pathname.slice(1) === 'login' ? 'home' : window.location.pathname.slice(1));
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
 

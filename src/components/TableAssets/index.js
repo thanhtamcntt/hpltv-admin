@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { ButtonAction, TagAction } from './styles';
 import { Table, Space } from 'antd';
 import ModalDetailAssets from '../ModalDetailAssets';
-import { RoleContext } from '../../../layout/RoleUserContext';
+import { RoleContext } from '../../contexts/RoleUserContext';
 
 function TableAssets(props) {
   const [dataTable, setDataTable] = useState([]);
@@ -28,15 +28,6 @@ function TableAssets(props) {
 
   useEffect(() => {
     let dataSource = [
-      {
-        title: props.type === 'category' ? 'Name category' : 'Name film',
-        dataIndex: props.type === 'category' ? 'name' : 'title',
-        key: props.type === 'category' ? 'name' : 'title',
-        width: userInfo.role === 'superAdmin' ? '70%' : '85%',
-        onCell: () => ({
-          style: { fontWeight: '500' },
-        }),
-      },
       {
         title: 'Action',
         key: 'action',
@@ -66,17 +57,23 @@ function TableAssets(props) {
         ),
       },
     ];
-    setDataColumn(dataSource);
-    if (props.data.length > 0) {
+
+    if (props.dataTable) {
+      Object.keys(props.dataTable).forEach((key) => {
+        dataSource.unshift(props.dataTable[key]);
+      });
+      setDataColumn(dataSource);
       if (props.data.length > 0) {
-        let dataSource = [];
-        for (let data of props.data) {
-          dataSource.push(data);
+        if (props.data.length > 0) {
+          let dataSource = [];
+          for (let data of props.data) {
+            dataSource.push(data);
+          }
+          setDataTable(dataSource);
         }
-        setDataTable(dataSource);
       }
     }
-  }, [props.data]);
+  }, [props.data, props.dataTable]);
 
   return (
     <>

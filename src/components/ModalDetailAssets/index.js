@@ -5,21 +5,17 @@ import {
   VideoDetail,
   DivVideo,
   DivInfoDetail,
-  DivLoading,
   InfoDetail,
   DivImage,
   InfoItem,
 } from './styles';
-import { useSelector } from 'react-redux';
-import { LoadingOutlined } from '@ant-design/icons';
+
 import dayjs from 'dayjs';
 import { Image } from 'antd';
 import { memo, useEffect, useState } from 'react';
-
-
+import LoadingComponent from '../LoadingComponent';
 
 function ModalDetailAssets({ setIsModalDetail, isModalDetail, asset, type }) {
-
   const [data, setData] = useState();
 
   useEffect(() => {
@@ -42,11 +38,7 @@ function ModalDetailAssets({ setIsModalDetail, isModalDetail, asset, type }) {
         open={isModalDetail}
         onOk={handleOk}
         onCancel={handleCancel}>
-        <DivLoading>
-          <div>
-            <LoadingOutlined />
-          </div>
-        </DivLoading>
+        <LoadingComponent />
       </ModalDetail>
     );
   }
@@ -58,11 +50,7 @@ function ModalDetailAssets({ setIsModalDetail, isModalDetail, asset, type }) {
         open={isModalDetail}
         onOk={handleOk}
         onCancel={handleCancel}>
-        <DivLoading>
-          <div>
-            <LoadingOutlined />
-          </div>
-        </DivLoading>
+        <LoadingComponent />
       </ModalDetail>
     );
   }
