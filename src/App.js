@@ -1,27 +1,17 @@
 import './App.css';
 import LayoutAdmin from './layout';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import LoginPage from './components/page/LoginPage';
+import { Navigate, Route, Routes} from 'react-router-dom';
+import LoginPage from './page/LoginPage';
 import Router from './routes/index';
-import { useContext, useEffect } from 'react';
-import { useState } from 'react';
-import LoadingPage from './components/page/LoadingPage';
-import { RoleContext } from './layout/RoleUserContext';
+import { useContext } from 'react';
+import LoadingPage from './page/LoadingPage';
+import { RoleContext } from './contexts/RoleUserContext';
 
 function App() {
-  const [isLogin, setIsLogin] = useState();
-  const { pathname } = useLocation();
 
-  const { userInfo } = useContext(RoleContext);
 
-  useEffect(() => {
-    setIsLogin(undefined);
-    if (localStorage.getItem('token')) {
-      setIsLogin(true);
-    } else {
-      setIsLogin(false);
-    }
-  }, [pathname]);
+  const { userInfo,isLogin } = useContext(RoleContext);
+
 
   if (isLogin === undefined || userInfo === undefined) {
     return <LoadingPage />;

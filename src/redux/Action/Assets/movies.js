@@ -19,8 +19,7 @@ export const createMovies = createAsyncThunk(
       method: 'POST',
       body: data,
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + localStorage.getItem('token'),
+        Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
       },
     });
     const json = await response.json();
@@ -40,7 +39,7 @@ export const deleteMovies = createAsyncThunk(
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + localStorage.getItem('token'),
+          Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
         },
       },
     );
@@ -62,7 +61,7 @@ export const updateMovies = createAsyncThunk(
         method: 'POST',
         body: data.formData,
         headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token'),
+          Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
         },
       },
     );

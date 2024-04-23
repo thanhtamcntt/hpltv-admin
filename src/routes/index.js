@@ -1,9 +1,9 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import React from 'react';
-import ChildrenContext from '../layout/ChildrenContext';
-import HomePage from '../components/Home';
-import AssetsPage from '../components/page/AssetsPage';
-import ManageUserPage from '../components/page/ManageUserPage';
+import ChildrenContext from '../contexts/ChildrenContext';
+import HomePage from '../page/HomePage';
+import AssetsPage from '../page/AssetsPage';
+import ManageUserPage from '../page/ManageUserPage';
 
 function Router() {
   const { select } = React.useContext(ChildrenContext);
@@ -16,13 +16,25 @@ function Router() {
         select === 'category') && (
         <Route
           path={'/' + select}
-          element={<AssetsPage title={select} type={select} />}
+          element={
+            <AssetsPage
+              title={select === 'category' ? 'Name category' : 'Name film'}
+              key={select === 'category' ? 'name' : 'title'}
+              dataIndex={select === 'category' ? 'name' : 'title'}
+              type={select}
+            />
+          }
         />
       )}
       {(select === 'user' || select === 'subscriber') && (
         <Route
           path={'/' + select}
-          element={<ManageUserPage title={select} type={select} />}
+          element={
+            <ManageUserPage
+              title={select === 'user' ? 'Name user' : 'Name subscriber'}
+              type={select}
+            />
+          }
         />
       )}
       <Route path="*" element={<Navigate to="/" replace={true} />} />

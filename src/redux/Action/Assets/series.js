@@ -21,7 +21,7 @@ export const createSeries = createAsyncThunk(
       method: 'POST',
       body: data,
       headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token'),
+        Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
       },
     });
     const json = await response.json();
@@ -40,7 +40,7 @@ export const deleteSeries = createAsyncThunk(
       {
         method: 'POST',
         headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token'),
+          Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
         },
       },
     );
@@ -62,7 +62,7 @@ export const updateSeries = createAsyncThunk(
         method: 'PATCH',
         body: data.formData,
         headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token'),
+          Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
         },
       },
     );

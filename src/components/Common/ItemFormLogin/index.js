@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form } from 'antd';
 
-function ItemForm(props) {
+function ItemFormLogin(props) {
   return (
     <Form.Item
       className="input-form"
@@ -18,4 +18,4 @@ function ItemForm(props) {
   );
 }
 
-export default ItemForm;
+export default ItemFormLogin;

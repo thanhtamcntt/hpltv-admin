@@ -16,6 +16,7 @@
 
 .layout-content-web {
   overflow-y: auto;
+  height: 100vh;
 }
 
 .ant-layout-sider-trigger {
@@ -37,6 +38,7 @@
 
 #FilmForm .add-film-button {
   margin: 40px 0 10px;
+  text-align: center;
 }
 
 :root {
@@ -98,8 +100,7 @@
   border-radius: 20px;
 }
 
-.ant-form-item-control-input > div > input,
-.ant-form-item-control-input > div > span {
+.form-add-modal {
   border-radius: 20px;
   height: 40px;
 }
@@ -108,4 +109,10 @@
   text-align: left;
   margin-left: 12px;
   margin-top: 4px;
+}
+
+/* action  */
+
+.modal-detail-user .ant-modal-footer {
+  margin-top: 25px;
 }
