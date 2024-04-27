@@ -16,7 +16,7 @@ export const UserSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    // fetch all subscriber
+    // fetch all users
     builder.addCase(fetchAllUser.pending, (state) => {
       state.loading = true;
     });

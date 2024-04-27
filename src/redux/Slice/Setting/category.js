@@ -10,6 +10,7 @@ const initialState = {
   data: [],
   loading: false,
   error: null,
+  count: 0,
 };
 
 export const CategorySlice = createSlice({
@@ -22,12 +23,11 @@ export const CategorySlice = createSlice({
       state.loading = true;
     });
     builder.addCase(fetchAllCategory.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.loading = false;
+      state.count = action.payload.count;
       state.data = [...action.payload.data];
     });
     builder.addCase(fetchAllCategory.rejected, (state, action) => {
-      console.log(action.payload);
       state.loading = false;
       state.error = action.payload.message;
     });
@@ -37,8 +37,8 @@ export const CategorySlice = createSlice({
       state.loading = true;
     });
     builder.addCase(createCategory.fulfilled, (state, action) => {
-      console.log('action: ', action.payload.data);
       state.loading = false;
+      state.count = state.count + 1;
       state.data.unshift(action.payload.data);
     });
     builder.addCase(createCategory.rejected, (state, action) => {
@@ -51,8 +51,8 @@ export const CategorySlice = createSlice({
       state.loading = true;
     });
     builder.addCase(deleteCategory.fulfilled, (state, action) => {
-      console.log('action: ', action.payload);
       state.loading = false;
+      state.count = state.count - 1;
       state.data = state.data.filter((data) => data._id !== action.payload);
     });
     builder.addCase(deleteCategory.rejected, (state, action) => {
@@ -65,7 +65,6 @@ export const CategorySlice = createSlice({
       state.loading = true;
     });
     builder.addCase(updateCategory.fulfilled, (state, action) => {
-      console.log('action: ', action.payload);
       state.loading = false;
       state.data.map((data) => {
         if (data._id === action.payload.data._id) {

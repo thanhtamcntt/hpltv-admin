@@ -3,6 +3,7 @@ import { ButtonAction, TagAction } from './styles';
 import { Table, Space } from 'antd';
 import ModalDetailAssets from '../ModalDetailAssets';
 import { RoleContext } from '../../contexts/RoleUserContext';
+import LoadingPage from '../../page/LoadingPage';
 
 function TableAssets(props) {
   const [dataTable, setDataTable] = useState([]);
@@ -27,6 +28,7 @@ function TableAssets(props) {
   };
 
   useEffect(() => {
+    setDataTable(undefined);
     let dataSource = [
       {
         title: 'Action',
@@ -75,12 +77,19 @@ function TableAssets(props) {
     }
   }, [props.data, props.dataTable]);
 
+  if (!dataTable) {
+    return <LoadingPage />;
+  }
+
   return (
     <>
-      <Table
-        columns={dataColumn}
-        dataSource={dataTable !== undefined && dataTable}
-      />
+      {dataTable && (
+        <Table
+          columns={dataColumn}
+          dataSource={dataTable !== undefined && dataTable}
+          pagination={false}
+        />
+      )}
       {asset && (
         <ModalDetailAssets
           isModalDetail={isModalDetail}

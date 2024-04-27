@@ -3,6 +3,17 @@ import styled from 'styled-components';
 export const DivAssets = styled.div`
   margin: 30px 0;
   text-align: left;
+`;
+
+export const DivAddData = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 0 5%;
+`;
+
+export const DivAction = styled.div`
+  display: flex;
+
   & button {
     font-size: 18px;
     display: flex;
@@ -10,14 +21,27 @@ export const DivAssets = styled.div`
     padding: 18px 36px;
     font-weight: 500;
   }
-`;
-export const DivAction = styled.div`
-  display: flex;
-  margin-left: 5%;
+
   & button:nth-child(2) {
     margin-left: 20px;
   }
 `;
+
+export const DivImport = styled.button`
+  margin-left: 10px;
+  background: green;
+  color: var(--white);
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  border-color: transparent;
+`;
+
+export const Text = styled.label`
+  cursor: pointer;
+  font-size: 16px;
+`;
+
 export const DivLoading = styled.div`
   margin-top: 15%;
   display: flex;
@@ -45,3 +69,8 @@ export const DivData = styled.div`
 
 export const AssetsTitle = styled.h2``;
 export const ButtonAdd = styled.button``;
+
+export const DivPagination = styled.div`
+  margin-top: 30px;
+  text-align: center;
+`;

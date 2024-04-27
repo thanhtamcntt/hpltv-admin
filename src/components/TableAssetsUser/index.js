@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { ButtonAction, TagAction } from './styles';
-import { Table, Space, Modal } from 'antd';
+import { Table, Space } from 'antd';
 import { RoleContext } from '../../contexts/RoleUserContext';
 import ModalDetailUser from '../ModalDetailUser';
 
@@ -87,6 +87,7 @@ function TableAssetsUser(props) {
       <Table
         columns={dataColumn}
         dataSource={dataTable !== undefined && dataTable}
+        pagination={false}
       />
       {asset && (
         <ModalDetailUser

@@ -4,10 +4,12 @@ import {
   createMovies,
   deleteMovies,
   updateMovies,
+  addManyMovies,
 } from '../../Action/Assets/movies';
 
 const initialState = {
   data: [],
+  count: 0,
   loading: false,
   error: null,
 };
@@ -22,8 +24,8 @@ export const MoviesSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(fetchAllMovies.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.loading = false;
+      state.count = action.payload.count;
       state.data = [...action.payload.data];
     });
     builder.addCase(fetchAllMovies.rejected, (state, action) => {
@@ -36,8 +38,8 @@ export const MoviesSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(createMovies.fulfilled, (state, action) => {
-      console.log('action: ', action.payload.data);
       state.loading = false;
+      state.count = state.count + 1;
       state.data.unshift(action.payload.data);
     });
     builder.addCase(createMovies.rejected, (state, action) => {
@@ -50,8 +52,8 @@ export const MoviesSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(deleteMovies.fulfilled, (state, action) => {
-      console.log('action: ', action.payload);
       state.loading = false;
+      state.count = state.count - 1;
       state.data = state.data.filter((data) => data._id !== action.payload);
     });
     builder.addCase(deleteMovies.rejected, (state, action) => {
@@ -64,7 +66,6 @@ export const MoviesSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(updateMovies.fulfilled, (state, action) => {
-      console.log('action: ', action.payload);
       state.loading = false;
       state.data.map((data) => {
         if (data._id === action.payload.data._id) {
@@ -84,6 +85,20 @@ export const MoviesSlice = createSlice({
       });
     });
     builder.addCase(updateMovies.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    // add many movies
+    builder.addCase(addManyMovies.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(addManyMovies.fulfilled, (state, action) => {
+      console.log(action.payload);
+      state.loading = false;
+      state.data = [...action.payload.data];
+    });
+    builder.addCase(addManyMovies.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
     });

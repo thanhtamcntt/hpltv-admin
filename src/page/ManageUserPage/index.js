@@ -1,5 +1,12 @@
 import { Button, Modal } from 'antd';
-import { DivManage, DivAction, DivError, TextError, DivData } from './styles';
+import {
+  DivManage,
+  DivAction,
+  DivError,
+  TextError,
+  DivData,
+  DivPagination,
+} from './styles';
 import { useContext, useEffect, useState } from 'react';
 import { RoleContext } from '../../contexts/RoleUserContext';
 import FormModalContext from '../../contexts/FormModalContext';
@@ -17,6 +24,7 @@ import {
   fetchAllSubscriber,
   resetPasswordSubscriber,
 } from '../../redux/Action/Manage/subscriber';
+import PaginationComponent from '../../components/Common/Pagination';
 
 function ManageUserPage(props) {
   const { userInfo } = useContext(RoleContext);
@@ -136,16 +144,11 @@ function ManageUserPage(props) {
   return (
     <>
       <DivManage>
-        {userInfo.role === 'superAdmin' &&
-          (props.type === 'user' ? (
-            <DivAction>
-              <Button type="primary">Add User</Button>
-            </DivAction>
-          ) : (
-            <DivAction>
-              <Button type="primary">Add Subscriber</Button>
-            </DivAction>
-          ))}
+        {userInfo.role === 'superAdmin' && props.type === 'user' && (
+          <DivAction>
+            <Button type="primary">Add User</Button>
+          </DivAction>
+        )}
 
         <FormModalContext.Provider
           value={{ type: props.type, dataRecord: dataRecord }}>
@@ -173,11 +176,14 @@ function ManageUserPage(props) {
               setTextModal={setTextModal}
               setIsDelete={setIsDelete}
             />
+            <DivPagination>
+              <PaginationComponent />
+            </DivPagination>
           </DivData>
         )}
       </DivManage>
       <Modal
-        title="Reset Password"
+        title={isDelete ? 'Delete Password' : 'Reset Password'}
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}>

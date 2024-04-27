@@ -105,11 +105,6 @@ function LoginPage() {
                 <Button htmlType="submit">Sign in</Button>
                 {error && <ErrorMessage>{error}!!</ErrorMessage>}
               </Form.Item>
-              <DivLink>
-                <Text>
-                  <Link to="/auth/signup">Forgot password ?</Link>
-                </Text>
-              </DivLink>
             </Form>
           </DivForm>
         </ContentLogin>
