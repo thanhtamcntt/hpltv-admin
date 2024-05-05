@@ -57,6 +57,7 @@ function ModalDetailAssets({ setIsModalDetail, isModalDetail, asset, type }) {
 
   return (
     <ModalDetail
+      className="detail-assets"
       title={type === 'category' ? 'Detail Category' : 'Detail Asset'}
       open={isModalDetail}
       onOk={handleOk}
@@ -75,7 +76,7 @@ function ModalDetailAssets({ setIsModalDetail, isModalDetail, asset, type }) {
               <VideoDetail>
                 <iframe
                   width="100%"
-                  height="255"
+                  height="400"
                   title={data.title}
                   src={data.videoUrl.url}
                   frameBorder="0"
@@ -100,7 +101,7 @@ function ModalDetailAssets({ setIsModalDetail, isModalDetail, asset, type }) {
                 <InfoItem>Country: {data.country}</InfoItem>
               )}
 
-              <InfoItem>Rating: {data.rating}</InfoItem>
+              <InfoItem>Rating: {data.rating}/5</InfoItem>
               {type === 'movies' && (
                 <InfoItem>
                   Release Date: {dayjs(data.releaseDate).format('DD-MM-YYYY')}
@@ -117,8 +118,8 @@ function ModalDetailAssets({ setIsModalDetail, isModalDetail, asset, type }) {
             <DivImage>
               <h2>Image Film</h2>
               <Image
-                width={180}
-                height={260}
+                width={260}
+                height={360}
                 src={data.imageUrl.url}
                 alt={data.title}
               />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   DollarOutlined,
   SettingOutlined,
@@ -39,9 +39,25 @@ const items = [
 ];
 
 function LayoutAdmin({ children }) {
-  const [select, setSelect] = useState(window.location.pathname.slice(1) === 'login' ? 'home' : window.location.pathname.slice(1));
+  const [select, setSelect] = useState(
+    window.location.pathname === '/' ||
+      window.location.pathname.slice(1) === 'login' ||
+      window.location.pathname.slice(1) === ''
+      ? 'home'
+      : window.location.pathname.slice(1),
+  );
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setSelect(
+      window.location.pathname === '/' ||
+        window.location.pathname.slice(1) === 'login' ||
+        window.location.pathname.slice(1) === ''
+        ? 'home'
+        : window.location.pathname.slice(1),
+    );
+  }, [window.location.pathname]);
 
   const {
     token: { colorBgContainer },

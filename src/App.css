@@ -116,3 +116,9 @@
 .modal-detail-user .ant-modal-footer {
   margin-top: 25px;
 }
+
+.detail-assets .ant-modal-content {
+  width: 800px;
+}
+
+/* pagination */

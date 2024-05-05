@@ -22,3 +22,8 @@ export const TextError = styled.h2`
 export const DivData = styled.div`
   margin: 30px 5%;
 `;
+
+export const DivPagination = styled.div`
+  margin-top: 30px;
+  text-align: center;
+`;

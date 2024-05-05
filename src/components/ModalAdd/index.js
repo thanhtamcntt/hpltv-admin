@@ -60,7 +60,7 @@ function ModalAdd(props) {
       default:
         break;
     }
-  }, [dataRecord]);
+  }, [dataRecord, type, props.isModal]);
 
   useEffect(() => {
     if (type === 'series') {
@@ -74,7 +74,6 @@ function ModalAdd(props) {
       }, 10);
     }
   }, [props.dataFilm]);
-
 
   useEffect(() => {
     if (type === 'movies') {

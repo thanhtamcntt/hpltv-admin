@@ -8,13 +8,11 @@ function SiderAdmin(props) {
   const navigate = useNavigate();
   const handleChangeValue = async (selectedKey) => {
     if (selectedKey.key === 'logout') {
-      await localStorage.removeItem('token');
-
+      await localStorage.removeItem('tokenManager');
       navigate('/login');
     } else {
       props.setSelect(selectedKey.key);
       props.handleSelect(selectedKey.key);
-      console.log('key: ' + selectedKey.key);
     }
   };
 

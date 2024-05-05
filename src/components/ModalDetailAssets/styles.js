@@ -2,7 +2,7 @@ import { Modal } from 'antd';
 import styled from 'styled-components';
 
 export const ModalDetail = styled(Modal)`
-  width: 700px;
+  width: 1000px;
 `;
 export const DivTitle = styled.div`
   text-align: center;
@@ -15,7 +15,7 @@ export const DivInfoDetail = styled.div`
   justify-content: space-between;
 `;
 export const InfoDetail = styled.div`
-  padding-right: 16px;
+  padding-right: 40px;
   & h2 {
     text-align: left;
     font-size: 20px;

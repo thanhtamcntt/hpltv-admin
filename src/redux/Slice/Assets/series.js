@@ -4,12 +4,14 @@ import {
   createSeries,
   deleteSeries,
   updateSeries,
+  addManySeries,
 } from '../../Action/Assets/series';
 
 const initialState = {
   data: [],
   loading: false,
   error: null,
+  count: 0,
 };
 
 export const SeriesSlice = createSlice({
@@ -21,8 +23,8 @@ export const SeriesSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(fetchAllSeries.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.loading = false;
+      state.count = action.payload.count;
       state.data = [...action.payload.data];
     });
     builder.addCase(fetchAllSeries.rejected, (state, action) => {
@@ -35,8 +37,8 @@ export const SeriesSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(createSeries.fulfilled, (state, action) => {
-      console.log('action: ', action.payload.data);
       state.loading = false;
+      state.count = state.count + 1;
       state.data.unshift(action.payload.data);
     });
     builder.addCase(createSeries.rejected, (state, action) => {
@@ -49,8 +51,8 @@ export const SeriesSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(deleteSeries.fulfilled, (state, action) => {
-      console.log('action: ', action.payload);
       state.loading = false;
+      state.count = state.count - 1;
       state.data = state.data.filter((data) => data._id !== action.payload);
     });
     builder.addCase(deleteSeries.rejected, (state, action) => {
@@ -76,6 +78,20 @@ export const SeriesSlice = createSlice({
       });
     });
     builder.addCase(updateSeries.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    // add many series
+    builder.addCase(addManySeries.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(addManySeries.fulfilled, (state, action) => {
+      console.log(action.payload);
+      state.loading = false;
+      state.data = [...action.payload.data];
+    });
+    builder.addCase(addManySeries.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
     });

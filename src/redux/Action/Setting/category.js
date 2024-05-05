@@ -2,8 +2,14 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchAllCategory = createAsyncThunk(
   'fetchAllCategory',
-  async (args, { rejectWithValue }) => {
-    const response = await fetch(process.env.REACT_APP_API_CATEGORY);
+  async (size, { rejectWithValue }) => {
+    const response = await fetch(
+      process.env.REACT_APP_API_CATEGORY +
+        '?limit=' +
+        process.env.REACT_APP_SIZE_PAGE +
+        '&page=' +
+        size,
+    );
     const data = await response.json();
     if (!data.success) {
       rejectWithValue(data);
@@ -64,6 +70,27 @@ export const updateCategory = createAsyncThunk(
     );
     const json = await response.json();
     console.log(json);
+    if (!json.success) {
+      rejectWithValue(json);
+    }
+    return json;
+  },
+);
+
+export const addManyCategory = createAsyncThunk(
+  'addManyCategory',
+  async (data, { rejectWithValue }) => {
+    console.log(data);
+    const formData = new FormData();
+    formData.append('file', data);
+    const response = await fetch(process.env.REACT_APP_API_ADD_MANY_MOVIES, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
+      },
+    });
+    const json = await response.json();
     if (!json.success) {
       rejectWithValue(json);
     }

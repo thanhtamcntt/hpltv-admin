@@ -14,17 +14,31 @@ function Router() {
       {(select === 'series' ||
         select === 'movies' ||
         select === 'category') && (
-        <Route
-          path={'/' + select}
-          element={
-            <AssetsPage
-              title={select === 'category' ? 'Name category' : 'Name film'}
-              key={select === 'category' ? 'name' : 'title'}
-              dataIndex={select === 'category' ? 'name' : 'title'}
-              type={select}
-            />
-          }
-        />
+        <>
+          <Route
+            path={'/' + select}
+            element={
+              <AssetsPage
+                title={select === 'category' ? 'Name category' : 'Name film'}
+                key={select === 'category' ? 'name' : 'title'}
+                dataIndex={select === 'category' ? 'name' : 'title'}
+                type={select}
+              />
+            }
+          />
+
+          <Route
+            path={'/' + select + '?page=:pageNum'}
+            element={
+              <AssetsPage
+                title={select === 'category' ? 'Name category' : 'Name film'}
+                key={select === 'category' ? 'name' : 'title'}
+                dataIndex={select === 'category' ? 'name' : 'title'}
+                type={select}
+              />
+            }
+          />
+        </>
       )}
       {(select === 'user' || select === 'subscriber') && (
         <Route
