@@ -20,15 +20,28 @@ function TableAssetsUser(props) {
   const handleDelete = (id) => {
     props.setTextModal('Are you sure you want to delete this account?');
     props.setUserIdReset(id);
-    props.setIsDelete(true);
+    props.setIsOptions(1);
     props.setIsModalOpen(true);
   };
   const handleUpdate = (record) => {
     props.setUserIdReset(record._id);
-    props.setIsDelete(false);
+    props.setIsOptions(2);
     props.setTextModal(
       "Are you sure you want to reset this account's password?",
     );
+    props.setIsModalOpen(true);
+  };
+
+  const handleBanned = (record) => {
+    props.setUserIdReset(record._id);
+    props.setIsOptions(3);
+    props.setTextModal('Are you sure you want to banned this account?');
+    props.setIsModalOpen(true);
+  };
+  const handleRecover = (record) => {
+    props.setUserIdReset(record._id);
+    props.setIsOptions(4);
+    props.setTextModal('Are you sure you want to recover this account?');
     props.setIsModalOpen(true);
   };
 
@@ -42,19 +55,42 @@ function TableAssetsUser(props) {
           style: { TextAlign: 'center' },
         }),
         render: (_, record) => (
-          <Space size="large">
+          <Space
+            size="large"
+            className={props.type !== 'banned-subscriber' && 'row-gap-space'}>
             <ButtonAction onClick={() => handleDetail(record)}>
               <TagAction color="processing">Detail</TagAction>
             </ButtonAction>
             {userInfo && userInfo.role === 'superAdmin' && (
               <>
-                <ButtonAction>
-                  <TagAction
-                    color="warning"
-                    onClick={() => handleUpdate(record)}>
-                    Reset Password
-                  </TagAction>
-                </ButtonAction>
+                {props.type !== 'banned-subscriber' ? (
+                  <>
+                    <ButtonAction>
+                      <TagAction
+                        color="warning"
+                        onClick={() => handleUpdate(record)}>
+                        Reset Password
+                      </TagAction>
+                    </ButtonAction>
+                    {props.type !== 'user' && (
+                      <ButtonAction>
+                        <TagAction
+                          color="error"
+                          onClick={() => handleBanned(record)}>
+                          Banned
+                        </TagAction>
+                      </ButtonAction>
+                    )}
+                  </>
+                ) : (
+                  <ButtonAction>
+                    <TagAction
+                      color="warning"
+                      onClick={() => handleRecover(record)}>
+                      Recover
+                    </TagAction>
+                  </ButtonAction>
+                )}
                 <ButtonAction onClick={() => handleDelete(record._id)}>
                   <TagAction color="error">Delete</TagAction>
                 </ButtonAction>

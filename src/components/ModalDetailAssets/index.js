@@ -43,7 +43,7 @@ function ModalDetailAssets({ setIsModalDetail, isModalDetail, asset, type }) {
     );
   }
 
-  if (type === 'movies' && !data.videoUrl.url) {
+  if (type === 'movies' && !data && !data.videoUrl && !data.videoUrl.url) {
     return (
       <ModalDetail
         title={type === 'category' ? 'Detail Category' : 'Detail Asset'}

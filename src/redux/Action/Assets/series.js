@@ -5,7 +5,7 @@ export const fetchAllSeries = createAsyncThunk(
   async (size, { rejectWithValue }) => {
     const response = await fetch(
       process.env.REACT_APP_API_SERIES +
-        '?limit=' +
+        '/from-page?trash=false&limit=' +
         process.env.REACT_APP_SIZE_PAGE +
         '&page=' +
         size,
@@ -41,11 +41,14 @@ export const createSeries = createAsyncThunk(
 export const deleteSeries = createAsyncThunk(
   'deleteSeries',
   async (data, { rejectWithValue }) => {
+    console.log(data);
     const response = await fetch(
-      process.env.REACT_APP_API_DELETE_SERIES + '/' + data,
+      process.env.REACT_APP_API_DELETE_SERIES + '/' + data.dataId,
       {
         method: 'POST',
+        body: JSON.stringify({ type: data.type }),
         headers: {
+          'Content-Type': 'application/json',
           Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
         },
       },
@@ -54,7 +57,7 @@ export const deleteSeries = createAsyncThunk(
     if (!json.success) {
       rejectWithValue(json);
     }
-    return data;
+    return data.dataId;
   },
 );
 

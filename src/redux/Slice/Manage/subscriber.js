@@ -3,6 +3,7 @@ import {
   deleteSubscriber,
   fetchAllSubscriber,
   resetPasswordSubscriber,
+  postBannedSubscriber,
 } from '../../Action/Manage/subscriber';
 
 const initialState = {
@@ -57,6 +58,20 @@ export const SubscriberSlice = createSlice({
       state.data = state.data.filter((data) => data._id !== action.payload);
     });
     builder.addCase(deleteSubscriber.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    // banned subscriber
+    builder.addCase(postBannedSubscriber.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(postBannedSubscriber.fulfilled, (state, action) => {
+      console.log('action: ', action.payload);
+      state.loading = false;
+      state.data = state.data.filter((data) => data._id !== action.payload);
+    });
+    builder.addCase(postBannedSubscriber.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
     });

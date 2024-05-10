@@ -66,12 +66,19 @@ export const CategorySlice = createSlice({
     });
     builder.addCase(updateCategory.fulfilled, (state, action) => {
       state.loading = false;
-      state.data.map((data) => {
-        if (data._id === action.payload.data._id) {
-          data.name = action.payload.data.name;
-          data.updateAt = action.payload.data.updateAt;
+      for (let i = 0; i < state.data.length; i++) {
+        if (state.data[i]._id === action.payload.data._id) {
+          state.data[i].name = action.payload.data.name;
+          state.data[i].updateAt = action.payload.data.updateAt;
+          break;
         }
-      });
+      }
+      // state.data.map((data) => {
+      //   if (data._id === action.payload.data._id) {
+      //     data.name = action.payload.data.name;
+      //     data.updateAt = action.payload.data.updateAt;
+      //   }
+      // });
     });
     builder.addCase(updateCategory.rejected, (state, action) => {
       state.loading = false;

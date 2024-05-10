@@ -10,7 +10,7 @@ function ModalAdd(props) {
   const [datePicker, setDatePicker] = useState(
     dataRecord !== undefined && dataRecord.releaseDate
       ? dataRecord.releaseDate
-      : dayjs().format('YYYY-MM-DD'),
+      : dayjs().format('YYYY'),
   );
   const [options, setOptions] = useState(undefined);
 
@@ -19,7 +19,7 @@ function ModalAdd(props) {
   useEffect(() => {
     if (type === 'movies' || type === 'series') {
       form.setFieldsValue({
-        releaseDate: dayjs(datePicker, 'YYYY-MM-DD'),
+        releaseDate: dayjs(datePicker, 'YYYY'),
       });
     }
     switch (type) {
@@ -28,14 +28,10 @@ function ModalAdd(props) {
           form.setFieldsValue({
             title: dataRecord.title,
             description: dataRecord.description,
-            listSeriesId:
-              dataRecord.listSeriesId.length > 0
-                ? dataRecord.listSeriesId
-                : 'none',
-          });
-        } else {
-          form.setFieldsValue({
-            listSeriesId: 'none',
+            director: dataRecord.director,
+            cast: dataRecord.cast,
+            country: dataRecord.country,
+            listCategoryId: dataRecord.listCategoryId,
           });
         }
         break;
@@ -63,48 +59,31 @@ function ModalAdd(props) {
   }, [dataRecord, type, props.isModal]);
 
   useEffect(() => {
-    if (type === 'series') {
-      let newOptions;
-      newOptions = props.dataFilm.map((item) => ({
-        label: item.title,
-        value: item._id,
-      }));
-      setTimeout(() => {
+    const fetchCategory = async () => {
+      const response = await fetch(process.env.REACT_APP_API_CATEGORY);
+      const data = await response.json();
+      if (data.success) {
+        let newOptions = [];
+        Promise.all(
+          data.data.map((item) =>
+            newOptions.push({
+              label: item.name,
+              value: item._id,
+            }),
+          ),
+        );
         setOptions(newOptions);
-      }, 10);
+      }
+    };
+    if (type === 'movies' || type === 'series') {
+      fetchCategory();
     }
-  }, [props.dataFilm]);
-
-  useEffect(() => {
-    if (type === 'movies') {
-      let newOptions;
-      newOptions = props.dataCategory.map((item) => ({
-        label: item.name,
-        value: item._id,
-      }));
-      setTimeout(() => {
-        setOptions(newOptions);
-      }, 10);
-    }
-  }, [props.dataCategory]);
+  }, [type]);
 
   const handleCancel = () => {
     props.setIsModal(false);
     props.setDataRecord(undefined);
     form.resetFields();
-  };
-
-  const handleOnchange = (value) => {
-    const lengthValue = value.filter((val) => val !== 'none');
-    if (lengthValue.length < 1) {
-      form.setFieldsValue({
-        listSeriesId: 'none',
-      });
-    } else {
-      form.setFieldsValue({
-        listSeriesId: value.filter((val) => val !== 'none'),
-      });
-    }
   };
 
   return (
@@ -113,12 +92,7 @@ function ModalAdd(props) {
       open={props.isModal}
       onCancel={handleCancel}
       footer={null}>
-      <FormAddModal
-        handleCancel={handleCancel}
-        options={options}
-        form={form}
-        handleOnchange={handleOnchange}
-      />
+      <FormAddModal handleCancel={handleCancel} options={options} form={form} />
     </Modal>
   );
 }

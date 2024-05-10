@@ -19,6 +19,14 @@ import {
   addManySeries,
 } from '../../redux/Action/Assets/series';
 import {
+  fetchAllSeriesTrash,
+  postRecoverSeries,
+} from '../../redux/Action/Assets/trashSeries';
+import {
+  fetchAllMoviesTrash,
+  postRecoverMovies,
+} from '../../redux/Action/Assets/trashMovies';
+import {
   addManyMovies,
   deleteMovies,
   fetchAllMovies,
@@ -33,8 +41,7 @@ import LoadingComponent from '../../components/LoadingComponent';
 import ModalAdd from '../../components/ModalAdd';
 import FormModalContext from '../../contexts/FormModalContext';
 import PaginationComponent from '../../components/Common/Pagination';
-import { useLocation, useNavigate } from 'react-router-dom';
-import LoadingPage from '../LoadingPage';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 function AssetsPage(props) {
   const [isModal, setIsModal] = useState(false);
@@ -44,28 +51,33 @@ function AssetsPage(props) {
   const [dataFile, setDataFile] = useState(undefined);
   const [page, setPage] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
+  const [dataId, setDataId] = useState(false);
+  const [typeModal, setTypeModal] = useState(false);
+  const [textModal, setTextModal] = useState(false);
   const { userInfo } = useContext(RoleContext);
 
   const navigate = useNavigate();
   const location = useLocation();
+  const { seriesId } = useParams();
+  console.log(seriesId);
 
   const dispatch = useDispatch();
-  let data, loading, error, dataFilm, dataCategory, count;
+  let data, loading, error, count;
   const series = useSelector((state) => state.seriesSlice);
   const movies = useSelector((state) => state.moviesSlice);
   const category = useSelector((state) => state.categorySlice);
+  const trashMovies = useSelector((state) => state.trashMoviesSlice);
+  const trashSeries = useSelector((state) => state.trashSeriesSlice);
   if (props.type === 'series') {
     data = series.data;
     loading = series.loading;
     error = series.error;
-    dataFilm = movies.data;
     count = series.count;
   }
   if (props.type === 'movies') {
     data = movies.data;
     loading = movies.loading;
     error = movies.error;
-    dataCategory = category.data;
     count = movies.count;
   }
   if (props.type === 'category') {
@@ -74,12 +86,25 @@ function AssetsPage(props) {
     error = category.error;
     count = category.count;
   }
+  if (props.type === 'trash-movies') {
+    data = trashMovies.data;
+    loading = trashMovies.loading;
+    error = trashMovies.error;
+    count = trashMovies.count;
+  }
+  if (props.type === 'trash-series') {
+    data = trashSeries.data;
+    loading = trashSeries.loading;
+    error = trashSeries.error;
+    count = trashSeries.count;
+  }
 
   const showModal = (type) => {
     setIsModal(true);
   };
 
   useEffect(() => {
+    console.log(props.title, props.dataIndex, props.key);
     const tableData = {
       title: {
         title: props.title,
@@ -93,12 +118,9 @@ function AssetsPage(props) {
     };
 
     setDataTable(tableData);
-  }, [props.type, props.dataIndex, props.key, props.title, userInfo]);
-
-  useEffect(() => {
     setIsLoading(true);
     setPage(1);
-  }, [props.type]);
+  }, [props.type, props.dataIndex, props.key, props.title, userInfo]);
 
   useEffect(() => {
     let pageNum;
@@ -115,11 +137,18 @@ function AssetsPage(props) {
     }
 
     if (props.type === 'series') {
-      Promise.all([dispatch(fetchAllSeries(pageNum))]);
+      if (seriesId) {
+      } else {
+        Promise.all([dispatch(fetchAllSeries(pageNum))]);
+      }
     } else if (props.type === 'movies') {
       Promise.all([dispatch(fetchAllMovies(pageNum))]);
-    } else {
+    } else if (props.type === 'category') {
       Promise.all([dispatch(fetchAllCategory(pageNum))]);
+    } else if (props.type === 'trash-movies') {
+      Promise.all([dispatch(fetchAllMoviesTrash(pageNum))]);
+    } else {
+      Promise.all([dispatch(fetchAllSeriesTrash(pageNum))]);
     }
 
     setTimeout(() => {
@@ -127,36 +156,63 @@ function AssetsPage(props) {
     }, 100);
   }, [location.search, props.type, dispatch, page]);
 
-  const deleteAssets = (id) => {
-    if (props.type === 'movies') {
-      dispatch(deleteMovies(id));
-    }
-    if (props.type === 'category') {
-      dispatch(deleteCategory(id));
-    }
-    if (props.type === 'series') {
-      dispatch(deleteSeries(id));
-    }
-  };
-
   const handleOnchangeInput = (e) => {
     if (e.target.files[0] !== undefined) {
       setDataFile(e.target.files[0]);
+      setTextModal(
+        'Are you sure you want to add all the data {props.type} from the csv file?',
+      );
+      setTypeModal('file');
       setIsModalOpen(true);
       e.target.value = '';
     }
   };
 
   const handleOk = () => {
-    if (props.type === 'series') {
-      dispatch(addManySeries(dataFile));
+    console.log(typeModal);
+    if (typeModal === 'file') {
+      if (props.type === 'series') {
+        dispatch(addManySeries(dataFile));
+      }
+      if (props.type === 'movies') {
+        dispatch(addManyMovies(dataFile));
+      }
+    } else if (typeModal === 'delete') {
+      if (props.type === 'movies') {
+        dispatch(deleteMovies({ dataId: dataId, type: typeModal }));
+      }
+      if (props.type === 'category') {
+        dispatch(deleteCategory(dataId));
+      }
+      if (props.type === 'series') {
+        dispatch(deleteSeries({ dataId: dataId, type: typeModal }));
+      }
+    } else if (typeModal === 'recover') {
+      if (props.type === 'trash-movies') {
+        dispatch(postRecoverMovies({ dataId: dataId }));
+      }
+      if (props.type === 'trash-series') {
+        dispatch(postRecoverSeries({ dataId: dataId }));
+      }
+    } else {
+      if (props.type === 'trash-movies') {
+        dispatch(deleteMovies({ dataId: dataId, type: typeModal }));
+      }
+
+      if (props.type === 'trash-series') {
+        dispatch(deleteSeries({ dataId: dataId, type: typeModal }));
+      }
     }
-    if (props.type === 'movies') {
-      dispatch(addManyMovies(dataFile));
-    }
-    setIsModalOpen(false);
+    setTypeModal(undefined);
     setDataFile(undefined);
+    setIsModalOpen(false);
+
+    if (data.length - 1 === 0 && page > 1) {
+      setPage((prev) => prev - 1);
+      navigate('/' + props.type + '?page=' + (page - 1));
+    }
   };
+
   const handleCancel = () => {
     setIsModalOpen(false);
     setDataFile(undefined);
@@ -170,7 +226,7 @@ function AssetsPage(props) {
   if (error) {
     return (
       <DivAssets>
-        {loading ? (
+        {isLoading ? (
           <LoadingComponent />
         ) : (
           <DivError>
@@ -183,13 +239,6 @@ function AssetsPage(props) {
     );
   }
 
-  // if (isLoading === false) {
-  //   return (
-  //     <DivAssets>
-  //       <LoadingPage />
-  //     </DivAssets>
-  //   );
-  // }
   return (
     <DivAssets>
       <DivAddData>
@@ -206,25 +255,27 @@ function AssetsPage(props) {
                 Add Movies
               </Button>
             </DivAction>
-          ) : (
+          ) : props.type === 'category' ? (
             <DivAction>
               <Button type="primary" onClick={showModal}>
                 Add Category
               </Button>
             </DivAction>
-          ))}
-        <DivImport>
-          <Text htmlFor="file">
-            <ImportOutlined /> Import many {props.type}
-          </Text>
-          <input
-            id="file"
-            name="file"
-            type="file"
-            hidden
-            onChange={(e) => handleOnchangeInput(e)}
-          />
-        </DivImport>
+          ) : null)}
+        {props.type === 'movies' && (
+          <DivImport>
+            <Text htmlFor="file">
+              <ImportOutlined /> Import many {props.type}
+            </Text>
+            <input
+              id="file"
+              name="file"
+              type="file"
+              hidden
+              onChange={(e) => handleOnchangeInput(e)}
+            />
+          </DivImport>
+        )}
       </DivAddData>
       <FormModalContext.Provider
         value={{ type: props.type, dataRecord: dataRecord }}>
@@ -232,19 +283,22 @@ function AssetsPage(props) {
           isModal={isModal}
           setIsModal={setIsModal}
           setDataRecord={setDataRecord}
-          dataFilm={dataFilm}
-          dataCategory={dataCategory}
         />
       </FormModalContext.Provider>
       <Modal
-        title={'Add data ' + props.type}
+        title={
+          props.type === 'movies' || props.type === 'series'
+            ? 'Add data ' + props.type
+            : typeModal === 'delete'
+            ? 'Delete data'
+            : typeModal === 'recover'
+            ? 'Recover data'
+            : 'Destroy data'
+        }
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}>
-        <p>
-          Are you sure you want to add all the data {props.type} from the csv
-          file?
-        </p>
+        <p>{textModal}</p>
       </Modal>
 
       <DivData>
@@ -254,19 +308,24 @@ function AssetsPage(props) {
           <>
             <TableAssets
               data={data}
-              deleteAssets={deleteAssets}
               setDataRecord={setDataRecord}
               type={props.type}
               setIsModal={setIsModal}
               dataTable={dataTable}
+              setDataId={setDataId}
+              setIsModalOpen={setIsModalOpen}
+              setTypeModal={setTypeModal}
+              setTextModal={setTextModal}
             />
-            <DivPagination>
-              <PaginationComponent
-                count={count}
-                page={page}
-                handleOnChangePage={handleOnChangePage}
-              />
-            </DivPagination>
+            {data.length > 0 && (
+              <DivPagination>
+                <PaginationComponent
+                  count={count}
+                  page={page}
+                  handleOnChangePage={handleOnChangePage}
+                />
+              </DivPagination>
+            )}
           </>
         )}
       </DivData>
