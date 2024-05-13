@@ -1,9 +1,11 @@
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ButtonAction, TagAction } from './styles';
 import { Table, Space } from 'antd';
 import ModalDetailAssets from '../ModalDetailAssets';
 import { RoleContext } from '../../contexts/RoleUserContext';
 import LoadingPage from '../../page/LoadingPage';
+import { useNavigate } from 'react-router-dom';
+import ChildrenContext from '../../contexts/ChildrenContext';
 
 function TableAssets(props) {
   const [dataTable, setDataTable] = useState([]);
@@ -11,20 +13,37 @@ function TableAssets(props) {
   const [isModalDetail, setIsModalDetail] = useState(false);
   const [asset, setAsset] = useState();
 
+  const navigate = useNavigate();
   const { userInfo } = useContext(RoleContext);
 
   const handleDetail = (record) => {
-    setAsset(record);
-    setIsModalDetail(true);
+    if (props.type === 'series') {
+      console.log(record._id);
+      navigate('/series/' + record._id);
+    } else {
+      setAsset(record);
+      setIsModalDetail(true);
+    }
   };
 
-  const handleDelete = (id) => {
-    console.log(id);
-    props.deleteAssets(id);
+  const handleRecover = (record, type) => {
+    props.setDataId(record._id);
+    props.setTypeModal(type);
+    props.setTextModal('Are you sure you want to recover this data?');
+    props.setIsModalOpen(true);
   };
-  const handleUpdate = (record) => {
-    props.setDataRecord(record);
-    props.setIsModal(true);
+
+  const handleDelete = (record, type) => {
+    props.setDataId(record._id);
+    props.setTypeModal(type);
+    props.setTextModal('Are you sure you want to delete this data?');
+    props.setIsModalOpen(true);
+  };
+  const handleDestroy = (record, type) => {
+    props.setDataId(record._id);
+    props.setTypeModal(type);
+    props.setTextModal('Are you sure you want to destroy this data?');
+    props.setIsModalOpen(true);
   };
 
   useEffect(() => {
@@ -43,16 +62,38 @@ function TableAssets(props) {
             </ButtonAction>
             {userInfo.role === 'superAdmin' && (
               <>
-                <ButtonAction>
-                  <TagAction
-                    color="warning"
-                    onClick={() => handleUpdate(record)}>
-                    Update
-                  </TagAction>
-                </ButtonAction>
-                <ButtonAction onClick={() => handleDelete(record._id)}>
-                  <TagAction color="error">Delete</TagAction>
-                </ButtonAction>
+                {props.type !== 'trash-movies' &&
+                props.type !== 'trash-series' ? (
+                  <ButtonAction>
+                    <TagAction
+                      color="warning"
+                      onClick={() => {
+                        props.setDataRecord(record);
+                        props.setIsModal(true);
+                      }}>
+                      Update
+                    </TagAction>
+                  </ButtonAction>
+                ) : (
+                  <ButtonAction>
+                    <TagAction
+                      color="warning"
+                      onClick={() => handleRecover(record, 'recover')}>
+                      Recover
+                    </TagAction>
+                  </ButtonAction>
+                )}
+                {props.type !== 'trash-movies' &&
+                props.type !== 'trash-series' ? (
+                  <ButtonAction onClick={() => handleDelete(record, 'delete')}>
+                    <TagAction color="error">Delete</TagAction>
+                  </ButtonAction>
+                ) : (
+                  <ButtonAction
+                    onClick={() => handleDestroy(record, 'destroy')}>
+                    <TagAction color="error">Destroy</TagAction>
+                  </ButtonAction>
+                )}
               </>
             )}
           </Space>
@@ -65,8 +106,8 @@ function TableAssets(props) {
         dataSource.unshift(props.dataTable[key]);
       });
       setDataColumn(dataSource);
-      if (props.data.length > 0) {
-        if (props.data.length > 0) {
+      if (props.data.length >= 0) {
+        if (props.data.length >= 0) {
           let dataSource = [];
           for (let data of props.data) {
             dataSource.push(data);
@@ -75,7 +116,7 @@ function TableAssets(props) {
         }
       }
     }
-  }, [props.data, props.dataTable]);
+  }, [props.data, props.dataTable, userInfo, props, props.type]);
 
   if (!dataTable) {
     return <LoadingPage />;

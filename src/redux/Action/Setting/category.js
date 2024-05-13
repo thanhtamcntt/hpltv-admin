@@ -5,7 +5,7 @@ export const fetchAllCategory = createAsyncThunk(
   async (size, { rejectWithValue }) => {
     const response = await fetch(
       process.env.REACT_APP_API_CATEGORY +
-        '?limit=' +
+        '/from-page?limit=' +
         process.env.REACT_APP_SIZE_PAGE +
         '&page=' +
         size,

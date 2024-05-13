@@ -4,6 +4,9 @@ import {
   SettingOutlined,
   LogoutOutlined,
   TeamOutlined,
+  BarChartOutlined,
+  LockOutlined,
+  RestOutlined,
 } from '@ant-design/icons';
 import { Layout, theme } from 'antd';
 import HeaderAdmin from '../components/HeaderComponent';
@@ -24,9 +27,11 @@ function getItem(label, key, icon, children) {
 }
 
 const items = [
+  getItem('Statistics', 'statistics', <BarChartOutlined />),
   getItem('Assets', 'assets', <DollarOutlined />, [
     getItem('Series', 'series'),
     getItem('Movies', 'movies'),
+    getItem('Film for series', 'film-for-series'),
   ]),
   getItem('Setting', 'setting', <SettingOutlined />, [
     getItem('Category', 'category'),
@@ -35,6 +40,16 @@ const items = [
     getItem('User', 'user'),
     getItem('Subscriber', 'subscriber'),
   ]),
+
+  getItem('Banned Account', 'banned account', <LockOutlined />, [
+    getItem('Subscriber', 'banned-subscriber'),
+  ]),
+
+  getItem('Trash', 'trash', <RestOutlined />, [
+    getItem('Series', 'trash-series'),
+    getItem('Movies', 'trash-movies'),
+  ]),
+  getItem('Payment', 'payment', <RestOutlined />),
   getItem('Logout', 'logout', <LogoutOutlined />),
 ];
 
@@ -54,7 +69,7 @@ function LayoutAdmin({ children }) {
       window.location.pathname === '/' ||
         window.location.pathname.slice(1) === 'login' ||
         window.location.pathname.slice(1) === ''
-        ? 'home'
+        ? 'statistics'
         : window.location.pathname.slice(1),
     );
   }, [window.location.pathname]);

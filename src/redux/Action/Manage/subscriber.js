@@ -3,11 +3,14 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 export const fetchAllSubscriber = createAsyncThunk(
   'fetchAllSubscriber',
   async (args, { rejectWithValue }) => {
-    const response = await fetch(process.env.REACT_APP_API_GET_ALL_SUBSCRIBER, {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
+    const response = await fetch(
+      process.env.REACT_APP_API_GET_ALL_SUBSCRIBER + '?banned=false',
+      {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
+        },
       },
-    });
+    );
     const data = await response.json();
     if (!data.success) {
       rejectWithValue(data);
@@ -55,6 +58,28 @@ export const deleteSubscriber = createAsyncThunk(
       rejectWithValue(data);
     }
 
+    return dataUser.userId;
+  },
+);
+
+export const postBannedSubscriber = createAsyncThunk(
+  'postBannedSubscriber',
+  async (dataUser, { rejectWithValue }) => {
+    const response = await fetch(
+      process.env.REACT_APP_API_GET_BANNED_SUBSCRIBER,
+      {
+        method: 'POST',
+        body: JSON.stringify(dataUser),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
+        },
+      },
+    );
+    const data = await response.json();
+    if (!data.success) {
+      rejectWithValue(data);
+    }
     return dataUser.userId;
   },
 );

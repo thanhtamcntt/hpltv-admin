@@ -5,7 +5,7 @@ export const fetchAllMovies = createAsyncThunk(
   async (size, { rejectWithValue }) => {
     const response = await fetch(
       process.env.REACT_APP_API_MOVIES +
-        '?limit=' +
+        '/from-page?trash=false&limit=' +
         process.env.REACT_APP_SIZE_PAGE +
         '&page=' +
         size,
@@ -40,9 +40,10 @@ export const deleteMovies = createAsyncThunk(
   'deleteMovies',
   async (data, { rejectWithValue }) => {
     const response = await fetch(
-      process.env.REACT_APP_API_DELETE_MOVIES + '/' + data,
+      process.env.REACT_APP_API_DELETE_MOVIES + '/' + data.dataId,
       {
         method: 'POST',
+        body: JSON.stringify({ type: data.type }),
         headers: {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
@@ -53,7 +54,7 @@ export const deleteMovies = createAsyncThunk(
     if (!json.success) {
       rejectWithValue(json);
     }
-    return data;
+    return data.dataId;
   },
 );
 

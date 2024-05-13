@@ -23,8 +23,13 @@ import {
   deleteSubscriber,
   fetchAllSubscriber,
   resetPasswordSubscriber,
+  postBannedSubscriber,
 } from '../../redux/Action/Manage/subscriber';
 import PaginationComponent from '../../components/Common/Pagination';
+import {
+  fetchAllSubscriberBanned,
+  postRecoverSubscriber,
+} from '../../redux/Action/Manage/bannedAccount';
 
 function ManageUserPage(props) {
   const { userInfo } = useContext(RoleContext);
@@ -35,12 +40,13 @@ function ManageUserPage(props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userIdReset, setUserIdReset] = useState();
   const [textModal, setTextModal] = useState();
-  const [isDelete, setIsDelete] = useState(false);
+  const [isOptions, setIsOptions] = useState(false);
 
   const dispatch = useDispatch();
   let data, loading, error;
   const user = useSelector((state) => state.userSlice);
   const subscriber = useSelector((state) => state.subscriberSlice);
+  const bannedSubscriber = useSelector((state) => state.subscriberBannedSlice);
   if (props.type === 'user') {
     data = user.data;
     loading = user.loading;
@@ -51,24 +57,33 @@ function ManageUserPage(props) {
     loading = subscriber.loading;
     error = subscriber.error;
   }
+  if (props.type === 'banned-subscriber') {
+    data = bannedSubscriber.data;
+    loading = bannedSubscriber.loading;
+    error = bannedSubscriber.error;
+  }
 
   const handleOk = async () => {
     const data = {
       userId: userIdReset,
       type: props.type,
     };
-    if (isDelete === true) {
+    if (isOptions === 1) {
       if (props.type === 'user') {
         Promise.all([dispatch(deleteUser(data))]);
       } else {
         Promise.all([dispatch(deleteSubscriber(data))]);
       }
-    } else {
+    } else if (isOptions === 2) {
       if (props.type === 'user') {
         Promise.all([dispatch(resetPasswordUser(data))]);
       } else {
         Promise.all([dispatch(resetPasswordSubscriber(data))]);
       }
+    } else if (isOptions === 3) {
+      Promise.all([dispatch(postBannedSubscriber(data))]);
+    } else {
+      Promise.all([dispatch(postRecoverSubscriber(data))]);
     }
 
     setUserIdReset();
@@ -80,7 +95,11 @@ function ManageUserPage(props) {
   };
 
   useEffect(() => {
-    Promise.all([dispatch(fetchAllUser()), dispatch(fetchAllSubscriber())]);
+    Promise.all([
+      dispatch(fetchAllUser()),
+      dispatch(fetchAllSubscriber()),
+      dispatch(fetchAllSubscriberBanned()),
+    ]);
   }, [props.type, dispatch]);
 
   useEffect(() => {
@@ -174,16 +193,26 @@ function ManageUserPage(props) {
               setUserIdReset={setUserIdReset}
               setIsModalOpen={setIsModalOpen}
               setTextModal={setTextModal}
-              setIsDelete={setIsDelete}
+              setIsOptions={setIsOptions}
             />
-            <DivPagination>
-              <PaginationComponent />
-            </DivPagination>
+            {data.length > 0 && (
+              <DivPagination>
+                <PaginationComponent />
+              </DivPagination>
+            )}
           </DivData>
         )}
       </DivManage>
       <Modal
-        title={isDelete ? 'Delete Password' : 'Reset Password'}
+        title={
+          isOptions === 1
+            ? 'Delete Password'
+            : isOptions === 2
+            ? 'Reset Password'
+            : isOptions === 3
+            ? 'Banned Account'
+            : 'Recover Account'
+        }
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}>

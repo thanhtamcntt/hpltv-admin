@@ -7,13 +7,16 @@ import ManageUserPage from '../page/ManageUserPage';
 
 function Router() {
   const { select } = React.useContext(ChildrenContext);
-
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
+      {select === 'statistics' && (
+        <Route path="/" element={<HomePage type={select} />} />
+      )}
       {(select === 'series' ||
         select === 'movies' ||
-        select === 'category') && (
+        select === 'category' ||
+        select === 'trash-series' ||
+        select === 'trash-movies') && (
         <>
           <Route
             path={'/' + select}
@@ -40,12 +43,47 @@ function Router() {
           />
         </>
       )}
-      {(select === 'user' || select === 'subscriber') && (
+      {
+        <>
+          <Route
+            path={'/series/:seriesId'}
+            element={
+              <AssetsPage
+                title={'Name film'}
+                key={'title'}
+                dataIndex={'title'}
+                type={'series'}
+              />
+            }
+          />
+
+          <Route
+            path={'/series/:seriesId?page=:pageNum'}
+            element={
+              <AssetsPage
+                title={select === 'category' ? 'Name category' : 'Name film'}
+                key={select === 'category' ? 'name' : 'title'}
+                dataIndex={select === 'category' ? 'name' : 'title'}
+                type={'series'}
+              />
+            }
+          />
+        </>
+      }
+      {(select === 'user' ||
+        select === 'subscriber' ||
+        select === 'banned-subscriber') && (
         <Route
           path={'/' + select}
           element={
             <ManageUserPage
-              title={select === 'user' ? 'Name user' : 'Name subscriber'}
+              title={
+                select === 'user'
+                  ? 'Name user'
+                  : 'subscriber'
+                  ? 'Name subscriber'
+                  : 'Banned subscriber'
+              }
               type={select}
             />
           }
