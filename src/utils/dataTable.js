@@ -141,14 +141,14 @@ export const columns2 = [
 export const optionsSelect = [
   {
     value: 'day',
-    label: 'day',
+    label: 'Day',
   },
   {
     value: 'month',
-    label: 'month',
+    label: 'Month',
   },
   {
     value: 'year',
-    label: 'year',
+    label: 'Year',
   },
 ];

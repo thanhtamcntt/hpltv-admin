@@ -12,7 +12,6 @@ function HeaderAdmin({ bgColor, title }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        marginLeft: '2%',
       }}>
       <TitleContent>{title}</TitleContent>
     </Header>

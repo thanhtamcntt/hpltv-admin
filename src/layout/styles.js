@@ -10,6 +10,12 @@ export const DivSider = styled.div`
   background-color: #f5f5f5;
   & > div {
     height: 100vh;
-    overflow: hidden;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 `;

@@ -5,6 +5,7 @@ import {
   deleteSeries,
   updateSeries,
   addManySeries,
+  fetchAllSeriesLook,
 } from '../../Action/Assets/series';
 
 const initialState = {
@@ -28,6 +29,19 @@ export const SeriesSlice = createSlice({
       state.data = [...action.payload.data];
     });
     builder.addCase(fetchAllSeries.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+    //fetch look
+    builder.addCase(fetchAllSeriesLook.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchAllSeriesLook.fulfilled, (state, action) => {
+      state.loading = false;
+      state.count = action.payload.count;
+      state.data = [...action.payload.data];
+    });
+    builder.addCase(fetchAllSeriesLook.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
     });

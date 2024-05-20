@@ -4,6 +4,7 @@ import {
   createCategory,
   deleteCategory,
   updateCategory,
+  fetchAllCategoryLook,
 } from '../../Action/Setting/category';
 
 const initialState = {
@@ -32,6 +33,19 @@ export const CategorySlice = createSlice({
       state.error = action.payload.message;
     });
 
+    // fetch all category look
+    builder.addCase(fetchAllCategoryLook.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchAllCategoryLook.fulfilled, (state, action) => {
+      state.loading = false;
+      state.count = action.payload.count;
+      state.data = [...action.payload.data];
+    });
+    builder.addCase(fetchAllCategoryLook.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload.message;
+    });
     // create a new category
     builder.addCase(createCategory.pending, (state) => {
       state.loading = true;

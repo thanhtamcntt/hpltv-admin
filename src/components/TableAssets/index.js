@@ -4,8 +4,6 @@ import { Table, Space } from 'antd';
 import ModalDetailAssets from '../ModalDetailAssets';
 import { RoleContext } from '../../contexts/RoleUserContext';
 import LoadingPage from '../../page/LoadingPage';
-import { useNavigate } from 'react-router-dom';
-import ChildrenContext from '../../contexts/ChildrenContext';
 
 function TableAssets(props) {
   const [dataTable, setDataTable] = useState([]);
@@ -13,22 +11,19 @@ function TableAssets(props) {
   const [isModalDetail, setIsModalDetail] = useState(false);
   const [asset, setAsset] = useState();
 
-  const navigate = useNavigate();
   const { userInfo } = useContext(RoleContext);
 
   const handleDetail = (record) => {
-    if (props.type === 'series') {
-      console.log(record._id);
-      navigate('/series/' + record._id);
-    } else {
-      setAsset(record);
-      setIsModalDetail(true);
-    }
+    setAsset(record);
+    setIsModalDetail(true);
   };
 
   const handleRecover = (record, type) => {
     props.setDataId(record._id);
     props.setTypeModal(type);
+    if (props.type === 'trash-film-for-series') {
+      props.setSeriesId(record.seriesId);
+    }
     props.setTextModal('Are you sure you want to recover this data?');
     props.setIsModalOpen(true);
   };
@@ -36,12 +31,18 @@ function TableAssets(props) {
   const handleDelete = (record, type) => {
     props.setDataId(record._id);
     props.setTypeModal(type);
+    if (props.type === 'film-for-series') {
+      props.setSeriesId(record.seriesId);
+    }
     props.setTextModal('Are you sure you want to delete this data?');
     props.setIsModalOpen(true);
   };
   const handleDestroy = (record, type) => {
     props.setDataId(record._id);
     props.setTypeModal(type);
+    if (props.type === 'trash-film-for-series') {
+      props.setSeriesId(record.seriesId);
+    }
     props.setTextModal('Are you sure you want to destroy this data?');
     props.setIsModalOpen(true);
   };
@@ -63,7 +64,8 @@ function TableAssets(props) {
             {userInfo.role === 'superAdmin' && (
               <>
                 {props.type !== 'trash-movies' &&
-                props.type !== 'trash-series' ? (
+                props.type !== 'trash-series' &&
+                props.type !== 'trash-film-for-series' ? (
                   <ButtonAction>
                     <TagAction
                       color="warning"
@@ -83,17 +85,20 @@ function TableAssets(props) {
                     </TagAction>
                   </ButtonAction>
                 )}
-                {props.type !== 'trash-movies' &&
-                props.type !== 'trash-series' ? (
-                  <ButtonAction onClick={() => handleDelete(record, 'delete')}>
-                    <TagAction color="error">Delete</TagAction>
-                  </ButtonAction>
-                ) : (
-                  <ButtonAction
-                    onClick={() => handleDestroy(record, 'destroy')}>
-                    <TagAction color="error">Destroy</TagAction>
-                  </ButtonAction>
-                )}
+                {props.type !== 'payment' &&
+                  (props.type !== 'trash-movies' &&
+                  props.type !== 'trash-series' &&
+                  props.type !== 'trash-film-for-series' ? (
+                    <ButtonAction
+                      onClick={() => handleDelete(record, 'delete')}>
+                      <TagAction color="error">Delete</TagAction>
+                    </ButtonAction>
+                  ) : (
+                    <ButtonAction
+                      onClick={() => handleDestroy(record, 'destroy')}>
+                      <TagAction color="error">Destroy</TagAction>
+                    </ButtonAction>
+                  ))}
               </>
             )}
           </Space>
@@ -117,10 +122,6 @@ function TableAssets(props) {
       }
     }
   }, [props.data, props.dataTable, userInfo, props, props.type]);
-
-  if (!dataTable) {
-    return <LoadingPage />;
-  }
 
   return (
     <>

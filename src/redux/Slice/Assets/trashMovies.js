@@ -3,6 +3,7 @@ import {
   fetchAllMoviesTrash,
   postRecoverMovies,
   deleteTrashMovies,
+  fetchAllMoviesTrashLook,
 } from '../../Action/Assets/trashMovies';
 
 const initialState = {
@@ -30,6 +31,20 @@ export const TrashMoviesSlice = createSlice({
       state.loading = false;
       state.error = action.payload.message;
     });
+
+    // fetch all movies look
+    builder.addCase(fetchAllMoviesTrashLook.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchAllMoviesTrashLook.fulfilled, (state, action) => {
+      state.loading = false;
+      state.count = action.payload.count;
+      state.data = [...action.payload.data];
+    });
+    builder.addCase(fetchAllMoviesTrashLook.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload.message;
+    });
     // recover movies
     builder.addCase(postRecoverMovies.pending, (state) => {
       state.loading = true;
@@ -51,7 +66,11 @@ export const TrashMoviesSlice = createSlice({
     builder.addCase(deleteTrashMovies.fulfilled, (state, action) => {
       state.loading = false;
       state.count = state.count - 1;
-      state.data = state.data.filter((data) => data._id !== action.payload);
+      console.log('action: ', action.payload);
+      state.data = state.data.filter((data) => {
+        // data._id !== action.payload
+        console.log('action: ', action.payload, data._id);
+      });
     });
     builder.addCase(deleteTrashMovies.rejected, (state, action) => {
       state.loading = false;

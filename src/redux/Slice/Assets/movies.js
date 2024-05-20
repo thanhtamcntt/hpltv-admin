@@ -5,6 +5,7 @@ import {
   deleteMovies,
   updateMovies,
   addManyMovies,
+  fetchAllMoviesLook,
 } from '../../Action/Assets/movies';
 
 const initialState = {
@@ -29,6 +30,20 @@ export const MoviesSlice = createSlice({
       state.data = [...action.payload.data];
     });
     builder.addCase(fetchAllMovies.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload.message;
+    });
+
+    // fetch all movies look
+    builder.addCase(fetchAllMoviesLook.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchAllMoviesLook.fulfilled, (state, action) => {
+      state.loading = false;
+      state.count = action.payload.count;
+      state.data = [...action.payload.data];
+    });
+    builder.addCase(fetchAllMoviesLook.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload.message;
     });
