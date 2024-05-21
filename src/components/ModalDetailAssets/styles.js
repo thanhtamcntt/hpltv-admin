@@ -7,8 +7,15 @@ export const ModalDetail = styled(Modal)`
 export const DivTitle = styled.div`
   text-align: center;
 `;
-export const TitleDetail = styled.h2``;
+export const TitleDetail = styled.h2`
+  margin-bottom: 25px;
+`;
 export const DivVideo = styled.div``;
+
+export const DivVideoFilm = styled.div`
+  margin-top: 1rem;
+`;
+
 export const VideoDetail = styled.div``;
 export const DivInfoDetail = styled.div`
   display: flex;
@@ -32,6 +39,7 @@ export const DivImage = styled.div`
     width: 180px;
     height: 260px;
     border-radius: 20px;
+    margin-top: 1rem;
   }
 
   & h2 {

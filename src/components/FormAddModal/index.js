@@ -6,6 +6,8 @@ import {
   Upload,
   Select,
   notification,
+  InputNumber,
+  message,
 } from 'antd';
 import ItemForm from '../Common/ItemFormAdd';
 import { UploadOutlined } from '@ant-design/icons';
@@ -19,13 +21,19 @@ import { createSeries, updateSeries } from '../../redux/Action/Assets/series';
 import FormModalContext from '../../contexts/FormModalContext';
 import { useContext, useState } from 'react';
 import LoadingComponent from '../LoadingComponent';
+import {
+  createFilmForSeries,
+  updateFilmForSeries,
+} from '../../redux/Action/Assets/filmForSeries';
 
 function FormAddModal(props) {
-  const [fileList, setFileList] = useState([]);
+  const [seriesId, setSeriesId] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+
   const dispatch = useDispatch();
 
-  const { type, dataRecord } = useContext(FormModalContext);
-
+  const { type, dataRecord, options, setDefaultValue } =
+    useContext(FormModalContext);
   const openNotification = (placement, message) => {
     notification.error({
       message: `Notification Error`,
@@ -35,7 +43,49 @@ function FormAddModal(props) {
   };
 
   const onFinish = async (values) => {
-    console.log('values', values.releaseDate.$y);
+    console.log(values);
+    if (type === 'film-for-series') {
+      let type = dataRecord ? 'update' : 'create';
+      let data;
+      if (dataRecord) {
+        data = {
+          number: values.filmSerialNumber,
+          type: type,
+          numberUpdate: dataRecord.filmSerialNumber,
+        };
+      } else {
+        data = {
+          number: values.filmSerialNumber,
+          type: type,
+        };
+      }
+
+      const response = await fetch(
+        process.env.REACT_APP_API_SERIES_ADMIN +
+          '/' +
+          values.listSeries +
+          '/check-series-number',
+        {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
+          },
+        },
+      );
+      const json = await response.json();
+      console.log(json);
+      if (!json.success) {
+        messageApi.open({
+          type: 'error',
+          content: json.message,
+          duration: 2,
+        });
+        return;
+      }
+    }
+
     if (type === 'movies') {
       if (
         values.imageUrl.file.type !== 'image/jpeg' &&
@@ -80,6 +130,11 @@ function FormAddModal(props) {
           name: values.name,
         };
         break;
+      case 'film-for-series':
+        formData.append('videoUrl', values.videoUrl.file);
+        formData.append('releaseDate', values.releaseDate.$y);
+        formData.append('filmSerialNumber', values.filmSerialNumber);
+        break;
       default:
         break;
     }
@@ -96,6 +151,7 @@ function FormAddModal(props) {
             };
             dispatch(updateSeries(data));
             props.handleCancel();
+
             break;
           case 'movies':
             data = {
@@ -112,6 +168,16 @@ function FormAddModal(props) {
             };
             dispatch(updateCategory(data));
             props.handleCancel();
+            break;
+          case 'film-for-series':
+            data = {
+              formData: formData,
+              Id: dataRecord._id,
+              seriesId: values.listSeries,
+            };
+            dispatch(updateFilmForSeries(data));
+            props.handleCancel();
+            setDefaultValue(options[0].value);
             break;
           default:
             break;
@@ -130,6 +196,15 @@ function FormAddModal(props) {
             dispatch(createCategory(dataBody));
             props.handleCancel();
             break;
+          case 'film-for-series':
+            let data = {
+              formData: formData,
+              seriesId: values.listSeries,
+            };
+            dispatch(createFilmForSeries(data));
+            props.handleCancel();
+            setDefaultValue(options[0].value);
+            break;
           default:
             break;
         }
@@ -142,9 +217,18 @@ function FormAddModal(props) {
     console.log('Failed:', errorInfo);
   };
 
+  const filterOption = (input, option) =>
+    (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+
+  const onChange = (value) => {
+    if (value !== '') {
+      setSeriesId(value);
+    }
+  };
   return (
     <>
-      {props.options ? (
+      {contextHolder}
+      {
         <Form
           form={props.form}
           name={type + 'Form'}
@@ -157,12 +241,14 @@ function FormAddModal(props) {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off">
-          <ItemForm
-            label={'Name ' + (type.charAt(0).toUpperCase() + type.slice(1))}
-            name={(type === 'category' && 'name') || 'title'}
-            message={`Please input your name ${type}!`}
-            input={<Input />}
-          />
+          {type !== 'film-for-series' && (
+            <ItemForm
+              label={'Name ' + (type.charAt(0).toUpperCase() + type.slice(1))}
+              name={(type === 'category' && 'name') || 'title'}
+              message={`Please input your name ${type}!`}
+              input={<Input />}
+            />
+          )}
 
           {(type === 'series' || type === 'movies') && (
             <>
@@ -200,7 +286,7 @@ function FormAddModal(props) {
             </>
           )}
 
-          {type === 'movies' && (
+          {(type === 'movies' || type === 'film-for-series') && (
             <ItemForm
               label="Video Film Url"
               name="videoUrl"
@@ -219,6 +305,38 @@ function FormAddModal(props) {
                 </Upload>
               }
             />
+          )}
+
+          {type === 'film-for-series' && (
+            <>
+              <ItemForm
+                label="Film serial number"
+                name="filmSerialNumber"
+                message="Please input your film serial number!"
+                input={<InputNumber min={1} type="number" />}
+              />
+              <ItemForm
+                label="Release Date"
+                name="releaseDate"
+                message="Please input your release date!"
+                input={<DatePicker picker="year" />}
+              />
+              <ItemForm
+                label={'Film for series'}
+                name="listSeries"
+                message={`Please select your series!`}
+                input={
+                  <Select
+                    showSearch
+                    placeholder="Select a series"
+                    optionFilterProp="children"
+                    onChange={onChange}
+                    filterOption={filterOption}
+                    options={options}
+                  />
+                }
+              />
+            </>
           )}
 
           {(type === 'movies' || type === 'series') && (
@@ -282,14 +400,16 @@ function FormAddModal(props) {
             className="add-film-button">
             <Button htmlType="submit">
               {dataRecord !== undefined
-                ? `Update ${type.charAt(0).toUpperCase() + type.slice(1)}`
-                : `Add ${type.charAt(0).toUpperCase() + type.slice(1)}`}
+                ? type !== 'film-for-series'
+                  ? `Update ${type.charAt(0).toUpperCase() + type.slice(1)}`
+                  : 'Update film'
+                : type !== 'film-for-series'
+                ? `Add ${type.charAt(0).toUpperCase() + type.slice(1)}`
+                : 'Add film'}
             </Button>
           </Form.Item>
         </Form>
-      ) : (
-        <LoadingComponent />
-      )}
+      }
     </>
   );
 }

@@ -3,6 +3,7 @@ import {
   fetchAllSeriesTrash,
   postRecoverSeries,
   deleteTrashSeries,
+  fetchAllSeriesTrashLook,
 } from '../../Action/Assets/trashSeries';
 
 const initialState = {
@@ -26,6 +27,19 @@ export const TrashSeriesSlice = createSlice({
       state.data = [...action.payload.data];
     });
     builder.addCase(fetchAllSeriesTrash.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+    //fetch look
+    builder.addCase(fetchAllSeriesTrashLook.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchAllSeriesTrashLook.fulfilled, (state, action) => {
+      state.loading = false;
+      state.count = action.payload.count;
+      state.data = [...action.payload.data];
+    });
+    builder.addCase(fetchAllSeriesTrashLook.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
     });

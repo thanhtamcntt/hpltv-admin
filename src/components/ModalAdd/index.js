@@ -1,25 +1,25 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Form, Modal } from 'antd';
 import dayjs from 'dayjs';
+import moment from 'moment';
 import FormAddModal from '../FormAddModal';
 import FormModalContext from '../../contexts/FormModalContext';
 
 function ModalAdd(props) {
   const { type, dataRecord } = useContext(FormModalContext);
 
-  const [datePicker, setDatePicker] = useState(
-    dataRecord !== undefined && dataRecord.releaseDate
-      ? dataRecord.releaseDate
-      : dayjs().format('YYYY'),
-  );
   const [options, setOptions] = useState(undefined);
 
   const [form] = Form.useForm();
 
   useEffect(() => {
-    if (type === 'movies' || type === 'series') {
+    const currentYear = new Date().getFullYear().toString();
+    if (type === 'movies' || type === 'series' || type === 'film-for-series') {
       form.setFieldsValue({
-        releaseDate: dayjs(datePicker, 'YYYY'),
+        releaseDate:
+          dataRecord !== undefined && dataRecord.releaseDate
+            ? dayjs(dataRecord.releaseDate.toString(), 'YYYY')
+            : dayjs(currentYear, 'YYYY'),
       });
     }
     switch (type) {
@@ -51,6 +51,14 @@ function ModalAdd(props) {
       case 'category':
         if (dataRecord && dataRecord.name) {
           form.setFieldsValue({ name: dataRecord.name });
+        }
+        break;
+      case 'film-for-series':
+        if (dataRecord) {
+          form.setFieldsValue({
+            filmSerialNumber: dataRecord.filmSerialNumber,
+            listSeries: dataRecord.seriesId,
+          });
         }
         break;
       default:

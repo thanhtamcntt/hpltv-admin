@@ -19,6 +19,29 @@ export const fetchAllSeries = createAsyncThunk(
   },
 );
 
+export const fetchAllSeriesLook = createAsyncThunk(
+  'fetchAllSeriesLook',
+  async (data, { rejectWithValue }) => {
+    const response = await fetch(
+      process.env.REACT_APP_API_SERIES +
+        '/fetch-look?trash=false&country=' +
+        data.valueCountries +
+        '&name=' +
+        data.textLook +
+        '&limit=' +
+        process.env.REACT_APP_SIZE_PAGE +
+        '&page=' +
+        data.pageNum,
+    );
+    const dataJson = await response.json();
+
+    if (!dataJson.success) {
+      rejectWithValue(dataJson);
+    }
+    return dataJson;
+  },
+);
+
 export const createSeries = createAsyncThunk(
   'createSeries',
   async (data, { rejectWithValue }) => {

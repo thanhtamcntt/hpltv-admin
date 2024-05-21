@@ -25,9 +25,15 @@
 .layout-content-web {
   overflow-y: auto;
   height: 100vh;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.layout-content-web::-webkit-scrollbar {
+  display: none;
 }
 
 .ant-layout-sider-trigger {
+  min-height: 45px;
   background-color: var(--layout-trigger-bg);
   color: var(--white);
   text-align: center;
@@ -121,8 +127,9 @@
 
 /* action  */
 
-.modal-detail-user .ant-modal-footer {
-  margin-top: 25px;
+.modal-detail-user .ant-modal-footer,
+.ant-modal-footer {
+  margin-top: 30px !important;
 }
 
 .detail-assets .ant-modal-content {

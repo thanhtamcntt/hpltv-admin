@@ -7,6 +7,7 @@ import {
   BarChartOutlined,
   LockOutlined,
   RestOutlined,
+  WalletOutlined,
 } from '@ant-design/icons';
 import { Layout, theme } from 'antd';
 import HeaderAdmin from '../components/HeaderComponent';
@@ -28,7 +29,7 @@ function getItem(label, key, icon, children) {
 
 const items = [
   getItem('Statistics', 'statistics', <BarChartOutlined />),
-  getItem('Assets', 'assets', <DollarOutlined />, [
+  getItem('Assets', 'assets', <WalletOutlined />, [
     getItem('Series', 'series'),
     getItem('Movies', 'movies'),
     getItem('Film for series', 'film-for-series'),
@@ -48,8 +49,10 @@ const items = [
   getItem('Trash', 'trash', <RestOutlined />, [
     getItem('Series', 'trash-series'),
     getItem('Movies', 'trash-movies'),
+    getItem('Film for series', 'trash-film-for-series'),
   ]),
-  getItem('Payment', 'payment', <RestOutlined />),
+  getItem('Payment', 'payment', <DollarOutlined />),
+  getItem('Subscription price', 'subscription-price', <DollarOutlined />),
   getItem('Logout', 'logout', <LogoutOutlined />),
 ];
 

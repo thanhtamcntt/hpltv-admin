@@ -64,14 +64,14 @@ function HomePage(props) {
       fetchDataSummaryRegister(
         setLabel,
         setDataset,
-        'month',
+        'day',
         setDataExportRegister,
         setMaxCount,
       ),
       fetchDataSummaryPurchases(
         setLabelPur,
         setDatasetPur,
-        'month',
+        'day',
         setDataExportPurchase,
         setMaxTotal,
       ),
@@ -175,7 +175,7 @@ function HomePage(props) {
                 <DivSelectAndExport>
                   <Select
                     options={optionsSelect}
-                    defaultValue="month"
+                    defaultValue="day"
                     style={{
                       width: 120,
                     }}
@@ -209,7 +209,7 @@ function HomePage(props) {
                 <DivSelectAndExport>
                   <Select
                     options={optionsSelect}
-                    defaultValue="month"
+                    defaultValue="day"
                     style={{
                       width: 120,
                     }}

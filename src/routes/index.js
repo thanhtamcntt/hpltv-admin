@@ -4,6 +4,7 @@ import ChildrenContext from '../contexts/ChildrenContext';
 import HomePage from '../page/HomePage';
 import AssetsPage from '../page/AssetsPage';
 import ManageUserPage from '../page/ManageUserPage';
+import PaymentAndPackagePage from '../page/PaymentAndPackagePage';
 
 function Router() {
   const { select } = React.useContext(ChildrenContext);
@@ -16,15 +17,38 @@ function Router() {
         select === 'movies' ||
         select === 'category' ||
         select === 'trash-series' ||
-        select === 'trash-movies') && (
+        select === 'trash-movies' ||
+        select === 'film-for-series' ||
+        select === 'trash-film-for-series') && (
         <>
           <Route
             path={'/' + select}
             element={
               <AssetsPage
-                title={select === 'category' ? 'Name category' : 'Name film'}
-                key={select === 'category' ? 'name' : 'title'}
-                dataIndex={select === 'category' ? 'name' : 'title'}
+                title={
+                  select === 'category'
+                    ? 'Name category'
+                    : select === 'film-for-series' ||
+                      select === 'trash-film-for-series'
+                    ? 'Episode'
+                    : 'Name film'
+                }
+                key={
+                  select === 'category'
+                    ? 'name'
+                    : select === 'film-for-series' ||
+                      select === 'trash-film-for-series'
+                    ? 'filmSerialNumber'
+                    : 'title'
+                }
+                dataIndex={
+                  select === 'category'
+                    ? 'name'
+                    : select === 'film-for-series' ||
+                      select === 'trash-film-for-series'
+                    ? 'filmSerialNumber'
+                    : 'title'
+                }
                 type={select}
               />
             }
@@ -43,33 +67,20 @@ function Router() {
           />
         </>
       )}
-      {
+
+      {(select === 'payment' || select === 'subscription-price') && (
         <>
           <Route
-            path={'/series/:seriesId'}
-            element={
-              <AssetsPage
-                title={'Name film'}
-                key={'title'}
-                dataIndex={'title'}
-                type={'series'}
-              />
-            }
+            path={'/' + select}
+            element={<PaymentAndPackagePage type={select} />}
           />
-
           <Route
-            path={'/series/:seriesId?page=:pageNum'}
-            element={
-              <AssetsPage
-                title={select === 'category' ? 'Name category' : 'Name film'}
-                key={select === 'category' ? 'name' : 'title'}
-                dataIndex={select === 'category' ? 'name' : 'title'}
-                type={'series'}
-              />
-            }
+            path={'/' + select + '?page=:pageNum'}
+            element={<PaymentAndPackagePage type={select} />}
           />
         </>
-      }
+      )}
+
       {(select === 'user' ||
         select === 'subscriber' ||
         select === 'banned-subscriber') && (

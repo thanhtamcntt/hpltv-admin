@@ -18,6 +18,28 @@ export const fetchAllMoviesTrash = createAsyncThunk(
   },
 );
 
+export const fetchAllMoviesTrashLook = createAsyncThunk(
+  'fetchAllMoviesTrashLook',
+  async (data, { rejectWithValue }) => {
+    const response = await fetch(
+      process.env.REACT_APP_API_MOVIES +
+        '/fetch-look?trash=true&country=' +
+        data.valueCountries +
+        '&name=' +
+        data.textLook +
+        '&limit=' +
+        process.env.REACT_APP_SIZE_PAGE +
+        '&page=' +
+        data.pageNum,
+    );
+    const dataJson = await response.json();
+    if (!dataJson.success) {
+      rejectWithValue(dataJson);
+    }
+    return dataJson;
+  },
+);
+
 export const deleteTrashMovies = createAsyncThunk(
   'deleteTrashMovies',
   async (data, { rejectWithValue }) => {

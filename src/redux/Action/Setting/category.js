@@ -18,6 +18,27 @@ export const fetchAllCategory = createAsyncThunk(
   },
 );
 
+export const fetchAllCategoryLook = createAsyncThunk(
+  'fetchAllCategoryLook',
+  async (data, { rejectWithValue }) => {
+    const response = await fetch(
+      process.env.REACT_APP_API_CATEGORY +
+        '/fetch-look?' +
+        '&name=' +
+        data.textLook +
+        '&limit=' +
+        process.env.REACT_APP_SIZE_PAGE +
+        '&page=' +
+        data.pageNum,
+    );
+    const dataJson = await response.json();
+    if (!dataJson.success) {
+      rejectWithValue(dataJson);
+    }
+    return dataJson;
+  },
+);
+
 export const createCategory = createAsyncThunk(
   'createCategory',
   async (data, { rejectWithValue }) => {
