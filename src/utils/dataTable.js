@@ -152,3 +152,125 @@ export const optionsSelect = [
     label: 'Year',
   },
 ];
+
+export const tableDataPayment = {
+  title5: {
+    title: 'Price package(monthly)',
+    dataIndex: 'monthlyPrice',
+    key: 'monthlyPrice',
+    width: '20%',
+    render: (text) => `$${text}`,
+    onCell: () => ({
+      style: { fontWeight: '500' },
+    }),
+  },
+  title4: {
+    title: 'Type package',
+    dataIndex: 'typePack',
+    key: 'typePack',
+    width: '20%',
+    onCell: () => ({
+      style: { fontWeight: '500' },
+    }),
+  },
+  title3: {
+    title: 'Email address',
+    dataIndex: 'email',
+    key: 'email',
+    width: '25%',
+    onCell: () => ({
+      style: { fontWeight: '500' },
+    }),
+  },
+  title2: {
+    title: 'Last Name',
+    dataIndex: 'lastName',
+    key: 'lastName',
+    width: '15%',
+    onCell: () => ({
+      style: { fontWeight: '500' },
+    }),
+  },
+  title: {
+    title: 'First Name',
+    dataIndex: 'firstName',
+    key: 'firstName',
+    width: '15%',
+    onCell: () => ({
+      style: { fontWeight: '500' },
+    }),
+  },
+};
+
+export const tableDataPackage = {
+  title2: {
+    title: 'Monthly price',
+    dataIndex: 'monthlyPrice',
+    key: 'monthlyPrice',
+    width: '60%',
+    render: (text) => `$${text}`,
+    onCell: () => ({
+      style: { fontWeight: '500' },
+    }),
+  },
+  title: {
+    title: 'Type package',
+    dataIndex: 'typePack',
+    key: 'typePack',
+    width: '20%',
+    onCell: () => ({
+      style: { fontWeight: '500' },
+    }),
+  },
+};
+
+export const tableCommonQuestions = {
+  title: {
+    title: 'Title',
+    dataIndex: 'title',
+    key: 'title',
+    width: '70%',
+    onCell: () => ({
+      style: { fontWeight: '500' },
+    }),
+  },
+};
+
+export const tableCustomerQuestions = {
+  title4: {
+    title: 'Phone Number',
+    dataIndex: 'phoneNumber',
+    key: 'phoneNumber',
+    width: '15%',
+    onCell: () => ({
+      style: { fontWeight: '500' },
+    }),
+  },
+  title3: {
+    title: 'Email',
+    dataIndex: 'email',
+    key: 'email',
+    width: '30%',
+    onCell: () => ({
+      style: { fontWeight: '500' },
+    }),
+  },
+  title2: {
+    title: 'Last Name',
+    dataIndex: 'lastName',
+    key: 'lastName',
+    width: '15%',
+    onCell: () => ({
+      style: { fontWeight: '500' },
+    }),
+  },
+  title: {
+    title: 'First Name',
+    dataIndex: 'firstName',
+    key: 'firstName',
+    width: '15%',
+    onCell: () => ({
+      style: { fontWeight: '500' },
+    }),
+  },
+};

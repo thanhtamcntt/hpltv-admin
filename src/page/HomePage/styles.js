@@ -111,7 +111,18 @@ export const Title = styled.h3`
   padding: 16px 10px;
   border-bottom: 1px solid #ccc;
 `;
-export const DataToday = styled.label``;
+export const DataToday = styled.div`
+  & > div {
+    padding: 1rem 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    & > canvas {
+      width: 90% !important;
+      height: 90% !important;
+    }
+  }
+`;
 
 export const RowTableUser = styled(Row)`
   margin-top: 20px;

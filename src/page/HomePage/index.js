@@ -21,7 +21,7 @@ import {
   DivSelectAndExport,
 } from './styles';
 import Chart from 'chart.js/auto';
-import { Bar } from 'react-chartjs-2';
+import { Bar, Doughnut } from 'react-chartjs-2';
 import LoadingComponent from '../../components/LoadingComponent';
 import {
   EuroCircleFilled,
@@ -42,6 +42,7 @@ import {
   fetchDataRegisterCurrentYear,
   fetchDataSummaryRegister,
   fetchDataSummaryPurchases,
+  fetchDataSummaryTotalAmountEachPackage,
 } from '../../utils/fetchData';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
@@ -52,6 +53,8 @@ function HomePage(props) {
   const [dataset, setDataset] = useState();
   const [labelPur, setLabelPur] = useState();
   const [datasetPur, setDatasetPur] = useState();
+  const [labelPack, setLabelPack] = useState();
+  const [datasetPack, setDatasetPack] = useState();
   const [dataSummary, setDataSummary] = useState();
   const [subscriber, setSubscriber] = useState();
   const [data, setData] = useState();
@@ -59,6 +62,7 @@ function HomePage(props) {
   const [maxTotal, setMaxTotal] = useState();
   const [dataExportRegister, setDataExportRegister] = useState();
   const [dataExportPurchase, setDataExportPurchase] = useState();
+
   useEffect(() => {
     Promise.all([
       fetchDataSummaryRegister(
@@ -78,7 +82,38 @@ function HomePage(props) {
       fetchDataRegisterCurrentYear(setDataSummary),
       fetchDataSubscriberToday(setSubscriber),
       fetchDataSubscriberOrderToday(setData),
+      fetchDataSummaryTotalAmountEachPackage(setLabelPack, setDatasetPack),
     ]);
+  }, []);
+
+  useEffect(() => {
+    const plugin = {
+      id: 'customTextInside',
+      afterDraw: (chart) => {
+        if (chart.config.type !== 'doughnut') {
+          return;
+        }
+        const ctx = chart.ctx;
+        chart.data.datasets.forEach((dataset, i) => {
+          chart.getDatasetMeta(i).data.forEach((element, index) => {
+            const dataValue = dataset.data[index];
+            const text = `${dataValue}`;
+
+            const position = element.tooltipPosition();
+
+            ctx.fillStyle = 'white';
+
+            ctx.fillText(text, position.x, position.y);
+          });
+        });
+      },
+    };
+
+    Chart.register(plugin);
+
+    return () => {
+      Chart.unregister(plugin);
+    };
   }, []);
 
   const onchangeSelect = async (value, type) => {
@@ -109,7 +144,9 @@ function HomePage(props) {
     !datasetPur ||
     !dataSummary ||
     !subscriber ||
-    !data
+    !data ||
+    !labelPack ||
+    !datasetPack
   ) {
     return (
       <>
@@ -241,8 +278,17 @@ function HomePage(props) {
           <RowSummaryToday>
             <ColSummaryToday>
               <DivSummaryToday>
-                <Title>Number of users registered today</Title>
-                <DataToday>100</DataToday>
+                <Title>Total amount for each package for the year</Title>
+                <DataToday>
+                  <div>
+                    <Doughnut
+                      data={{
+                        labels: labelPack,
+                        datasets: datasetPack,
+                      }}
+                    />
+                  </div>
+                </DataToday>
               </DivSummaryToday>
             </ColSummaryToday>
           </RowSummaryToday>
@@ -251,7 +297,7 @@ function HomePage(props) {
       <RowTableUser>
         <ColTableUser span={12}>
           <DivTable>
-            <h3>User registered today</h3>
+            <h3>List of most recently registered users</h3>
             <Table
               columns={columns}
               dataSource={subscriber}
@@ -261,7 +307,7 @@ function HomePage(props) {
         </ColTableUser>
         <ColTableUser span={12}>
           <DivTable right={'right'}>
-            <h3>User's orders today</h3>
+            <h3>List of recent user orders</h3>
             <Table columns={columns2} dataSource={data} pagination={false} />
           </DivTable>
         </ColTableUser>

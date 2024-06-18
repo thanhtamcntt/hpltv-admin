@@ -5,7 +5,7 @@ import {
   deleteCategory,
   updateCategory,
   fetchAllCategoryLook,
-} from '../../Action/Setting/category';
+} from '../../Action/Assets/category';
 
 const initialState = {
   data: [],

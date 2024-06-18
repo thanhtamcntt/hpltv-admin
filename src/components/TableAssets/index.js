@@ -3,7 +3,6 @@ import { ButtonAction, TagAction } from './styles';
 import { Table, Space } from 'antd';
 import ModalDetailAssets from '../ModalDetailAssets';
 import { RoleContext } from '../../contexts/RoleUserContext';
-import LoadingPage from '../../page/LoadingPage';
 
 function TableAssets(props) {
   const [dataTable, setDataTable] = useState([]);
@@ -61,7 +60,7 @@ function TableAssets(props) {
             <ButtonAction onClick={() => handleDetail(record)}>
               <TagAction color="processing">Detail</TagAction>
             </ButtonAction>
-            {userInfo.role === 'superAdmin' && (
+            {userInfo.role === 'superAdmin' && props.type !== 'payment' && (
               <>
                 {props.type !== 'trash-movies' &&
                 props.type !== 'trash-series' &&
@@ -86,6 +85,7 @@ function TableAssets(props) {
                   </ButtonAction>
                 )}
                 {props.type !== 'payment' &&
+                  props.type !== 'subscription-price' &&
                   (props.type !== 'trash-movies' &&
                   props.type !== 'trash-series' &&
                   props.type !== 'trash-film-for-series' ? (

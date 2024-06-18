@@ -142,3 +142,18 @@
 .row-gap-space {
   column-gap: 0 !important;
 }
+
+/* csv file */
+.link-download-csv {
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 7px 15px;
+  color: #1677ff;
+  margin-left: 10px;
+}
+
+.link-download-csv:hover {
+  color: #1677ff !important;
+  border: 1px solid #1677ff;
+}

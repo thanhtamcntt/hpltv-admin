@@ -5,6 +5,9 @@ import HomePage from '../page/HomePage';
 import AssetsPage from '../page/AssetsPage';
 import ManageUserPage from '../page/ManageUserPage';
 import PaymentAndPackagePage from '../page/PaymentAndPackagePage';
+import ProfilePage from '../page/ProfilePage';
+import SettingPage from '../page/SettingPage';
+import ChatPage from '../page/ChatPage';
 
 function Router() {
   const { select } = React.useContext(ChildrenContext);
@@ -81,6 +84,16 @@ function Router() {
         </>
       )}
 
+      {(select === 'common-questions' || select === 'customer-questions') && (
+        <>
+          <Route path={'/' + select} element={<SettingPage type={select} />} />
+          {/* <Route
+            path={'/' + select + '?page=:pageNum'}
+            element={<PaymentAndPackagePage type={select} />}
+          /> */}
+        </>
+      )}
+
       {(select === 'user' ||
         select === 'subscriber' ||
         select === 'banned-subscriber') && (
@@ -100,6 +113,8 @@ function Router() {
           }
         />
       )}
+      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/support-customer" element={<ChatPage />} />
       <Route path="*" element={<Navigate to="/" replace={true} />} />
     </Routes>
   );

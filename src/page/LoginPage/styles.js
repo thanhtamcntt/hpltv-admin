@@ -26,13 +26,14 @@ export const ContentLogin = styled.div`
 `;
 
 export const DivLogo = styled.div`
-  margin: 40px 0;
+  margin: 40px 0 20px;
   font-size: 24px;
   & h2 {
     margin: 0;
   }
 `;
 export const DivTitle = styled.div`
+  margin-bottom: 20px;
   & h2 {
     font-weight: 500;
     margin: 0;

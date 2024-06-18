@@ -1,10 +1,17 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  API_CATEGORY,
+  API_CREATE_CATEGORY,
+  API_DELETE_CATEGORY,
+  API_UPDATE_CATEGORY,
+  API_ADD_MANY_MOVIES,
+} from '../../../configs/apis';
 
 export const fetchAllCategory = createAsyncThunk(
   'fetchAllCategory',
   async (size, { rejectWithValue }) => {
     const response = await fetch(
-      process.env.REACT_APP_API_CATEGORY +
+      API_CATEGORY +
         '/from-page?limit=' +
         process.env.REACT_APP_SIZE_PAGE +
         '&page=' +
@@ -22,7 +29,7 @@ export const fetchAllCategoryLook = createAsyncThunk(
   'fetchAllCategoryLook',
   async (data, { rejectWithValue }) => {
     const response = await fetch(
-      process.env.REACT_APP_API_CATEGORY +
+      API_CATEGORY +
         '/fetch-look?' +
         '&name=' +
         data.textLook +
@@ -43,7 +50,7 @@ export const createCategory = createAsyncThunk(
   'createCategory',
   async (data, { rejectWithValue }) => {
     console.log(data);
-    const response = await fetch(process.env.REACT_APP_API_CREATE_CATEGORY, {
+    const response = await fetch(API_CREATE_CATEGORY, {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
@@ -61,12 +68,9 @@ export const createCategory = createAsyncThunk(
 export const deleteCategory = createAsyncThunk(
   'deleteCategory',
   async (data, { rejectWithValue }) => {
-    const response = await fetch(
-      process.env.REACT_APP_API_DELETE_CATEGORY + '/' + data,
-      {
-        method: 'POST',
-      },
-    );
+    const response = await fetch(API_DELETE_CATEGORY + '/' + data, {
+      method: 'POST',
+    });
     const json = await response.json();
     if (!json.success) {
       rejectWithValue(json);
@@ -79,16 +83,13 @@ export const updateCategory = createAsyncThunk(
   'updateCategory',
   async (data, { rejectWithValue }) => {
     console.log(data);
-    const response = await fetch(
-      process.env.REACT_APP_API_UPDATE_CATEGORY + '/' + data.Id,
-      {
-        method: 'PATCH',
-        body: JSON.stringify(data.formData),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(API_UPDATE_CATEGORY + '/' + data.Id, {
+      method: 'PATCH',
+      body: JSON.stringify(data.formData),
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
     const json = await response.json();
     console.log(json);
     if (!json.success) {
@@ -104,7 +105,7 @@ export const addManyCategory = createAsyncThunk(
     console.log(data);
     const formData = new FormData();
     formData.append('file', data);
-    const response = await fetch(process.env.REACT_APP_API_ADD_MANY_MOVIES, {
+    const response = await fetch(API_ADD_MANY_MOVIES, {
       method: 'POST',
       body: formData,
       headers: {

@@ -15,13 +15,15 @@ function LookInfo(props) {
               ? 'Search by movie name'
               : props.type === 'series' || props.type === 'trash-series'
               ? 'Search by series name'
-              : 'Search by first name or last name'
+              : props.type === 'payment'
+              ? 'Search by first name or last name'
+              : 'Search by name package'
           }
           allowClear
           value={props.textLook}
           onChange={(e) => props.setTextLook(e.target.value)}
         />
-        {props.type !== 'category' && (
+        {props.type !== 'category' && props.type !== 'subscription-price' && (
           <Select
             showSearch
             defaultValue={'All'}

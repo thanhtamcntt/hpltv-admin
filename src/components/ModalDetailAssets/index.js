@@ -9,6 +9,10 @@ import {
   DivImage,
   InfoItem,
   DivVideoFilm,
+  DivInfo,
+  ListInfo,
+  ItemInfo,
+  DivImageBanner,
 } from './styles';
 
 import dayjs from 'dayjs';
@@ -72,21 +76,36 @@ function ModalDetailAssets({ setIsModalDetail, isModalDetail, asset, type }) {
       open={isModalDetail}
       onOk={handleOk}
       onCancel={handleCancel}>
+      {(type === 'series' || type === 'movies') && (
+        <DivImageBanner>
+          <h2>{'Image banner film: ' + data.title}</h2>
+          <Image
+            width="100%"
+            height={350}
+            src={data.imageUrlBanner.url}
+            alt={data.title}
+          />
+        </DivImageBanner>
+      )}
       <DivTitle>
         {type === 'category' ? (
           <TitleDetail>Name category : {data.name}</TitleDetail>
         ) : type !== 'film-for-series' &&
           type !== 'trash-film-for-series' &&
-          type !== 'payment' ? (
+          type !== 'payment' &&
+          type !== 'subscription-price' ? (
           <TitleDetail>Name film : {data.title}</TitleDetail>
-        ) : type !== 'payment' ? (
+        ) : type !== 'payment' && type !== 'subscription-price' ? (
           <TitleDetail>Episode {data.filmSerialNumber}</TitleDetail>
-        ) : (
+        ) : type === 'payment' ? (
           <TitleDetail>
             Information about customers purchasing packages
           </TitleDetail>
+        ) : (
+          <TitleDetail>Information packages</TitleDetail>
         )}
       </DivTitle>
+
       {type !== 'category' &&
         type !== 'film-for-series' &&
         type !== 'trash-film-for-series' && (
@@ -109,7 +128,7 @@ function ModalDetailAssets({ setIsModalDetail, isModalDetail, asset, type }) {
             <DivInfoDetail>
               <InfoDetail>
                 <h2>Information Detail </h2>
-                {type !== 'payment' && (
+                {type !== 'payment' && type !== 'subscription-price' && (
                   <InfoItem>Description: {data.description}</InfoItem>
                 )}
                 {type === 'movies' && (
@@ -120,20 +139,16 @@ function ModalDetailAssets({ setIsModalDetail, isModalDetail, asset, type }) {
                   <InfoItem>Duration: {data.duration} minute</InfoItem>
                 )}
                 {type === 'movies' && (
-                  <InfoItem>Country: {data.country}</InfoItem>
+                  <InfoItem>Country: {data.country.join(', ')}</InfoItem>
                 )}
 
-                {type !== 'payment' && (
+                {type !== 'payment' && type !== 'subscription-price' && (
                   <InfoItem>Rating: {data.rating}/5</InfoItem>
                 )}
                 {type === 'movies' && (
-                  <InfoItem>
-                    Release Date: {dayjs(data.releaseDate).format('DD-MM-YYYY')}
-                  </InfoItem>
+                  <InfoItem>Release Date: {data.releaseDate}</InfoItem>
                 )}
-                {type === 'movies' && (
-                  <InfoItem>Product Company: {data.productCompany}</InfoItem>
-                )}
+
                 {type === 'payment' && (
                   <>
                     <InfoItem>
@@ -146,9 +161,11 @@ function ModalDetailAssets({ setIsModalDetail, isModalDetail, asset, type }) {
                   </>
                 )}
 
-                <InfoItem>
-                  Created At: {dayjs(data.createAt).format('DD-MM-YYYY')}
-                </InfoItem>
+                {type !== 'subscription-price' && (
+                  <InfoItem>
+                    Created At: {dayjs(data.createAt).format('DD-MM-YYYY')}
+                  </InfoItem>
+                )}
                 {type === 'payment' && (
                   <InfoItem>
                     Expiration date:{' '}
@@ -156,20 +173,40 @@ function ModalDetailAssets({ setIsModalDetail, isModalDetail, asset, type }) {
                   </InfoItem>
                 )}
               </InfoDetail>
-              <DivImage>
-                <h2>{type !== 'payment' ? 'Image Film' : 'Image user'}</h2>
-                <Image
-                  width={300}
-                  height={300}
-                  src={
-                    data && data.userId && data.userId.avatarUser.url
-                      ? data.userId.avatarUser.url
-                      : data.imageUrl.url
-                  }
-                  alt={data.title || 'image user'}
-                />
-              </DivImage>
+              {type !== 'subscription-price' && (
+                <DivImage>
+                  <h2>{type !== 'payment' ? 'Image Film' : 'Image user'}</h2>
+                  <Image
+                    width={250}
+                    height={350}
+                    src={
+                      data && data.userId && data.userId.avatarUser.url
+                        ? data.userId.avatarUser.url
+                        : data.imageUrl.url
+                    }
+                    alt={data.title || 'image user'}
+                  />
+                </DivImage>
+              )}
             </DivInfoDetail>
+            {type === 'subscription-price' && (
+              <DivInfo>
+                <ListInfo>
+                  <ItemInfo>Type package: {data.typePack}</ItemInfo>
+                  <ItemInfo>Monthly price: ${data.monthlyPrice}</ItemInfo>
+                  <ItemInfo>Quality picture: {data.qualityPicture}</ItemInfo>
+                  <ItemInfo>Resolution: {data.resolution}</ItemInfo>
+                  <ItemInfo>DeviceSupport: {data.deviceSupport}</ItemInfo>
+                  <ItemInfo>Quantity watch: {data.quantityWatch}</ItemInfo>
+                  <ItemInfo>
+                    Quantity download: {data.quantityDownload}
+                  </ItemInfo>
+                  <ItemInfo>
+                    Created at: {dayjs(data.createAt).format('DD-MM-YYYY')}
+                  </ItemInfo>
+                </ListInfo>
+              </DivInfo>
+            )}
           </>
         )}
       {type === 'trash-film-for-series' ||

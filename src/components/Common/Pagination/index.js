@@ -7,7 +7,7 @@ function PaginationComponent(props) {
       total={props.count}
       showSizeChanger={false}
       showQuickJumper
-      defaultPageSize={5}
+      defaultPageSize={process.env.REACT_APP_SIZE_PAGE}
       onChange={props.handleOnChangePage}
     />
   );
