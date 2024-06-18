@@ -1,10 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { API_SERIES, API_SERIES_ADMIN } from '../../../configs/apis';
 
 export const fetchAllFilmForSeriesTrash = createAsyncThunk(
   'fetchAllFilmForSeriesTrash',
   async (size, { rejectWithValue }) => {
     const response = await fetch(
-      process.env.REACT_APP_API_SERIES +
+      API_SERIES +
         '/' +
         size.value +
         '/from-page?trash=true&limit=' +
@@ -24,11 +25,7 @@ export const deleteTrashFilmForSeries = createAsyncThunk(
   'deleteTrashFilmForSeries',
   async (data, { rejectWithValue }) => {
     const response = await fetch(
-      process.env.REACT_APP_API_SERIES_ADMIN +
-        '/' +
-        data.seriesId +
-        '/delete-film/' +
-        data.dataId,
+      API_SERIES_ADMIN + '/' + data.seriesId + '/delete-film/' + data.dataId,
       {
         method: 'POST',
         body: JSON.stringify({ type: data.type }),
@@ -50,10 +47,7 @@ export const postRecoverFilmForSeries = createAsyncThunk(
   'postRecoverFilmForSeries',
   async (Data, { rejectWithValue }) => {
     const response = await fetch(
-      process.env.REACT_APP_API_SERIES_ADMIN +
-        '/' +
-        Data.seriesId +
-        '/recover-film',
+      API_SERIES_ADMIN + '/' + Data.seriesId + '/recover-film',
       {
         method: 'POST',
         body: JSON.stringify(Data),

@@ -1,5 +1,17 @@
+import {
+  API_GET_SUBSCRIBER_TODAY,
+  API_GET_SUBSCRIBER_ORDER_TODAY,
+  API_GET_SUMMARY_PURCHASES_REGISTER_CURRENT_YEAR,
+  API_GET_SUMMARY_PURCHASES,
+  API_GET_SUMMARY_REGISTER,
+  API_CATEGORY,
+  API_GET_DATA_PACKAGE,
+  API_GET_ALL_SUBSCRIBER,
+  API_GET_SUMMARY_TOTAL_EACH_PACKAGE,
+} from '../configs/apis';
+
 export const fetchDataSubscriberToday = async (setSubscriber) => {
-  const response = await fetch(process.env.REACT_APP_API_GET_SUBSCRIBER_TODAY, {
+  const response = await fetch(API_GET_SUBSCRIBER_TODAY, {
     headers: {
       Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
     },
@@ -11,14 +23,11 @@ export const fetchDataSubscriberToday = async (setSubscriber) => {
 };
 
 export const fetchDataSubscriberOrderToday = async (setData) => {
-  const response = await fetch(
-    process.env.REACT_APP_API_GET_SUBSCRIBER_ORDER_TODAY,
-    {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
-      },
+  const response = await fetch(API_GET_SUBSCRIBER_ORDER_TODAY, {
+    headers: {
+      Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
     },
-  );
+  });
   const json = await response.json();
   if (json.success) {
     setData(json.data);
@@ -27,7 +36,7 @@ export const fetchDataSubscriberOrderToday = async (setData) => {
 
 export const fetchDataRegisterCurrentYear = async (setDataSummary) => {
   const response = await fetch(
-    process.env.REACT_APP_API_GET_SUMMARY_PURCHASES_REGISTER_CURRENT_YEAR,
+    API_GET_SUMMARY_PURCHASES_REGISTER_CURRENT_YEAR,
     {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
@@ -47,14 +56,11 @@ export const fetchDataSummaryPurchases = async (
   setDataExportPurchase,
   setMaxTotal,
 ) => {
-  const response = await fetch(
-    process.env.REACT_APP_API_GET_SUMMARY_PURCHASES + '?type=' + type,
-    {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
-      },
+  const response = await fetch(API_GET_SUMMARY_PURCHASES + '?type=' + type, {
+    headers: {
+      Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
     },
-  );
+  });
   const json = await response.json();
   let labels = [],
     datasets = [],
@@ -129,14 +135,11 @@ export const fetchDataSummaryRegister = async (
   setDataExportRegister,
   setMaxCount,
 ) => {
-  const response = await fetch(
-    process.env.REACT_APP_API_GET_SUMMARY_REGISTER + '?type=' + type,
-    {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
-      },
+  const response = await fetch(API_GET_SUMMARY_REGISTER + '?type=' + type, {
+    headers: {
+      Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
     },
-  );
+  });
   const json = await response.json();
   let labels = [],
     datasets = [],
@@ -200,6 +203,106 @@ export const fetchDataSummaryRegister = async (
       ],
       borderWidth: 1,
       maxBarThickness: 30,
+    },
+  ]);
+};
+
+export const fetchCategory = async (setOptions) => {
+  const response = await fetch(API_CATEGORY);
+  const data = await response.json();
+  if (data.success) {
+    let newOptions = [];
+    Promise.all(
+      data.data.map((item) =>
+        newOptions.push({
+          label: item.name,
+          value: item._id,
+        }),
+      ),
+    );
+    setOptions(newOptions);
+  }
+};
+
+export const fetchPackage = async (setOptions) => {
+  const response = await fetch(API_GET_DATA_PACKAGE);
+  const data = await response.json();
+  if (data.success) {
+    let newOptions = [];
+    Promise.all(
+      data.data.map((item) =>
+        newOptions.push({
+          label: item.typePack,
+          value: item._id,
+        }),
+      ),
+    );
+    setOptions(newOptions);
+  }
+};
+
+export const fetchSubscriber = async (setOptions2) => {
+  const response = await fetch(API_GET_ALL_SUBSCRIBER + '?banned=false', {
+    headers: {
+      Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
+    },
+  });
+  const data = await response.json();
+  console.log(data);
+  if (data.success) {
+    let newOptions = [];
+    Promise.all(
+      data.data.map((item) =>
+        newOptions.push({
+          label: item.email,
+          value: item._id,
+        }),
+      ),
+    );
+    setOptions2(newOptions);
+  }
+};
+
+export const fetchDataSummaryTotalAmountEachPackage = async (
+  setLabelPack,
+  setDatasetPack,
+) => {
+  const response = await fetch(API_GET_SUMMARY_TOTAL_EACH_PACKAGE, {
+    headers: {
+      Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
+    },
+  });
+  const json = await response.json();
+  console.log(json);
+  let labels = [],
+    datasets = [];
+
+  if (json.success) {
+    for (let i = 0; i < json.data.length; i++) {
+      labels.push(`${json.data[i].namePackage}`);
+      datasets.push(json.data[i].total);
+    }
+  }
+  setLabelPack(labels);
+
+  setDatasetPack([
+    {
+      label: 'Total Amount Package',
+      data: datasets,
+      backgroundColor: [
+        'rgb(255, 86, 48)',
+        'rgb(24, 119, 242)',
+        'rgb(255, 171, 0)',
+        'rgb(0, 184, 217)',
+      ],
+      borderColor: [
+        'rgb(255, 86, 48)',
+        'rgb(24, 119, 242)',
+        'rgb(255, 171, 0)',
+        'rgb(0, 184, 217)',
+      ],
+      borderWidth: 1,
+      // maxBarThickness: 30,
     },
   ]);
 };

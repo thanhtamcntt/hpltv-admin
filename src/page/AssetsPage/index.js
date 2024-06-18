@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   DivAssets,
   DivAction,
@@ -10,7 +10,7 @@ import {
   DivAddData,
   DivPagination,
 } from './styles';
-import { Button, Input, Modal, Select } from 'antd';
+import { Button, Modal, Select, message, notification } from 'antd';
 import { ImportOutlined } from '@ant-design/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -31,7 +31,6 @@ import {
   fetchAllMoviesTrashLook,
 } from '../../redux/Action/Assets/trashMovies';
 import {
-  addManyMovies,
   deleteMovies,
   fetchAllMovies,
   fetchAllMoviesLook,
@@ -44,7 +43,7 @@ import {
   fetchAllCategory,
   deleteCategory,
   fetchAllCategoryLook,
-} from '../../redux/Action/Setting/category';
+} from '../../redux/Action/Assets/category';
 import TableAssets from '../../components/TableAssets';
 import { RoleContext } from '../../contexts/RoleUserContext';
 import LoadingComponent from '../../components/LoadingComponent';
@@ -61,9 +60,11 @@ import { importMovies } from '../../assets/fileImport';
 import { CSVLink } from 'react-csv';
 import { countries } from '../../assets/country';
 import LookInfo from '../../components/Common/LookComponent';
+import { API_SERIES, API_ADD_MANY_MOVIES } from '../../configs/apis';
 
 function AssetsPage(props) {
   const [isModal, setIsModal] = useState(false);
+  const [isChangeData, setIsChangeData] = useState(false);
   const [isModalUpload, setIsModalUpload] = useState(false);
   const [dataRecord, setDataRecord] = useState(undefined);
   const [dataTable, setDataTable] = useState(undefined);
@@ -81,12 +82,22 @@ function AssetsPage(props) {
   const [dataCountries, setDataCountries] = useState();
   const [textLook, setTextLook] = useState('');
   const [valueCountries, setValueCountries] = useState('All');
+  const [isUpdate, setIsUpdate] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const { userInfo } = useContext(RoleContext);
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { look, textSearch, textCountry } = location.state || false;
+  const { look, textSearch, textCountry, change } = location.state || false;
+
+  const openNotification = (placement, message) => {
+    notification.error({
+      message: `Notification Error`,
+      description: message,
+      placement,
+    });
+  };
 
   const dispatch = useDispatch();
   let data, loading, error, count;
@@ -160,15 +171,14 @@ function AssetsPage(props) {
     };
 
     setDataTable(tableData);
-    setIsLoading(true);
     setPage(1);
   }, [props.type, props.dataIndex, props.key, props.title, userInfo]);
 
   useEffect(() => {
+    setIsLoading(true);
     let pageNum = getPage();
     setTextLook('');
     setValueCountries('All');
-    console.log(look, textCountry, textSearch, props.type);
 
     if (look === undefined) {
       if (props.type === 'series') {
@@ -189,8 +199,8 @@ function AssetsPage(props) {
             dispatch(
               fetchAllSeriesLook({
                 pageNum: 1,
-                valueCountries: valueCountries,
-                textLook: textLook,
+                valueCountries: textCountry,
+                textLook: textSearch,
               }),
             ),
           ]);
@@ -200,8 +210,8 @@ function AssetsPage(props) {
             dispatch(
               fetchAllMoviesLook({
                 pageNum: 1,
-                valueCountries: valueCountries,
-                textLook: textLook,
+                valueCountries: textCountry,
+                textLook: textSearch,
               }),
             ),
           ]);
@@ -211,8 +221,8 @@ function AssetsPage(props) {
             dispatch(
               fetchAllSeriesTrashLook({
                 pageNum: 1,
-                valueCountries: valueCountries,
-                textLook: textLook,
+                valueCountries: textCountry,
+                textLook: textSearch,
               }),
             ),
           ]);
@@ -222,8 +232,8 @@ function AssetsPage(props) {
             dispatch(
               fetchAllMoviesTrashLook({
                 pageNum: 1,
-                valueCountries: valueCountries,
-                textLook: textLook,
+                valueCountries: textCountry,
+                textLook: textSearch,
               }),
             ),
           ]);
@@ -233,7 +243,7 @@ function AssetsPage(props) {
             dispatch(
               fetchAllCategoryLook({
                 pageNum: 1,
-                textLook: textLook,
+                textLook: textSearch,
               }),
             ),
           ]);
@@ -242,15 +252,31 @@ function AssetsPage(props) {
           break;
       }
     }
-
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 100);
-  }, [location.search, props.type, dispatch, page, textSearch]);
+    if (isUpdate) {
+      if (
+        props.type === 'movies' ||
+        props.type === 'series' ||
+        props.type === 'film-for-series'
+      ) {
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1500);
+      } else {
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 100);
+      }
+    } else {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 100);
+    }
+    setIsUpdate(false);
+  }, [location.search, props.type, dispatch, page, isChangeData, change]);
 
   useEffect(() => {
     const fetchCategory = async () => {
-      const response = await fetch(process.env.REACT_APP_API_SERIES);
+      const response = await fetch(API_SERIES);
       const data = await response.json();
       if (data.success) {
         let newOptions = [];
@@ -305,7 +331,7 @@ function AssetsPage(props) {
     if (e.target.files[0] !== undefined) {
       setDataFile(e.target.files[0]);
       setTextModal(
-        'Are you sure you want to add all the data {props.type} from the csv file?',
+        `Are you sure you want to add all the data ${props.type} from the csv file?`,
       );
       setTypeModal('file');
       setIsModalOpen(true);
@@ -313,13 +339,36 @@ function AssetsPage(props) {
     }
   };
 
-  const handleOk = () => {
+  const handleOk = async () => {
     let pageNum = getPage();
 
     if (typeModal === 'file') {
       if (props.type === 'movies') {
-        dispatch(addManyMovies(dataFile));
-        Promise.all([dispatch(fetchAllMovies(pageNum))]);
+        const formData = new FormData();
+        formData.append('file', dataFile);
+        // dispatch(addManyMovies(formData));
+        const response = await fetch(API_ADD_MANY_MOVIES, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
+          },
+        });
+        const json = await response.json();
+        if (!json.success) {
+          setTypeModal(undefined);
+          setDataFile(undefined);
+          setIsModalOpen(false);
+          openNotification('top', json.message);
+          return;
+        } else {
+          setIsModalOpen(false);
+          setIsLoading(true);
+          setTimeout(() => {
+            Promise.all([dispatch(fetchAllMovies(1))]);
+            setIsLoading(false);
+          }, 2000);
+        }
       }
     } else if (typeModal === 'delete') {
       if (props.type === 'movies') {
@@ -454,6 +503,7 @@ function AssetsPage(props) {
       navigate('/' + props.type + '?page=1', {
         state: {
           look: true,
+          change: !change,
           textSearch: textLook,
           textCountry: valueCountries,
         },
@@ -462,6 +512,7 @@ function AssetsPage(props) {
       navigate('/' + props.type + '?page=1', {
         state: {
           look: true,
+          change: !change,
           textSearch: textLook,
         },
       });
@@ -483,17 +534,7 @@ function AssetsPage(props) {
       </DivAssets>
     );
   }
-
-  if (
-    isLoading ||
-    loading ||
-    ((props.type === 'film-for-series' ||
-      props.type === 'trash-film-for-series') &&
-      !dataSeries) ||
-    ((props.type === 'film-for-series' ||
-      props.type === 'trash-film-for-series') &&
-      !defaultValue)
-  ) {
+  if (isLoading || loading) {
     return (
       <DivAssets>
         <LoadingComponent />
@@ -502,6 +543,7 @@ function AssetsPage(props) {
   }
   return (
     <DivAssets>
+      {contextHolder}
       <DivAddData>
         <div>
           <FormModalContext.Provider
@@ -510,6 +552,9 @@ function AssetsPage(props) {
               dataRecord: dataRecord,
               options: dataSeries,
               setDefaultValue: setDefaultValue,
+              setIsChangeData: setIsChangeData,
+              filterOption: filterOption,
+              setIsUpdate: setIsUpdate,
             }}>
             <ModalAdd
               isModal={isModal}
@@ -517,36 +562,17 @@ function AssetsPage(props) {
               setDataRecord={setDataRecord}
             />
           </FormModalContext.Provider>
-          {userInfo.role === 'superAdmin' &&
-            (props.type === 'series' ? (
-              <DivAction>
-                <Button type="primary" onClick={showModal}>
-                  Add Series
-                </Button>
-              </DivAction>
-            ) : props.type === 'movies' ? (
-              <DivAction>
-                <Button type="primary" onClick={showModal}>
-                  Add Movies
-                </Button>
-              </DivAction>
-            ) : props.type === 'category' ? (
-              <DivAction>
-                <Button type="primary" onClick={showModal}>
-                  Add Category
-                </Button>
-              </DivAction>
-            ) : props.type === 'film-for-series' ? (
-              <DivAction>
-                <Button type="primary" onClick={showModal}>
-                  Add Film
-                </Button>
-              </DivAction>
-            ) : null)}
+          {userInfo.role === 'superAdmin' && (
+            <DivAction>
+              <Button type="primary" onClick={showModal}>
+                Add
+              </Button>
+            </DivAction>
+          )}
           {props.type === 'movies' && (
             <>
               <ButtonImport onClick={handleImport}>
-                <ImportOutlined /> Import many {props.type}
+                <ImportOutlined /> Import many data movies
               </ButtonImport>
               <Modal
                 open={isModalUpload}
@@ -554,13 +580,13 @@ function AssetsPage(props) {
                 title="Upload file"
                 footer={(_) => (
                   <>
-                    <Text onClick={handleOpenFile}>
-                      <CSVLink
-                        data={dataExport}
-                        filename="instruction-file.csv">
-                        Instruction file
-                      </CSVLink>
-                    </Text>
+                    <CSVLink
+                      onClick={handleOpenFile}
+                      data={dataExport}
+                      filename="instruction-file.csv"
+                      className="link-download-csv">
+                      Instruction file
+                    </CSVLink>
                     <Text htmlFor="file" onClick={handleOpenFile}>
                       Import file{' '}
                       <input

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const DivPayment = styled.div`
   margin: 30px 5%;
@@ -15,7 +15,7 @@ export const DivAction = styled.div`
     align-items: center;
   }
   & > div:last-child {
-    width: 50%;
+    width: ${(props) => (props.width ? '100%' : '50%')};
     justify-content: flex-end;
   }
 `;

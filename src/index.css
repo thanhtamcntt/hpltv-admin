@@ -12,6 +12,7 @@ code {
 
 :root {
   --white: #fff;
+  --black: #000;
   --layout-trigger-bg: #002140;
   --login-bg: #44425b;
   --btn-form: #83e4ed;

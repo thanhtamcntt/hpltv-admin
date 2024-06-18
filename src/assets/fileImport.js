@@ -2,6 +2,9 @@ export const importMovies = [
   {
     title: 'a',
     description: 'a',
+    imageBannerId: 'image-webFilm/x6n3aaxa1fu7s3xve5vv',
+    imageBannerUrl:
+      'https://res.cloudinary.com/dzxupp48t/image/upload/v1714015063/image-webFilm/x6n3aaxa1fu7s3xve5vv.jpg',
     imageId: 'image-webFilm/x6n3aaxa1fu7s3xve5vv',
     imageUrl:
       'https://res.cloudinary.com/dzxupp48t/image/upload/v1714015063/image-webFilm/x6n3aaxa1fu7s3xve5vv.jpg',
@@ -18,6 +21,9 @@ export const importMovies = [
   {
     title: 'b',
     description: 'b',
+    imageBannerId: 'image-webFilm/ec0auxro2acbu2mstql5',
+    imageBannerUrl:
+      'https://res.cloudinary.com/dzxupp48t/image/upload/v1714015063/image-webFilm/ec0auxro2acbu2mstql5.jpg',
     imageId: 'image-webFilm/ec0auxro2acbu2mstql5',
     imageUrl:
       'https://res.cloudinary.com/dzxupp48t/image/upload/v1714015063/image-webFilm/ec0auxro2acbu2mstql5.jpg',
@@ -34,6 +40,9 @@ export const importMovies = [
   {
     title: 'c',
     description: 'c',
+    imageBannerId: 'image-webFilm/q5c4nesmneutsxmfxgtk',
+    imageBannerUrl:
+      'https://res.cloudinary.com/dzxupp48t/image/upload/v1714015063/image-webFilm/q5c4nesmneutsxmfxgtk.jpg',
     imageId: 'image-webFilm/q5c4nesmneutsxmfxgtk',
     imageUrl:
       'https://res.cloudinary.com/dzxupp48t/image/upload/v1714015063/image-webFilm/q5c4nesmneutsxmfxgtk.jpg',
@@ -64,6 +73,8 @@ export const importMovies = [
   {
     title: 'title movies',
     description: 'description movies',
+    imageBannerId: 'id image banner movies cloudinary',
+    imageBannerUrl: 'link image banner movies cloudinary',
     imageId: 'id image movies cloudinary',
     imageUrl: 'link image movies cloudinary',
     videoId: 'id video movies cloudinary',

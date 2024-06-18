@@ -33,9 +33,11 @@ const items = [
     getItem('Series', 'series'),
     getItem('Movies', 'movies'),
     getItem('Film for series', 'film-for-series'),
+    getItem('Category', 'category'),
   ]),
   getItem('Setting', 'setting', <SettingOutlined />, [
-    getItem('Category', 'category'),
+    getItem('Common questions', 'common-questions'),
+    getItem('Customer Questions', 'customer-questions'),
   ]),
   getItem('Manage', 'manage', <TeamOutlined />, [
     getItem('User', 'user'),
@@ -53,6 +55,7 @@ const items = [
   ]),
   getItem('Payment', 'payment', <DollarOutlined />),
   getItem('Subscription price', 'subscription-price', <DollarOutlined />),
+  getItem('Support customer', 'support-customer', <DollarOutlined />),
   getItem('Logout', 'logout', <LogoutOutlined />),
 ];
 

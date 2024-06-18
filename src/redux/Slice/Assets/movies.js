@@ -4,7 +4,7 @@ import {
   createMovies,
   deleteMovies,
   updateMovies,
-  addManyMovies,
+  // addManyMovies,
   fetchAllMoviesLook,
 } from '../../Action/Assets/movies';
 
@@ -90,11 +90,10 @@ export const MoviesSlice = createSlice({
           data.director = action.payload.data.director;
           data.cast = action.payload.data.cast;
           data.country = action.payload.data.country;
-          data.productCompany = action.payload.data.productCompany;
           data.duration = action.payload.data.duration;
           data.imageUrl = action.payload.data.imageUrl;
+          data.imageUrlBanner = action.payload.data.imageUrlBanner;
           data.videoUrl = action.payload.data.videoUrl;
-          data.updateAt = action.payload.data.updateAt;
           data.listCategoryId = action.payload.data.listCategoryId;
         }
       });
@@ -105,17 +104,19 @@ export const MoviesSlice = createSlice({
     });
 
     // add many movies
-    builder.addCase(addManyMovies.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(addManyMovies.fulfilled, (state, action) => {
-      console.log(action.payload);
-      state.loading = false;
-      state.data = [...action.payload.data];
-    });
-    builder.addCase(addManyMovies.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
-    });
+    // builder.addCase(addManyMovies.pending, (state) => {
+    //   state.loading = true;
+    // });
+    // builder.addCase(addManyMovies.fulfilled, (state, action) => {
+    //   console.log(action.payload);
+    //   state.loading = false;
+    //   state.count = action.payload.count;
+    //   let data = [...action.payload.data];
+    //   state.data = data;
+    // });
+    // builder.addCase(addManyMovies.rejected, (state, action) => {
+    //   state.loading = false;
+    //   state.error = action.payload;
+    // });
   },
 });

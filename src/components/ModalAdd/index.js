@@ -1,16 +1,35 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Form, Modal } from 'antd';
 import dayjs from 'dayjs';
-import moment from 'moment';
 import FormAddModal from '../FormAddModal';
 import FormModalContext from '../../contexts/FormModalContext';
+import FormAddPackage from '../FormAddPackage';
+import {
+  fetchCategory,
+  fetchPackage,
+  fetchSubscriber,
+} from '../../utils/fetchData';
+import { countries } from '../../assets/country';
+import FormAddQuestion from '../FormAddQuestion';
+import FormResolveQuestion from '../FormResolveQuestion';
 
 function ModalAdd(props) {
   const { type, dataRecord } = useContext(FormModalContext);
-
+  const [valueCountries, setValueCountries] = useState();
+  const [countriesData, setCountriesData] = useState(false);
+  const [checkImageBanner, setCheckImageBanner] = useState(false);
+  const [checkImageFilm, setCheckImageFilm] = useState(false);
+  const [checkVideoFilm, setCheckVideoFilm] = useState(false);
   const [options, setOptions] = useState(undefined);
+  const [options2, setOptions2] = useState(undefined);
 
   const [form] = Form.useForm();
+  useEffect(() => {
+    setCheckImageBanner(false);
+    setCheckImageFilm(false);
+    setCheckVideoFilm(false);
+  }, [dataRecord]);
+  console.log(type);
 
   useEffect(() => {
     const currentYear = new Date().getFullYear().toString();
@@ -43,7 +62,6 @@ function ModalAdd(props) {
             director: dataRecord.director,
             cast: dataRecord.cast,
             country: dataRecord.country,
-            productCompany: dataRecord.productCompany,
             listCategoryId: dataRecord.listCategoryId,
           });
         }
@@ -61,30 +79,42 @@ function ModalAdd(props) {
           });
         }
         break;
+      case 'subscription-price':
+        if (dataRecord) {
+          form.setFieldsValue({
+            typePack: dataRecord.typePack,
+            monthlyPrice: dataRecord.monthlyPrice,
+            qualityPicture: dataRecord.qualityPicture,
+            resolution: dataRecord.resolution,
+            deviceSupport: dataRecord.deviceSupport,
+            quantityWatch: dataRecord.quantityWatch,
+            quantityDownload: dataRecord.quantityDownload,
+          });
+        }
+        break;
+      case 'common-questions':
+        if (dataRecord) {
+          form.setFieldsValue({
+            title: dataRecord.title,
+            description: dataRecord.description,
+          });
+        }
+        break;
       default:
         break;
     }
-  }, [dataRecord, type, props.isModal]);
+
+    if (type === 'series' || type === 'movies') {
+      setCountriesData(countries.slice(1));
+    }
+  }, [dataRecord, type, props.isModal, form]);
 
   useEffect(() => {
-    const fetchCategory = async () => {
-      const response = await fetch(process.env.REACT_APP_API_CATEGORY);
-      const data = await response.json();
-      if (data.success) {
-        let newOptions = [];
-        Promise.all(
-          data.data.map((item) =>
-            newOptions.push({
-              label: item.name,
-              value: item._id,
-            }),
-          ),
-        );
-        setOptions(newOptions);
-      }
-    };
     if (type === 'movies' || type === 'series') {
-      fetchCategory();
+      fetchCategory(setOptions);
+    } else if (type === 'payment') {
+      fetchPackage(setOptions);
+      fetchSubscriber(setOptions2);
     }
   }, [type]);
 
@@ -93,14 +123,42 @@ function ModalAdd(props) {
     props.setDataRecord(undefined);
     form.resetFields();
   };
-
   return (
     <Modal
-      title={dataRecord !== undefined ? `Update ${type}` : `Add ${type}`}
+      title={dataRecord !== undefined ? `Update Data` : `Add Data`}
       open={props.isModal}
       onCancel={handleCancel}
       footer={null}>
-      <FormAddModal handleCancel={handleCancel} options={options} form={form} />
+      {type !== 'subscription-price' &&
+      type !== 'payment' &&
+      type !== 'common-questions' &&
+      type !== 'customer-questions' ? (
+        <FormAddModal
+          handleCancel={handleCancel}
+          options={options}
+          form={form}
+          valueCountries={valueCountries}
+          countriesData={countriesData}
+          setValueCountries={setValueCountries}
+          checkImageBanner={checkImageBanner}
+          checkImageFilm={checkImageFilm}
+          checkVideoFilm={checkVideoFilm}
+          setCheckImageBanner={setCheckImageBanner}
+          setCheckImageFilm={setCheckImageFilm}
+          setCheckVideoFilm={setCheckVideoFilm}
+        />
+      ) : type !== 'common-questions' && type !== 'customer-questions' ? (
+        <FormAddPackage
+          handleCancel={handleCancel}
+          form={form}
+          options={options}
+          options2={options2}
+        />
+      ) : type !== 'customer-questions' ? (
+        <FormAddQuestion handleCancel={handleCancel} form={form} />
+      ) : (
+        <FormResolveQuestion handleCancel={handleCancel} form={form} />
+      )}
     </Modal>
   );
 }

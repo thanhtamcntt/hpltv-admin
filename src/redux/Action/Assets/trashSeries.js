@@ -1,10 +1,15 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  API_SERIES,
+  API_DELETE_SERIES,
+  API_RECOVER_SERIES,
+} from '../../../configs/apis';
 
 export const fetchAllSeriesTrash = createAsyncThunk(
   'fetchAllSeriesTrash',
   async (size, { rejectWithValue }) => {
     const response = await fetch(
-      process.env.REACT_APP_API_SERIES +
+      API_SERIES +
         '/from-page?trash=true&limit=' +
         process.env.REACT_APP_SIZE_PAGE +
         '&page=' +
@@ -23,7 +28,7 @@ export const fetchAllSeriesTrashLook = createAsyncThunk(
   'fetchAllSeriesTrashLook',
   async (data, { rejectWithValue }) => {
     const response = await fetch(
-      process.env.REACT_APP_API_SERIES +
+      API_SERIES +
         '/fetch-look?trash=true&country=' +
         data.valueCountries +
         '&name=' +
@@ -45,16 +50,13 @@ export const fetchAllSeriesTrashLook = createAsyncThunk(
 export const deleteTrashSeries = createAsyncThunk(
   'deleteTrashSeries',
   async (data, { rejectWithValue }) => {
-    const response = await fetch(
-      process.env.REACT_APP_API_DELETE_SERIES + '/' + data.dataId,
-      {
-        method: 'POST',
-        body: JSON.stringify({ type: data.type }),
-        headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
-        },
+    const response = await fetch(API_DELETE_SERIES + '/' + data.dataId, {
+      method: 'POST',
+      body: JSON.stringify({ type: data.type }),
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
       },
-    );
+    });
     const json = await response.json();
     if (!json.success) {
       rejectWithValue(json);
@@ -66,7 +68,7 @@ export const deleteTrashSeries = createAsyncThunk(
 export const postRecoverSeries = createAsyncThunk(
   'postRecoverSeries',
   async (Data, { rejectWithValue }) => {
-    const response = await fetch(process.env.REACT_APP_API_RECOVER_SERIES, {
+    const response = await fetch(API_RECOVER_SERIES, {
       method: 'POST',
       body: JSON.stringify(Data),
       headers: {

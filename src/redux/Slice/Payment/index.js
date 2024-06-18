@@ -1,5 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchAllOrder, fetchAllOrderLook } from '../../Action/Payment/index';
+import {
+  fetchAllOrder,
+  fetchAllOrderLook,
+  createPayment,
+} from '../../Action/Payment/index';
 
 const initialState = {
   data: [],
@@ -39,6 +43,29 @@ export const PaymentSlice = createSlice({
     builder.addCase(fetchAllOrderLook.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload.message;
+    });
+
+    // create a payment
+    builder.addCase(createPayment.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(createPayment.fulfilled, (state, action) => {
+      state.loading = false;
+      state.data.map((data) => {});
+      for (let i = 0; i < state.data.length; i++) {
+        if (state.data[i].userId._id === action.payload.data.userId._id) {
+          state.data = state.data.filter(
+            (data) => data.userId._id !== action.payload.data.userId._id,
+          );
+          state.count = state.count - 1;
+        }
+      }
+      state.count = state.count + 1;
+      state.data.unshift(action.payload.data);
+    });
+    builder.addCase(createPayment.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
     });
   },
 });

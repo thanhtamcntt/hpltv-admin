@@ -15,6 +15,8 @@ import ItemFormLogin from '../../components/Common/ItemFormLogin';
 import { Button, Form, Input } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import LogoImage from '../../components/LogoImage';
+import { API_LOGIN } from '../../configs/apis';
 
 function LoginPage() {
   const [error, setError] = useState();
@@ -23,7 +25,7 @@ function LoginPage() {
   const onFinish = async (values) => {
     setError();
     console.log('Success:', values);
-    const response = await fetch(process.env.REACT_APP_API_LOGIN, {
+    const response = await fetch(API_LOGIN, {
       method: 'POST',
       body: JSON.stringify({
         email: values.email,
@@ -59,7 +61,7 @@ function LoginPage() {
       <DivContent>
         <ContentLogin>
           <DivLogo>
-            <h2>SHOWHUB</h2>
+            <LogoImage height="60" width="300" />
           </DivLogo>
           <DivTitle>
             <h2>Welcome Back!!</h2>

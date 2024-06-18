@@ -86,8 +86,12 @@ export const SeriesSlice = createSlice({
           data.title = action.payload.data.title;
           data.description = action.payload.data.description;
           data.imageUrl = action.payload.data.imageUrl;
+          data.imageUrlBanner = action.payload.data.imageUrlBanner;
           data.listSeriesId = action.payload.data.listSeriesId;
-          data.updateAt = action.payload.data.updateAt;
+          data.releaseDate = action.payload.data.releaseDate;
+          data.director = action.payload.data.director;
+          data.cast = action.payload.data.cast;
+          data.country = action.payload.data.country;
         }
       });
     });

@@ -15,6 +15,14 @@ import { fetchAllOrder, fetchAllOrderLook } from '../../redux/Action/Payment';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PaginationComponent from '../../components/Common/Pagination';
 import LoadingComponent from '../../components/LoadingComponent';
+import { tableDataPackage, tableDataPayment } from '../../utils/dataTable';
+import {
+  fetchAllPackage,
+  fetchAllPackageLook,
+} from '../../redux/Action/Package';
+import FormModalContext from '../../contexts/FormModalContext';
+import ModalAdd from '../../components/ModalAdd';
+import { API_GET_DATA_PACKAGE } from '../../configs/apis';
 
 function PaymentAndPackagePage(props) {
   const [dataPayment, setDataPayment] = useState();
@@ -25,6 +33,7 @@ function PaymentAndPackagePage(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [textLook, setTextLook] = useState('');
   const [valuePackage, setValuePackage] = useState('All');
+  const [isModal, setIsModal] = useState(false);
 
   const { userInfo } = useContext(RoleContext);
   const dispatch = useDispatch();
@@ -34,15 +43,22 @@ function PaymentAndPackagePage(props) {
 
   let data, loading, error, count;
   const payment = useSelector((state) => state.paymentSlice);
-  data = payment.data;
-  loading = payment.loading;
-  error = payment.error;
-  count = payment.count;
-  console.log(data);
+  const packageSlice = useSelector((state) => state.packageSlice);
+  if (props.type === 'payment') {
+    data = payment.data;
+    loading = payment.loading;
+    error = payment.error;
+    count = payment.count;
+  } else {
+    data = packageSlice.data;
+    loading = packageSlice.loading;
+    error = packageSlice.error;
+    count = packageSlice.count;
+  }
 
   useEffect(() => {
     const fetchDataPayment = async () => {
-      const response = await fetch(process.env.REACT_APP_API_GET_DATA_PAYMENT);
+      const response = await fetch(API_GET_DATA_PACKAGE);
       const dataJson = await response.json();
       let data = [{ label: 'All', value: 'all' }];
       for (let i = 0; i < dataJson.data.length; i++) {
@@ -57,56 +73,11 @@ function PaymentAndPackagePage(props) {
   }, []);
 
   useEffect(() => {
-    const tableData = {
-      title5: {
-        title: 'Price package(monthly)',
-        dataIndex: 'monthlyPrice',
-        key: 'monthlyPrice',
-        width: '15%',
-        render: (text) => `$${text}`,
-        onCell: () => ({
-          style: { fontWeight: '500' },
-        }),
-      },
-      title4: {
-        title: 'Type package',
-        dataIndex: 'typePack',
-        key: 'typePack',
-        width: '15%',
-        onCell: () => ({
-          style: { fontWeight: '500' },
-        }),
-      },
-      title3: {
-        title: 'Email address',
-        dataIndex: 'email',
-        key: 'email',
-        width: '20%',
-        onCell: () => ({
-          style: { fontWeight: '500' },
-        }),
-      },
-      title2: {
-        title: 'last Name',
-        dataIndex: 'lastName',
-        key: 'lastName',
-        width: '10%',
-        onCell: () => ({
-          style: { fontWeight: '500' },
-        }),
-      },
-      title: {
-        title: 'first Name',
-        dataIndex: 'firstName',
-        key: 'firstName',
-        width: '10%',
-        onCell: () => ({
-          style: { fontWeight: '500' },
-        }),
-      },
-    };
-
-    setDataTable(tableData);
+    if (props.type === 'payment') {
+      setDataTable(tableDataPayment);
+    } else {
+      setDataTable(tableDataPackage);
+    }
     setIsLoading(true);
     setPage(1);
   }, [props.type, userInfo]);
@@ -119,6 +90,8 @@ function PaymentAndPackagePage(props) {
     if (look !== true) {
       if (props.type === 'payment') {
         Promise.all([dispatch(fetchAllOrder(pageNum))]);
+      } else {
+        Promise.all([dispatch(fetchAllPackage(pageNum))]);
       }
     } else {
       if (props.type === 'payment') {
@@ -132,6 +105,14 @@ function PaymentAndPackagePage(props) {
           ),
         ]);
       } else {
+        Promise.all([
+          dispatch(
+            fetchAllPackageLook({
+              pageNum: 1,
+              textLook: textSearch,
+            }),
+          ),
+        ]);
       }
     }
 
@@ -176,6 +157,9 @@ function PaymentAndPackagePage(props) {
       },
     });
   };
+  const showModal = (type) => {
+    setIsModal(true);
+  };
 
   if (loading || !dataPayment) {
     return (
@@ -188,11 +172,27 @@ function PaymentAndPackagePage(props) {
   return (
     <DivPayment>
       <DivAddDataPayment>
+        <FormModalContext.Provider
+          value={{
+            type: props.type,
+            dataRecord: dataRecord,
+          }}>
+          <ModalAdd
+            isModal={isModal}
+            setIsModal={setIsModal}
+            setDataRecord={setDataRecord}
+          />
+        </FormModalContext.Provider>
         {userInfo.role === 'superAdmin' && (
-          <DivAction>
-            <div>
-              <Button type="primary">Add</Button>
-            </div>
+          <DivAction width={props.type !== 'payment' && true}>
+            {props.type !== 'subscription-price' && (
+              <div>
+                <Button type="primary" onClick={showModal}>
+                  Add
+                </Button>
+              </div>
+            )}
+
             <div>
               <LookInfo
                 onChangeLook={onChangeLook}
@@ -209,7 +209,13 @@ function PaymentAndPackagePage(props) {
         )}
       </DivAddDataPayment>
       <DivTable>
-        <TableAssets data={data} dataTable={dataTable} type={props.type} />
+        <TableAssets
+          data={data}
+          dataTable={dataTable}
+          type={props.type}
+          setIsModal={setIsModal}
+          setDataRecord={setDataRecord}
+        />
       </DivTable>
       {data.length > 0 && (
         <DivPagination>
