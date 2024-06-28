@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ButtonAction, TagAction } from './styles';
 import { Table, Space } from 'antd';
 import ModalDetailAssets from '../ModalDetailAssets';
-import { RoleContext } from '../../contexts/RoleUserContext';
+import { RoleContext } from '../../contexts/UserContext';
 
 function TableAssets(props) {
   const [dataTable, setDataTable] = useState([]);

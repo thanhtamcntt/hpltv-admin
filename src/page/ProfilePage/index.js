@@ -20,7 +20,7 @@ import { Image, Upload, Button, Form, Tabs, notification } from 'antd';
 import { CameraOutlined, DeleteOutlined } from '@ant-design/icons';
 import FormUpdateProfile from '../../components/FormUpdateProfile';
 import LoadingPage from '../LoadingPage';
-import { RoleContext } from '../../contexts/RoleUserContext';
+import { RoleContext } from '../../contexts/UserContext';
 import { API_CHANGE_AVATAR, API_DELETE_AVATAR } from '../../configs/apis';
 
 function ProfilePage() {

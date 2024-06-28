@@ -59,6 +59,11 @@
   --color-action: #1677ff;
   --color-action-hover: #69b1ff;
   --color-error: #ff4d4f;
+  --height-form: 50px;
+}
+
+.background-chat {
+  background-color: #e8e8e8 !important;
 }
 
 #FilmForm .add-film-button button {
@@ -97,6 +102,10 @@
 .loading-component div .content {
   padding: 50px;
   border-radius: 4px;
+}
+
+.loading-container {
+  color: black;
 }
 
 /* form */

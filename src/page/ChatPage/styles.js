@@ -1,27 +1,157 @@
+import { Col, Row } from 'antd';
 import styled from 'styled-components';
 
 export const DivContainerChat = styled.div`
-  margin: 30px;
+  margin: 20px 14rem;
   text-align: left;
   color: var(--white);
 `;
 
-export const DivContent = styled.div`
-  width: 350px;
-  border: 1px solid #000;
+export const RowContainer = styled(Row)`
+  height: 620px;
 `;
+export const ColContainer = styled(Col)``;
+export const DivLeft = styled.div`
+  background-color: var(--white);
+  width: 96%;
+  height: 100%;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
 
-export const DivListChat = styled.div``;
-
-export const DivJoinRoom = styled.div`
-  margin-bottom: 1rem;
+  & h2 {
+    color: var(--black);
+    padding: 1rem 10px;
+    border-bottom: 1px solid var(--black);
+  }
 `;
+export const ListChat = styled.ul`
+  padding: 0;
+  flex-grow: 1;
+`;
+export const ItemChat = styled.li``;
+export const DivLeftItem = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  cursor: pointer;
 
-export const Text = styled.p`
+  &:hover {
+    background-color: #f8f8f8;
+  }
+`;
+export const LeftItem = styled.div`
+  width: 50px;
+
+  & img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+`;
+export const RightItem = styled.div`
   color: var(--black);
+  font-weight: 500;
+  margin-left: 10px;
+  overflow: hidden;
+
+  & > p:nth-child(2) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90%;
+  }
 `;
 
-export const ButtonJoinChat = styled.button``;
+export const DivRight = styled.div`
+  width: 100%;
+  height: 100%;
+  background-color: var(--white);
+  border-radius: 10px;
+  overflow: hidden;
+`;
+
+export const DivHeader = styled.div`
+  display: flex;
+  align-items: center;
+  height: 60px;
+  border-bottom: 2px solid #ccc;
+`;
+
+export const DivRightItem = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  cursor: pointer;
+  flex: 1;
+`;
+
+export const LeftHeaderItem = styled.div`
+  width: 50px;
+
+  & img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+`;
+export const RightHeaderItem = styled.div`
+  color: var(--black);
+  font-weight: 500;
+`;
+
+export const DivOutRoom = styled.div`
+  width: 60px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const ButtonOutRoom = styled.button`
+  width: 70%;
+  height: 70%;
+  border: none;
+  background: #0086e8;
+  color: var(--white);
+  cursor: pointer;
+  border-radius: 50%;
+
+  & span {
+    font-size: 24px;
+  }
+`;
+
+export const ListMessage = styled.ul`
+  padding: 0;
+  height: 100%;
+`;
+
+export const ItemMessage = styled.li`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const ChatItemContent = styled.div`
+  width: 100%;
+  overflow: hidden !important;
+
+  & > div {
+    min-height: 520px;
+    max-height: 520px;
+    padding: 10px 1rem 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+`;
 
 export const DivChat = styled.div`
   background-color: var(--bg-chat);
@@ -52,8 +182,99 @@ export const DivChat = styled.div`
   }
 `;
 
+export const DivItemChat = styled.div`
+  width: 100%;
+  display: flex;
+  margin-bottom: 12px;
+  justify-content: flex-end;
+`;
+
+export const DivItemChatUser = styled.div`
+  width: 100%;
+  display: flex;
+  margin-bottom: 12px;
+`;
+
+export const DivAvatarUser = styled.div`
+  margin-left: 6px;
+  width: 25px;
+  height: 25px;
+  & img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+`;
+
+export const DivAvatar = styled.div`
+  margin-right: 6px;
+  width: 25px;
+  height: 25px;
+  & img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+`;
+
+export const DivText = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 60%;
+  align-items: flex-start;
+  & > p:nth-child(2) {
+    color: var(--black);
+    font-size: 10px;
+    font-weight: 700;
+    margin-top: 4px;
+  }
+`;
+
+export const DivTextUser = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 60%;
+  align-items: flex-end;
+  & > p:nth-child(2) {
+    color: var(--black);
+    font-size: 10px;
+    font-weight: 700;
+    margin-top: 4px;
+  }
+`;
+
+export const TextUser = styled.p`
+  background-color: #4c77f6;
+  padding: 0.2rem 0.4rem;
+  max-width: 100%;
+
+  text-align: right;
+  border-radius: 10px;
+  overflow-wrap: break-word;
+  color: var(--white) !important;
+  float: right;
+  font-size: 16px;
+  font-weight: 500;
+`;
+
+export const TextUserResponse = styled.p`
+  background-color: #10a829;
+  padding: 0.2rem 0.4rem;
+  text-align: right;
+  border-radius: 10px;
+  text-align: left;
+  color: var(--white-bg) !important;
+  overflow-wrap: break-word;
+  float: left;
+  font-size: 16px;
+  max-width: 100%;
+
+  font-weight: 500;
+`;
+
 export const ButtonFooter = styled.button`
   width: 50%;
+
   background: transparent;
   color: ${(props) => (!props.handle ? '#7f7f7f' : 'var(--white-bg)')};
   cursor: pointer;
@@ -91,33 +312,28 @@ export const DivForm = styled.div`
 `;
 
 export const DivContentChat = styled.div`
-  background: var(--white-bg);
   height: 100%;
-`;
-
-export const TitleChat = styled.h3`
-  background: #212b30;
-  padding: 2px 0;
-`;
-
-export const ChatContent = styled.div`
-  min-height: 400px;
+  background-color: var(--white);
+  flex-grow: 1;
 `;
 
 export const FormChat = styled.form`
+  height: var(--height-form);
   display: flex;
   align-items: center;
   border-top: 1px solid var(--black);
 
   & input {
-    width: 80%;
-    padding: 12px 10px;
+    flex: 1;
+    padding: 16px 10px;
+    outline: none;
+    border: none;
   }
 `;
 
 export const ButtonChat = styled.button`
-  flex: 1;
-  padding: 13px 0;
+  width: calc(var(--height-form) + 10px);
+  padding: 18px 0;
   outline: none;
   border: none;
   background-color: transparent;
@@ -126,7 +342,61 @@ export const ButtonChat = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  outline: none;
+
   & svg {
     color: var(--black);
   }
+`;
+
+export const DivInfo = styled.div`
+  width: 100%;
+  height: 100%;
+  color: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const DivInfoOut = styled.div`
+  border-radius: 10px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10003;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  & > div {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--white);
+    width: 60%;
+    border-radius: 10px;
+
+    & > p {
+      color: var(--black);
+    }
+  }
+`;
+
+export const ButtonInfo = styled.button`
+  width: 100px;
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 0;
+  border-radius: 5px;
+  color: var(--white-bg);
+  background-color: #00ac0b;
+  cursor: pointer;
+  border: none;
 `;

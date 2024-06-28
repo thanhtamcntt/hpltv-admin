@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   DollarOutlined,
   SettingOutlined,
@@ -17,6 +17,9 @@ import ChildrenContext from '../contexts/ChildrenContext';
 import { useNavigate } from 'react-router-dom';
 import { Spin } from 'antd';
 import { DivContainerWeb, DivSider } from './styles';
+import { io } from 'socket.io-client';
+import { API_CREATE_MESSAGE, API_GET_ON_MESSAGE } from '../configs/apis';
+import { RoleContext } from '../contexts/UserContext';
 
 function getItem(label, key, icon, children) {
   return {
@@ -68,7 +71,78 @@ function LayoutAdmin({ children }) {
       : window.location.pathname.slice(1),
   );
   const [collapsed, setCollapsed] = useState(false);
+
+  const { userInfo } = useContext(RoleContext);
+
   const navigate = useNavigate();
+
+  const [listChat, setListChat] = useState([]);
+  const [chooseChat, setChooseChat] = useState();
+  const [message, setMessage] = useState({});
+  const [socket, setSocket] = useState();
+  const [input, setInput] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [visible, setVisible] = useState(true);
+
+  const newSocket = io('http://localhost:4000/admin');
+
+  useEffect(() => {
+    setSocket(newSocket);
+    newSocket.on('chatCustomer', (newMessage) => {
+      // setMessage((prev) => [...prev, newMessage]);
+      console.log(newMessage);
+      setMessage((prev) => ({
+        ...prev,
+        [newMessage.roomId]: [
+          ...(prev[newMessage.roomId] || []),
+          newMessage.data,
+        ],
+      }));
+    });
+
+    newSocket.on('forceLeave', (roomId) => {
+      console.log(roomId);
+      setVisible((prev) => ({ ...prev, [roomId]: true }));
+      newSocket.emit('leaveRoom', roomId);
+    });
+
+    newSocket.on('room', (data) => {
+      const dataPost = {
+        roomId: data.roomId,
+        participants: {
+          adminId: userInfo.userId,
+          userId: data.userId,
+        },
+      };
+
+      const addMessage = async () => {
+        const response = await fetch(API_CREATE_MESSAGE, {
+          method: 'POST',
+          body: JSON.stringify(dataPost),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const json = await response.json();
+        if (json.success) {
+          setListChat((prev) => [...prev, data]);
+        }
+      };
+      addMessage();
+      if (listChat.length > 0) {
+        setChooseChat(listChat[0].roomId);
+      } else {
+        setChooseChat(data.roomId);
+      }
+      // console.log('data ', data);
+    });
+
+    return () => {
+      newSocket.off('chatCustomer');
+      newSocket.off('room');
+      // newSocket.disconnect();
+    };
+  }, [message]);
 
   useEffect(() => {
     setSelect(
@@ -80,12 +154,65 @@ function LayoutAdmin({ children }) {
     );
   }, [window.location.pathname]);
 
+  useEffect(() => {
+    const fetchListChat = async () => {
+      const response = await fetch(API_GET_ON_MESSAGE, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const json = await response.json();
+      let list = [],
+        mess = [];
+      if (json.data.length > 0) {
+        for (let i = 0; i < json.data.length; i++) {
+          list.push({
+            roomId: json.data[i].roomId,
+            userId: json.data[i].participants.userId._id,
+            firstName: json.data[i].participants.userId.firstName,
+            lastName: json.data[i].participants.userId.lastName,
+            userInfo: json.data[i].participants.userId,
+          });
+          mess = {
+            ...mess,
+            [json.data[i].roomId]: json.data[i].messages,
+          };
+        }
+        if (list.length > 0) {
+          setChooseChat(list[0].roomId);
+        }
+        setListChat(list);
+        setMessage(mess);
+      }
+    };
+    fetchListChat();
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 700);
+  }, []);
+
   const {
     token: { colorBgContainer },
   } = theme.useToken();
 
   const handleSelect = (select) => {
     navigate(`/${select}`);
+  };
+
+  const handleOutRoom = (roomId) => {
+    setVisible((prev) => ({ ...prev, [roomId]: false }));
+    setMessage((prev) => {
+      let newMessage = { ...prev };
+      delete newMessage[roomId];
+      return newMessage;
+    });
+    setListChat((prev) => prev.filter((item) => item.roomId !== roomId));
+
+    if (listChat.length - 1 > 0) {
+      setChooseChat(listChat[0].roomId);
+    } else {
+      setChooseChat();
+    }
   };
 
   if (!items) {
@@ -119,7 +246,22 @@ function LayoutAdmin({ children }) {
           bgColor={colorBgContainer}
           title={`${select}`.toUpperCase()}
         />
-        <ChildrenContext.Provider value={{ select: select }}>
+        <ChildrenContext.Provider
+          value={{
+            select: select,
+            socket,
+            message,
+            setMessage,
+            listChat,
+            setListChat,
+            input,
+            setInput,
+            chooseChat,
+            setChooseChat,
+            isLoading,
+            visible,
+            handleOutRoom,
+          }}>
           {children}
         </ChildrenContext.Provider>
 

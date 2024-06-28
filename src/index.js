@@ -6,17 +6,17 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { store } from './redux/store';
 import { Provider } from 'react-redux';
-import RoleUserContext from './contexts/RoleUserContext';
+import UserContext from './contexts/UserContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <RoleUserContext>
+      <UserContext>
         <Provider store={store}>
           <App />
         </Provider>
-      </RoleUserContext>
+      </UserContext>
     </BrowserRouter>
   </React.StrictMode>,
 );

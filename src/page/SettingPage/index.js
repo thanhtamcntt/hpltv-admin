@@ -8,7 +8,7 @@ import {
   DivAddData,
   DivPagination,
 } from './styles';
-import { RoleContext } from '../../contexts/RoleUserContext';
+import { RoleContext } from '../../contexts/UserContext';
 import { Button, Modal } from 'antd';
 import PaginationComponent from '../../components/Common/Pagination';
 import TableAssetsSetting from '../../components/TableAssetsSetting';

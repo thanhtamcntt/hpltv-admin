@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { ButtonAction, TagAction } from './styles';
 import { Table, Space } from 'antd';
-import { RoleContext } from '../../contexts/RoleUserContext';
+import { RoleContext } from '../../contexts/UserContext';
 import ModalDetailQuestion from '../ModalDetailQuestion';
 
 function TableAssetsSetting(props) {

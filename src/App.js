@@ -1,17 +1,14 @@
 import './App.css';
 import LayoutAdmin from './layout';
-import { Navigate, Route, Routes} from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import LoginPage from './page/LoginPage';
 import Router from './routes/index';
 import { useContext } from 'react';
 import LoadingPage from './page/LoadingPage';
-import { RoleContext } from './contexts/RoleUserContext';
+import { RoleContext } from './contexts/UserContext';
 
 function App() {
-
-
-  const { userInfo,isLogin } = useContext(RoleContext);
-
+  const { userInfo, isLogin } = useContext(RoleContext);
 
   if (isLogin === undefined || userInfo === undefined) {
     return <LoadingPage />;

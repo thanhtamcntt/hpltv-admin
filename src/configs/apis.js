@@ -80,3 +80,10 @@ export const API_CHANGE_AVATAR =
 export const API_DELETE_AVATAR =
   'http://localhost:4000/auth/delete-avatar?user=user';
 export const API_VERIFY_TOKEN = 'http://localhost:4000/auth/verify-token';
+
+export const API_CREATE_MESSAGE = 'http://localhost:4000/admin/message/create';
+export const API_UPDATE_MESSAGE = 'http://localhost:4000/admin/message/update';
+export const API_UPDATE_OFF_MESSAGE =
+  'http://localhost:4000/admin/message/update-off';
+
+export const API_GET_ON_MESSAGE = 'http://localhost:4000/message/get-on';
