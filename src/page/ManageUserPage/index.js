@@ -8,7 +8,7 @@ import {
   DivPagination,
 } from './styles';
 import { useContext, useEffect, useState } from 'react';
-import { RoleContext } from '../../contexts/RoleUserContext';
+import { RoleContext } from '../../contexts/UserContext';
 import FormModalContext from '../../contexts/FormModalContext';
 import ModalAdd from '../../components/ModalAdd';
 import LoadingComponent from '../../components/LoadingComponent';

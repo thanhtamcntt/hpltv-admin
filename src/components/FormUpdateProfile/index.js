@@ -4,7 +4,7 @@ import InputItem from '../Common/InputItem';
 import validator from 'validator';
 import { useContext, useState } from 'react';
 import LoadingComponent from '../LoadingComponent';
-import { RoleContext } from '../../contexts/RoleUserContext';
+import { RoleContext } from '../../contexts/UserContext';
 import { API_UPDATE_PROFILE, API_CHANGE_PASSWORD } from '../../configs/apis';
 
 function FormUpdateProfile(props) {

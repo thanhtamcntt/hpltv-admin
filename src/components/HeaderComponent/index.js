@@ -11,7 +11,7 @@ import {
   DivLabel,
 } from './styles';
 import { BellOutlined, DownOutlined } from '@ant-design/icons';
-import { RoleContext } from '../../contexts/RoleUserContext';
+import { RoleContext } from '../../contexts/UserContext';
 import { Link } from 'react-router-dom';
 
 function HeaderAdmin({ bgColor, title }) {

@@ -4,7 +4,7 @@ import { API_VERIFY_TOKEN } from '../../configs/apis';
 
 export const RoleContext = createContext();
 
-function RoleUserContext({ children }) {
+function UserContext({ children }) {
   const [userInfo, setUserInfo] = useState();
   const [isLogin, setIsLogin] = useState();
   const [isUpdateUser, setIsUpdateUser] = useState(false);
@@ -77,10 +77,15 @@ function RoleUserContext({ children }) {
   };
 
   return (
-    <RoleContext.Provider value={{ userInfo, isLogin, updateUserInfo }}>
+    <RoleContext.Provider
+      value={{
+        userInfo,
+        isLogin,
+        updateUserInfo,
+      }}>
       {children}
     </RoleContext.Provider>
   );
 }
 
-export default RoleUserContext;
+export default UserContext;
