@@ -1,4 +1,4 @@
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import ItemForm from '../Common/ItemFormAdd';
 import { useDispatch } from 'react-redux';
 import { Title, Description } from './styles';
@@ -11,15 +11,27 @@ function FormResolveQuestion(props) {
 
   const { type, dataRecord } = useContext(FormModalContext);
 
+  const [messageApi, contextHolder] = message.useMessage();
+  const success = () => {
+    messageApi.open({
+      type: 'success',
+      content: 'Reply sent successfully.',
+      duration: 1.5,
+    });
+  };
+
   const onFinish = async (values) => {
     let dataBody;
 
     dataBody = {
       explanation: values.explanation,
-      description: values.description,
+      explainId: dataRecord._id,
     };
-    await dispatch(resolveCustomerQuestions(dataBody));
+    success();
     props.handleCancel();
+    setTimeout(async () => {
+      await dispatch(resolveCustomerQuestions(dataBody));
+    }, 1500);
   };
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
@@ -27,9 +39,10 @@ function FormResolveQuestion(props) {
 
   return (
     <>
-      <Title>Title question: {dataRecord && dataRecord.title}</Title>
+      {contextHolder}
+      <Title>Title question customer: {dataRecord && dataRecord.title}</Title>
       <Description>
-        Description detail: {dataRecord && dataRecord.description}
+        Description detail question: {dataRecord && dataRecord.description}
       </Description>
       <Form
         form={props.form}

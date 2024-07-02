@@ -142,7 +142,11 @@ function ManageUserPage(props) {
       },
     };
     setDataTable(tableData);
-  }, [props.type]);
+  }, [props.type, userInfo]);
+
+  const showModal = (type) => {
+    setIsModal(true);
+  };
 
   if (error) {
     return (
@@ -165,7 +169,9 @@ function ManageUserPage(props) {
       <DivManage>
         {userInfo.role === 'superAdmin' && props.type === 'user' && (
           <DivAction>
-            <Button type="primary">Add User</Button>
+            <Button type="primary" onClick={showModal}>
+              Add User
+            </Button>
           </DivAction>
         )}
 

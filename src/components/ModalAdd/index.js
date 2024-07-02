@@ -12,6 +12,7 @@ import {
 import { countries } from '../../assets/country';
 import FormAddQuestion from '../FormAddQuestion';
 import FormResolveQuestion from '../FormResolveQuestion';
+import FormAddUser from '../FormAddUser';
 
 function ModalAdd(props) {
   const { type, dataRecord } = useContext(FormModalContext);
@@ -100,6 +101,17 @@ function ModalAdd(props) {
           });
         }
         break;
+      case 'user':
+        if (dataRecord) {
+          form.setFieldsValue({
+            firstName: dataRecord.firstName,
+            lastName: dataRecord.lastName,
+            email: dataRecord.email,
+            phoneNumber: dataRecord.phoneNumber,
+            sex: dataRecord.sex,
+          });
+        }
+        break;
       default:
         break;
     }
@@ -132,7 +144,8 @@ function ModalAdd(props) {
       {type !== 'subscription-price' &&
       type !== 'payment' &&
       type !== 'common-questions' &&
-      type !== 'customer-questions' ? (
+      type !== 'customer-questions' &&
+      type !== 'user' ? (
         <FormAddModal
           handleCancel={handleCancel}
           options={options}
@@ -147,17 +160,21 @@ function ModalAdd(props) {
           setCheckImageFilm={setCheckImageFilm}
           setCheckVideoFilm={setCheckVideoFilm}
         />
-      ) : type !== 'common-questions' && type !== 'customer-questions' ? (
+      ) : type !== 'common-questions' &&
+        type !== 'customer-questions' &&
+        type !== 'user' ? (
         <FormAddPackage
           handleCancel={handleCancel}
           form={form}
           options={options}
           options2={options2}
         />
-      ) : type !== 'customer-questions' ? (
+      ) : type !== 'customer-questions' && type !== 'user' ? (
         <FormAddQuestion handleCancel={handleCancel} form={form} />
-      ) : (
+      ) : type !== 'user' ? (
         <FormResolveQuestion handleCancel={handleCancel} form={form} />
+      ) : (
+        <FormAddUser handleCancel={handleCancel} form={form} />
       )}
     </Modal>
   );

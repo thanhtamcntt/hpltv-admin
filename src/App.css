@@ -49,10 +49,9 @@
 #FilmForm > div {
   margin-bottom: 10px;
 }
-
-#FilmForm .add-film-button {
-  margin: 40px 0 10px;
-  text-align: center;
+.add-film-button {
+  margin: 30px 0 10px;
+  text-align: center !important;
 }
 
 :root {

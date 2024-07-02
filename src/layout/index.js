@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
   DollarOutlined,
-  SettingOutlined,
+  QuestionCircleOutlined,
   LogoutOutlined,
   TeamOutlined,
   BarChartOutlined,
   LockOutlined,
   RestOutlined,
   WalletOutlined,
+  CustomerServiceOutlined,
 } from '@ant-design/icons';
 import { Layout, theme } from 'antd';
 import HeaderAdmin from '../components/HeaderComponent';
@@ -34,31 +35,29 @@ const items = [
   getItem('Statistics', 'statistics', <BarChartOutlined />),
   getItem('Assets', 'assets', <WalletOutlined />, [
     getItem('Series', 'series'),
-    getItem('Movies', 'movies'),
     getItem('Film for series', 'film-for-series'),
+    getItem('Movies', 'movies'),
     getItem('Category', 'category'),
-  ]),
-  getItem('Setting', 'setting', <SettingOutlined />, [
-    getItem('Common questions', 'common-questions'),
-    getItem('Customer Questions', 'customer-questions'),
   ]),
   getItem('Manage', 'manage', <TeamOutlined />, [
     getItem('User', 'user'),
     getItem('Subscriber', 'subscriber'),
   ]),
-
+  getItem('Payment', 'payment', <DollarOutlined />),
+  getItem('Subscription price', 'subscription-price', <DollarOutlined />),
+  getItem('Support customer', 'support-customer', <CustomerServiceOutlined />),
+  getItem('Question', 'question', <QuestionCircleOutlined />, [
+    getItem('Common questions', 'common-questions'),
+    getItem('Customer Questions', 'customer-questions'),
+  ]),
   getItem('Banned Account', 'banned account', <LockOutlined />, [
     getItem('Subscriber', 'banned-subscriber'),
   ]),
-
   getItem('Trash', 'trash', <RestOutlined />, [
     getItem('Series', 'trash-series'),
     getItem('Movies', 'trash-movies'),
     getItem('Film for series', 'trash-film-for-series'),
   ]),
-  getItem('Payment', 'payment', <DollarOutlined />),
-  getItem('Subscription price', 'subscription-price', <DollarOutlined />),
-  getItem('Support customer', 'support-customer', <DollarOutlined />),
   getItem('Logout', 'logout', <LogoutOutlined />),
 ];
 

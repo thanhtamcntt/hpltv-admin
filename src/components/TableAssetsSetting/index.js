@@ -30,6 +30,7 @@ function TableAssetsSetting(props) {
       {
         title: 'Action',
         key: 'action',
+        width: props.type === 'customer-questions' ? '10%' : '20%',
         onCell: () => ({
           style: { TextAlign: 'center' },
         }),

@@ -68,6 +68,16 @@ function TableAssetsUser(props) {
                     <ButtonAction>
                       <TagAction
                         color="warning"
+                        onClick={() => {
+                          props.setDataRecord(record);
+                          props.setIsModal(true);
+                        }}>
+                        Update
+                      </TagAction>
+                    </ButtonAction>
+                    <ButtonAction>
+                      <TagAction
+                        color="warning"
                         onClick={() => handleUpdate(record)}>
                         Reset Password
                       </TagAction>

@@ -3,6 +3,7 @@ import {
   API_GET_ALL_USER,
   API_RESET_PASSWORD,
   API_DELETE_USER,
+  API_POST_CREATE_USER,
 } from '../../../configs/apis';
 
 export const fetchAllUser = createAsyncThunk(
@@ -18,6 +19,20 @@ export const fetchAllUser = createAsyncThunk(
       rejectWithValue(data);
     }
     return data;
+  },
+);
+
+export const createUser = createAsyncThunk(
+  'createUser',
+  async (dataUser, { rejectWithValue }) => {
+    return dataUser;
+  },
+);
+
+export const updateUser = createAsyncThunk(
+  'updateUser',
+  async (userData, { rejectWithValue }) => {
+    return userData;
   },
 );
 
