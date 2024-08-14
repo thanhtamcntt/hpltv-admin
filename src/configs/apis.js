@@ -90,4 +90,7 @@ export const API_UPDATE_MESSAGE = 'http://localhost:4000/admin/message/update';
 export const API_UPDATE_OFF_MESSAGE =
   'http://localhost:4000/admin/message/update-off';
 
+export const API_UPDATE_JOIN_MESSAGE =
+  'http://localhost:4000/admin/message/join-chat';
+
 export const API_GET_ON_MESSAGE = 'http://localhost:4000/message/get-on';

@@ -6,6 +6,7 @@ import {
   TextError,
   DivData,
   DivPagination,
+  DivAddAndLook,
 } from './styles';
 import { useContext, useEffect, useState } from 'react';
 import { RoleContext } from '../../contexts/UserContext';
@@ -17,6 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   deleteUser,
   fetchAllUser,
+  fetchAllUserLook,
   resetPasswordUser,
 } from '../../redux/Action/Manage/user';
 import {
@@ -24,16 +26,21 @@ import {
   fetchAllSubscriber,
   resetPasswordSubscriber,
   postBannedSubscriber,
+  fetchAllSubscriberLook,
 } from '../../redux/Action/Manage/subscriber';
 import PaginationComponent from '../../components/Common/Pagination';
 import {
   fetchAllSubscriberBanned,
+  fetchAllSubscriberBannedLook,
   postRecoverSubscriber,
 } from '../../redux/Action/Manage/bannedAccount';
+import { useLocation, useNavigate } from 'react-router-dom';
+import LookInfo from '../../components/Common/LookComponent';
+import { API_GET_ALL_SUBSCRIBER, API_GET_ALL_USER } from '../../configs/apis';
 
 function ManageUserPage(props) {
   const { userInfo } = useContext(RoleContext);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [isModal, setIsModal] = useState(false);
   const [dataRecord, setDataRecord] = useState(undefined);
   const [dataTable, setDataTable] = useState(undefined);
@@ -41,9 +48,27 @@ function ManageUserPage(props) {
   const [userIdReset, setUserIdReset] = useState();
   const [textModal, setTextModal] = useState();
   const [isOptions, setIsOptions] = useState(false);
+  const [page, setPage] = useState(undefined);
+  const [textFirstName, setTextFirstName] = useState('');
+  const [textLastName, setTextLastName] = useState('');
+  const [valueEmail, setValueEmail] = useState('All');
+  const [valueGender, setValueGender] = useState('All');
+  const [dataEmail, setDataEmail] = useState();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const searchParams = new URLSearchParams(location.search);
+
+  const look = searchParams.get('look');
+  const pageCurrent = searchParams.get('page');
+  const firstName = searchParams.get('firstName');
+  const lastName = searchParams.get('lastName');
+  const email = searchParams.get('email');
+  const gender = searchParams.get('gender');
 
   const dispatch = useDispatch();
-  let data, loading, error;
+  let data, loading, error, count;
   const user = useSelector((state) => state.userSlice);
   const subscriber = useSelector((state) => state.subscriberSlice);
   const bannedSubscriber = useSelector((state) => state.subscriberBannedSlice);
@@ -51,56 +76,20 @@ function ManageUserPage(props) {
     data = user.data;
     loading = user.loading;
     error = user.error;
+    count = user.count;
   }
   if (props.type === 'subscriber') {
     data = subscriber.data;
     loading = subscriber.loading;
     error = subscriber.error;
+    count = subscriber.count;
   }
   if (props.type === 'banned-subscriber') {
     data = bannedSubscriber.data;
     loading = bannedSubscriber.loading;
     error = bannedSubscriber.error;
+    count = bannedSubscriber.count;
   }
-
-  const handleOk = async () => {
-    const data = {
-      userId: userIdReset,
-      type: props.type,
-    };
-    if (isOptions === 1) {
-      if (props.type === 'user') {
-        Promise.all([dispatch(deleteUser(data))]);
-      } else {
-        Promise.all([dispatch(deleteSubscriber(data))]);
-      }
-    } else if (isOptions === 2) {
-      if (props.type === 'user') {
-        Promise.all([dispatch(resetPasswordUser(data))]);
-      } else {
-        Promise.all([dispatch(resetPasswordSubscriber(data))]);
-      }
-    } else if (isOptions === 3) {
-      Promise.all([dispatch(postBannedSubscriber(data))]);
-    } else {
-      Promise.all([dispatch(postRecoverSubscriber(data))]);
-    }
-
-    setUserIdReset();
-    setIsModalOpen(false);
-  };
-  const handleCancel = () => {
-    setUserIdReset();
-    setIsModalOpen(false);
-  };
-
-  useEffect(() => {
-    Promise.all([
-      dispatch(fetchAllUser()),
-      dispatch(fetchAllSubscriber()),
-      dispatch(fetchAllSubscriberBanned()),
-    ]);
-  }, [props.type, dispatch]);
 
   useEffect(() => {
     const tableData = {
@@ -142,24 +131,231 @@ function ManageUserPage(props) {
       },
     };
     setDataTable(tableData);
-  }, [props.type, userInfo]);
+    if (pageCurrent) setPage(pageCurrent);
+    else setPage(1);
+  }, [props.type, userInfo, pageCurrent]);
+
+  useEffect(() => {
+    const fetchEmail = async () => {
+      const API_EMAIL =
+        props.type === 'user'
+          ? API_GET_ALL_USER
+          : props.type === 'subscriber'
+          ? API_GET_ALL_SUBSCRIBER + '?banned=false'
+          : API_GET_ALL_SUBSCRIBER + '?banned=true';
+      const response = await fetch(API_EMAIL, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
+        },
+      });
+      const data = await response.json();
+      let arr = [{ label: 'All', value: 'All' }];
+      for (let i = 0; i < data.data.length; i++) {
+        arr.push({ label: data.data[i].email, value: data.data[i].email });
+      }
+
+      setDataEmail(arr);
+    };
+    fetchEmail();
+  }, [props.type]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    let pageNum = getPage();
+
+    setTextFirstName('');
+    setTextLastName('');
+    setValueEmail('All');
+    setValueGender('All');
+
+    if (!look) {
+      if (props.type === 'user') {
+        Promise.all([dispatch(fetchAllUser(pageNum))]);
+      } else if (props.type === 'subscriber') {
+        Promise.all([dispatch(fetchAllSubscriber(pageNum))]);
+      } else if (props.type === 'banned-subscriber') {
+        Promise.all([dispatch(fetchAllSubscriberBanned(pageNum))]);
+      }
+    } else {
+      switch (props.type) {
+        case 'user':
+          Promise.all([
+            dispatch(
+              fetchAllUserLook({
+                pageNum: pageNum,
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                gender: gender,
+              }),
+            ),
+          ]);
+          break;
+        case 'subscriber':
+          Promise.all([
+            dispatch(
+              fetchAllSubscriberLook({
+                pageNum: pageNum,
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                gender: gender,
+              }),
+            ),
+          ]);
+          break;
+        case 'banned-subscriber':
+          Promise.all([
+            dispatch(
+              fetchAllSubscriberBannedLook({
+                pageNum: pageNum,
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                gender: gender,
+              }),
+            ),
+          ]);
+          break;
+        default:
+          break;
+      }
+    }
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 100);
+  }, [location.search, props.type, dispatch, page]);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, [user, subscriber, bannedSubscriber]);
+
+  const getPage = () => {
+    let pageNum;
+    if (location.search !== '') {
+      const searchParams = new URLSearchParams(location.search);
+
+      for (let param of searchParams) {
+        if (param[0] === 'page') {
+          pageNum = parseInt(param[1]);
+        }
+      }
+    } else {
+      pageNum = 1;
+    }
+    return pageNum;
+  };
+
+  const handleOk = async () => {
+    const data = {
+      userId: userIdReset,
+      type: props.type,
+    };
+    if (isOptions === 1) {
+      if (props.type === 'user') {
+        Promise.all([dispatch(deleteUser(data))]);
+      } else {
+        Promise.all([dispatch(deleteSubscriber(data))]);
+      }
+    } else if (isOptions === 2) {
+      if (props.type === 'user') {
+        Promise.all([dispatch(resetPasswordUser(data))]);
+      } else {
+        Promise.all([dispatch(resetPasswordSubscriber(data))]);
+      }
+    } else if (isOptions === 3) {
+      Promise.all([dispatch(postBannedSubscriber(data))]);
+    } else {
+      Promise.all([dispatch(postRecoverSubscriber(data))]);
+    }
+
+    setUserIdReset();
+    setIsModalOpen(false);
+
+    if (data.length - 1 === 0 && page > 1) {
+      setPage((prev) => prev - 1);
+      if (look) {
+        navigate(
+          '/' +
+            props.type +
+            '?look=true&page=' +
+            (page - 1) +
+            '&firstName=' +
+            firstName +
+            '&lastName=' +
+            lastName +
+            '&email=' +
+            email +
+            '&gender=' +
+            gender,
+        );
+      } else navigate('/' + props.type + '?page=' + (page - 1));
+    }
+  };
+  const handleCancel = () => {
+    setUserIdReset();
+    setIsModalOpen(false);
+  };
 
   const showModal = (type) => {
     setIsModal(true);
   };
 
+  const handleOnChangePage = (page, size) => {
+    setPage(page);
+    if (look) {
+      navigate(
+        '/' +
+          props.type +
+          '?look=true&page=' +
+          page +
+          '&firstName=' +
+          firstName +
+          '&lastName=' +
+          lastName +
+          '&email=' +
+          email +
+          '&gender=' +
+          gender,
+      );
+    } else navigate('/' + props.type + '?page=' + page);
+  };
+
+  const onChangeLook = () => {
+    setPage(1);
+    navigate(
+      '/' +
+        props.type +
+        '?look=true&page=1&firstName=' +
+        textFirstName +
+        '&lastName=' +
+        textLastName +
+        '&email=' +
+        valueEmail +
+        '&gender=' +
+        valueGender,
+    );
+  };
+
+  const filterOption = (input, option) =>
+    (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+
+  if (isLoading || loading) {
+    return (
+      <DivManage>
+        <LoadingComponent />
+      </DivManage>
+    );
+  }
+
   if (error) {
     return (
       <DivManage>
-        {loading ? (
-          <LoadingComponent />
-        ) : (
-          <DivError>
-            <TextError>
-              The server is having problems, please try again later!!!
-            </TextError>
-          </DivError>
-        )}
+        <DivError>
+          <TextError>
+            The server is having problems, please try again later!!!
+          </TextError>
+        </DivError>
       </DivManage>
     );
   }
@@ -167,13 +363,31 @@ function ManageUserPage(props) {
   return (
     <>
       <DivManage>
-        {userInfo.role === 'superAdmin' && props.type === 'user' && (
-          <DivAction>
-            <Button type="primary" onClick={showModal}>
-              Add User
-            </Button>
-          </DivAction>
-        )}
+        <DivAddAndLook user={props.type === 'user' ? true : false}>
+          {userInfo.role === 'superAdmin' && props.type === 'user' && (
+            <DivAction>
+              <Button type="primary" onClick={showModal}>
+                Add User
+              </Button>
+            </DivAction>
+          )}
+          <div>
+            <LookInfo
+              setValueGender={setValueGender}
+              setTextFirstName={setTextFirstName}
+              textFirstName={textFirstName}
+              setTextLastName={setTextLastName}
+              textLastName={textLastName}
+              valueEmail={valueEmail}
+              setValueEmail={setValueEmail}
+              valueGender={valueGender}
+              dataEmail={dataEmail}
+              type={props.type}
+              filterOption={filterOption}
+              onChangeLook={onChangeLook}
+            />
+          </div>
+        </DivAddAndLook>
 
         <FormModalContext.Provider
           value={{ type: props.type, dataRecord: dataRecord }}>
@@ -203,7 +417,11 @@ function ManageUserPage(props) {
             />
             {data.length > 0 && (
               <DivPagination>
-                <PaginationComponent />
+                <PaginationComponent
+                  count={count}
+                  page={page}
+                  handleOnChangePage={handleOnChangePage}
+                />
               </DivPagination>
             )}
           </DivData>

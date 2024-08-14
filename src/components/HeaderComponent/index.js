@@ -13,21 +13,18 @@ import {
 import { BellOutlined, DownOutlined } from '@ant-design/icons';
 import { RoleContext } from '../../contexts/UserContext';
 import { Link } from 'react-router-dom';
+import LogoImage from '../LogoImage';
 
 function HeaderAdmin({ bgColor, title }) {
   const { userInfo } = useContext(RoleContext);
-
+  console.log(userInfo);
   const items = [
     {
       key: '1',
       type: 'group',
       label: (
         <DivLabel>
-          <LabelText>
-            {userInfo.firstName} {userInfo.lastName}
-            <br />
-            {userInfo.email}
-          </LabelText>
+          <LabelText>{userInfo.role}</LabelText>
         </DivLabel>
       ),
     },
@@ -39,18 +36,24 @@ function HeaderAdmin({ bgColor, title }) {
   return (
     <DivHeader>
       <DivRight>
-        <BellOutlined />
-        <DivInfo>
-          <Dropdown
-            menu={{
-              items,
-            }}>
-            <a href="/" onClick={(e) => e.preventDefault()}>
-              <AvatarUser src={userInfo.avatarUser.url} />
-              <DownOutlined />
-            </a>
-          </Dropdown>
-        </DivInfo>
+        <div>
+          <LogoImage height={45} width={150} />
+        </div>
+        <div>
+          <span>{userInfo.firstName + ' ' + userInfo.lastName}</span>
+
+          <DivInfo>
+            <Dropdown
+              menu={{
+                items,
+              }}>
+              <a href="/" onClick={(e) => e.preventDefault()}>
+                <AvatarUser src={userInfo.avatarUser.url} />
+                <DownOutlined />
+              </a>
+            </Dropdown>
+          </DivInfo>
+        </div>
       </DivRight>
     </DivHeader>
   );

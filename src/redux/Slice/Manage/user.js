@@ -5,6 +5,7 @@ import {
   resetPasswordUser,
   createUser,
   updateUser,
+  fetchAllUserLook,
 } from '../../Action/Manage/user';
 
 const initialState = {
@@ -30,6 +31,21 @@ export const UserSlice = createSlice({
       state.count = action.payload.count;
     });
     builder.addCase(fetchAllUser.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload.message;
+    });
+
+    // fetch all users look
+    builder.addCase(fetchAllUserLook.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchAllUserLook.fulfilled, (state, action) => {
+      console.log(action.payload);
+      state.loading = false;
+      state.data = [...action.payload.data];
+      state.count = action.payload.count;
+    });
+    builder.addCase(fetchAllUserLook.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload.message;
     });

@@ -39,6 +39,7 @@ export const DivNameUser = styled.div``;
 
 export const NameUser = styled.h2`
   margin-bottom: 20px;
+  text-align: center;
 `;
 
 export const DivInfo = styled.div`

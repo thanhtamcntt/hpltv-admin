@@ -7,6 +7,21 @@ export const DivContainerChat = styled.div`
   color: var(--white);
 `;
 
+export const DivError = styled.div`
+  position: absolute;
+  text-align: center;
+  margin-top: 50%;
+  z-index: 10050;
+  & p {
+    background-color: rgba(255, 0, 0, 1);
+    color: var(--white-bg);
+    width: 80%;
+    margin: 0 auto;
+    padding: 4px 6px;
+    font-weight: 500;
+  }
+`;
+
 export const RowContainer = styled(Row)`
   height: 620px;
 `;
@@ -243,9 +258,19 @@ export const DivTextUser = styled.div`
   }
 `;
 
+export const DivFile = styled.div`
+  max-width: 100%;
+  float: right;
+
+  & img,
+  & video {
+    max-width: 100%;
+  }
+`;
+
 export const TextUser = styled.p`
   background-color: #4c77f6;
-  padding: 0.2rem 0.4rem;
+  padding: 0.4rem 0.4rem;
   max-width: 100%;
 
   text-align: right;
@@ -253,20 +278,20 @@ export const TextUser = styled.p`
   overflow-wrap: break-word;
   color: var(--white) !important;
   float: right;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
 `;
 
 export const TextUserResponse = styled.p`
   background-color: #10a829;
-  padding: 0.2rem 0.4rem;
+  padding: 0.4rem 0.4rem;
   text-align: right;
   border-radius: 10px;
   text-align: left;
   color: var(--white-bg) !important;
   overflow-wrap: break-word;
   float: left;
-  font-size: 16px;
+  font-size: 15px;
   max-width: 100%;
 
   font-weight: 500;
@@ -317,7 +342,7 @@ export const DivContentChat = styled.div`
   flex-grow: 1;
 `;
 
-export const FormChat = styled.form`
+export const FormChat = styled.div`
   height: var(--height-form);
   display: flex;
   align-items: center;
@@ -399,4 +424,88 @@ export const ButtonInfo = styled.button`
   background-color: #00ac0b;
   cursor: pointer;
   border: none;
+`;
+
+export const BtnIcon = styled.button`
+  width: 10% !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: 50px;
+  & svg {
+    color: var(--black);
+    font-size: 20px;
+  }
+`;
+
+export const LabelFile = styled.label`
+  width: 6%;
+  display: flex;
+  background: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  & svg {
+    color: var(--black);
+  }
+`;
+
+export const DivPicker = styled.div`
+  position: absolute;
+  top: 170px;
+  right: 10%;
+  & aside {
+    width: 300px !important;
+    height: 400px !important;
+    border: 1px solid #ccc;
+  }
+`;
+
+export const DivImage = styled.div`
+  position: absolute;
+  border: 1px solid #0924c8;
+  background: #0924c8;
+  padding: 4px;
+  max-width: 300px;
+  max-height: 250px;
+  right: 19%;
+  bottom: 55px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  & span {
+    margin-bottom: 4px;
+  }
+
+  & img {
+    max-width: 100%;
+    max-height: 190px;
+  }
+`;
+
+export const BtnExit = styled.button`
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0;
+  font-size: 20px;
+  color: var(--white);
+`;
+
+export const ArrowBottom = styled.div`
+  position: absolute;
+  bottom: -12px;
+  right: 7%;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 12px solid #0924c8;
 `;

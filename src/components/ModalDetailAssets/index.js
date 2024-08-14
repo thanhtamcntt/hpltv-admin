@@ -76,17 +76,6 @@ function ModalDetailAssets({ setIsModalDetail, isModalDetail, asset, type }) {
       open={isModalDetail}
       onOk={handleOk}
       onCancel={handleCancel}>
-      {(type === 'series' || type === 'movies') && (
-        <DivImageBanner>
-          <h2>{'Image banner film: ' + data.title}</h2>
-          <Image
-            width="100%"
-            height={350}
-            src={data.imageUrlBanner.url}
-            alt={data.title}
-          />
-        </DivImageBanner>
-      )}
       <DivTitle>
         {type === 'category' ? (
           <TitleDetail>Name category : {data.name}</TitleDetail>
@@ -110,8 +99,25 @@ function ModalDetailAssets({ setIsModalDetail, isModalDetail, asset, type }) {
         type !== 'film-for-series' &&
         type !== 'trash-film-for-series' && (
           <>
+            {(type === 'movies' || type === 'series') && (
+              <DivVideo>
+                <h2>Trailer </h2>
+                <VideoDetail>
+                  <iframe
+                    width="100%"
+                    height="400"
+                    title={data.title}
+                    src={data?.videoTrailerUrl?.url || data?.videoUrl?.url}
+                    frameBorder="0"
+                    style={{ borderRadius: '20px' }}
+                    allow="accelerometer;clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen></iframe>
+                </VideoDetail>
+              </DivVideo>
+            )}
             {type === 'movies' && (
               <DivVideo>
+                <h2>Video</h2>
                 <VideoDetail>
                   <iframe
                     width="100%"
@@ -131,21 +137,23 @@ function ModalDetailAssets({ setIsModalDetail, isModalDetail, asset, type }) {
                 {type !== 'payment' && type !== 'subscription-price' && (
                   <InfoItem>Description: {data.description}</InfoItem>
                 )}
-                {type === 'movies' && (
+                {(type === 'movies' || type === 'series') && (
                   <InfoItem>Director: {data.director}</InfoItem>
                 )}
-                {type === 'movies' && <InfoItem>Cast: {data.cast}</InfoItem>}
-                {type === 'movies' && (
+                {(type === 'movies' || type === 'series') && (
+                  <InfoItem>Cast: {data.cast}</InfoItem>
+                )}
+                {(type === 'movies' || type === 'series') && (
                   <InfoItem>Duration: {data.duration} minute</InfoItem>
                 )}
-                {type === 'movies' && (
+                {(type === 'movies' || type === 'series') && (
                   <InfoItem>Country: {data.country.join(', ')}</InfoItem>
                 )}
 
                 {type !== 'payment' && type !== 'subscription-price' && (
                   <InfoItem>Rating: {data.rating}/5</InfoItem>
                 )}
-                {type === 'movies' && (
+                {(type === 'movies' || type === 'series') && (
                   <InfoItem>Release Date: {data.releaseDate}</InfoItem>
                 )}
 

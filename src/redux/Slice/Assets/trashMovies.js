@@ -68,8 +68,7 @@ export const TrashMoviesSlice = createSlice({
       state.count = state.count - 1;
       console.log('action: ', action.payload);
       state.data = state.data.filter((data) => {
-        // data._id !== action.payload
-        console.log('action: ', action.payload, data._id);
+        return data._id !== action.payload;
       });
     });
     builder.addCase(deleteTrashMovies.rejected, (state, action) => {

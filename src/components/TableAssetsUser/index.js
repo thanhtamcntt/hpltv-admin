@@ -65,16 +65,19 @@ function TableAssetsUser(props) {
               <>
                 {props.type !== 'banned-subscriber' ? (
                   <>
-                    <ButtonAction>
-                      <TagAction
-                        color="warning"
-                        onClick={() => {
-                          props.setDataRecord(record);
-                          props.setIsModal(true);
-                        }}>
-                        Update
-                      </TagAction>
-                    </ButtonAction>
+                    {props.type === 'user' && (
+                      <ButtonAction>
+                        <TagAction
+                          color="warning"
+                          onClick={() => {
+                            props.setDataRecord(record);
+                            props.setIsModal(true);
+                          }}>
+                          Update
+                        </TagAction>
+                      </ButtonAction>
+                    )}
+
                     <ButtonAction>
                       <TagAction
                         color="warning"

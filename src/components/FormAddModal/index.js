@@ -34,14 +34,8 @@ function FormAddModal(props) {
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useDispatch();
 
-  const {
-    type,
-    dataRecord,
-    options,
-    setDefaultValue,
-    setIsChangeData,
-    setIsUpdate,
-  } = useContext(FormModalContext);
+  const { type, dataRecord, options, setDefaultValue, setIsLoading } =
+    useContext(FormModalContext);
   const openNotification = (placement, message) => {
     notification.error({
       message: `Notification Error`,
@@ -51,7 +45,6 @@ function FormAddModal(props) {
   };
 
   const onFinish = async (values) => {
-    console.log(values);
     if (type === 'film-for-series') {
       let type = dataRecord ? 'update' : 'create';
       let data;
@@ -80,7 +73,6 @@ function FormAddModal(props) {
         },
       );
       const json = await response.json();
-      console.log(json);
       if (!json.success) {
         messageApi.open({
           type: 'error',
@@ -114,10 +106,10 @@ function FormAddModal(props) {
         formData.append('title', values.title);
         formData.append('description', values.description);
         if (dataRecord) {
-          if (props.checkImageBanner)
-            formData.append('imageUrlBanner', values.imageUrlBanner.file);
+          if (props.checkVideoTrailer)
+            formData.append('videoTrailerUrl', values.videoTrailerUrl.file);
         } else {
-          formData.append('imageUrlBanner', values.imageUrlBanner.file);
+          formData.append('videoTrailerUrl', values.videoTrailerUrl.file);
         }
         if (dataRecord) {
           if (props.checkImageFilm)
@@ -130,15 +122,16 @@ function FormAddModal(props) {
         formData.append('cast', values.cast);
         formData.append('country', values.country);
         formData.append('listCategoryId', values.listCategoryId);
+        formData.append('listPackageIdBand', values.listPackageIdBand);
         break;
       case 'movies':
         formData.append('title', values.title);
         formData.append('description', values.description);
         if (dataRecord) {
-          if (props.checkImageBanner)
-            formData.append('imageUrlBanner', values.imageUrlBanner.file);
+          if (props.checkVideoTrailer)
+            formData.append('videoTrailerUrl', values.videoTrailerUrl.file);
         } else {
-          formData.append('imageUrlBanner', values.imageUrlBanner.file);
+          formData.append('videoTrailerUrl', values.videoTrailerUrl.file);
         }
         if (dataRecord) {
           if (props.checkImageFilm)
@@ -157,6 +150,7 @@ function FormAddModal(props) {
         formData.append('cast', values.cast);
         formData.append('country', values.country);
         formData.append('listCategoryId', values.listCategoryId);
+        formData.append('listPackageIdBand', values.listPackageIdBand);
         break;
       case 'category':
         dataBody = {
@@ -239,9 +233,8 @@ function FormAddModal(props) {
             break;
         }
       }
+      setIsLoading(true);
       props.handleCancel();
-      setIsUpdate(true);
-      setIsChangeData((prev) => !prev);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -260,8 +253,8 @@ function FormAddModal(props) {
   };
 
   const onChangeCheckbox = (e, type) => {
-    if (type === 'image-banner') {
-      props.setCheckImageBanner(e.target.checked);
+    if (type === 'video-trailer') {
+      props.setCheckVideoTrailer(e.target.checked);
     } else if (type === 'image') {
       props.setCheckImageFilm(e.target.checked);
     } else {
@@ -280,14 +273,14 @@ function FormAddModal(props) {
             {type !== 'film-for-series' && (
               <>
                 <Checkbox
-                  checked={props.checkImageBanner}
-                  onChange={(e) => onChangeCheckbox(e, 'image-banner')}>
-                  Image banner
-                </Checkbox>
-                <Checkbox
                   checked={props.checkImageFilm}
                   onChange={(e) => onChangeCheckbox(e, 'image')}>
                   Image film
+                </Checkbox>
+                <Checkbox
+                  checked={props.checkVideoTrailer}
+                  onChange={(e) => onChangeCheckbox(e, 'video-trailer')}>
+                  Video trailer
                 </Checkbox>
               </>
             )}
@@ -332,59 +325,6 @@ function FormAddModal(props) {
               />
 
               {dataRecord ? (
-                props.checkImageBanner && (
-                  <ItemForm
-                    label={`Image Banner ${
-                      type.charAt(0).toUpperCase() + type.slice(1)
-                    } Url`}
-                    name="imageUrlBanner"
-                    message="Please input your image banner url!"
-                    input={
-                      <Upload
-                        maxCount={1}
-                        beforeUpload={(file) => {
-                          console.log(file);
-                          if (
-                            file.type !== 'image/jpeg' &&
-                            file.type !== 'image/jpg' &&
-                            file.type !== 'image/png'
-                          ) {
-                            return Upload.LIST_IGNORE;
-                          }
-                          return false;
-                        }}>
-                        <Button icon={<UploadOutlined />}>Select File</Button>
-                      </Upload>
-                    }
-                  />
-                )
-              ) : (
-                <ItemForm
-                  label={`Image Banner ${
-                    type.charAt(0).toUpperCase() + type.slice(1)
-                  } Url`}
-                  name="imageUrlBanner"
-                  message="Please input your image banner url!"
-                  input={
-                    <Upload
-                      maxCount={1}
-                      beforeUpload={(file) => {
-                        console.log(file);
-                        if (
-                          file.type !== 'image/jpeg' &&
-                          file.type !== 'image/jpg' &&
-                          file.type !== 'image/png'
-                        ) {
-                          return Upload.LIST_IGNORE;
-                        }
-                        return false;
-                      }}>
-                      <Button icon={<UploadOutlined />}>Select File</Button>
-                    </Upload>
-                  }
-                />
-              )}
-              {dataRecord ? (
                 props.checkImageFilm && (
                   <ItemForm
                     label={`Image ${
@@ -428,6 +368,52 @@ function FormAddModal(props) {
                           file.type !== 'image/jpg' &&
                           file.type !== 'image/png'
                         ) {
+                          return Upload.LIST_IGNORE;
+                        }
+                        return false;
+                      }}>
+                      <Button icon={<UploadOutlined />}>Select File</Button>
+                    </Upload>
+                  }
+                />
+              )}
+
+              {dataRecord ? (
+                props.checkVideoTrailer && (
+                  <ItemForm
+                    label={`Video trailer ${
+                      type.charAt(0).toUpperCase() + type.slice(1)
+                    } Url`}
+                    name="videoTrailerUrl"
+                    message="Please input your video trailer url!"
+                    input={
+                      <Upload
+                        showUploadList={true}
+                        maxCount={1}
+                        beforeUpload={(file) => {
+                          if (file.type !== 'video/mp4') {
+                            return Upload.LIST_IGNORE;
+                          }
+                          return false;
+                        }}>
+                        <Button icon={<UploadOutlined />}>Select File</Button>
+                      </Upload>
+                    }
+                  />
+                )
+              ) : (
+                <ItemForm
+                  label={`Video trailer ${
+                    type.charAt(0).toUpperCase() + type.slice(1)
+                  } Url`}
+                  name="videoTrailerUrl"
+                  message="Please input your video trailer url!"
+                  input={
+                    <Upload
+                      showUploadList={true}
+                      maxCount={1}
+                      beforeUpload={(file) => {
+                        if (file.type !== 'video/mp4') {
                           return Upload.LIST_IGNORE;
                         }
                         return false;
@@ -576,6 +562,27 @@ function FormAddModal(props) {
                     }}
                     placeholder="Please select"
                     options={props.options}
+                  />
+                }
+              />
+
+              <ItemForm
+                label={
+                  type === 'movies'
+                    ? 'Film for package not allows watch'
+                    : 'Series for package not allows watch'
+                }
+                name="listPackageIdBand"
+                message={`Please select your ${type} for package!`}
+                input={
+                  <Select
+                    mode="multiple"
+                    allowClear
+                    style={{
+                      width: '100%',
+                    }}
+                    placeholder="Please select"
+                    options={props.options2}
                   />
                 }
               />

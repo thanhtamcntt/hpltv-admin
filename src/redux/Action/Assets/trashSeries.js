@@ -54,6 +54,7 @@ export const deleteTrashSeries = createAsyncThunk(
       method: 'POST',
       body: JSON.stringify({ type: data.type }),
       headers: {
+        'Content-Type': 'application/json',
         Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
       },
     });

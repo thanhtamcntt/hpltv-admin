@@ -31,8 +31,10 @@ export const fetchAllOrderLook = createAsyncThunk(
       API_GET_DATA_PAYMENT +
         '/fetch-look?trash=false&package=' +
         data.valuePackage +
-        '&name=' +
-        data.textLook +
+        '&firstName=' +
+        data.firstName +
+        '&lastName=' +
+        data.lastName +
         '&limit=' +
         process.env.REACT_APP_SIZE_PAGE +
         '&page=' +

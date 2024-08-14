@@ -8,17 +8,52 @@ import {
 
 export const fetchAllSubscriber = createAsyncThunk(
   'fetchAllSubscriber',
-  async (args, { rejectWithValue }) => {
-    const response = await fetch(API_GET_ALL_SUBSCRIBER + '?banned=false', {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
+  async (size, { rejectWithValue }) => {
+    const response = await fetch(
+      API_GET_ALL_SUBSCRIBER +
+        '/from-page?banned=false' +
+        '&limit=' +
+        process.env.REACT_APP_SIZE_PAGE +
+        '&page=' +
+        size,
+      {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('tokenManager'),
+        },
       },
-    });
+    );
     const data = await response.json();
     if (!data.success) {
       rejectWithValue(data);
     }
     return data;
+  },
+);
+
+export const fetchAllSubscriberLook = createAsyncThunk(
+  'fetchAllSubscriberLook',
+  async (data, { rejectWithValue }) => {
+    const response = await fetch(
+      API_GET_ALL_SUBSCRIBER +
+        '/fetch-look?banned=false&firstName=' +
+        data.firstName +
+        '&lastName=' +
+        data.lastName +
+        '&email=' +
+        data.email +
+        '&gender=' +
+        data.gender +
+        '&limit=' +
+        process.env.REACT_APP_SIZE_PAGE +
+        '&page=' +
+        data.pageNum,
+    );
+    const dataJson = await response.json();
+
+    if (!dataJson.success) {
+      rejectWithValue(dataJson);
+    }
+    return dataJson;
   },
 );
 

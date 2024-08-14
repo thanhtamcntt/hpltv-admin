@@ -12,7 +12,7 @@ import {
   ErrorMessage,
 } from './styles';
 import ItemFormLogin from '../../components/Common/ItemFormLogin';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import LogoImage from '../../components/LogoImage';
@@ -22,9 +22,18 @@ function LoginPage() {
   const [error, setError] = useState();
   const navigate = useNavigate();
 
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const success = (text) => {
+    messageApi.open({
+      type: 'success',
+      content: text,
+      duration: 2,
+    });
+  };
+
   const onFinish = async (values) => {
     setError();
-    console.log('Success:', values);
     const response = await fetch(API_LOGIN, {
       method: 'POST',
       body: JSON.stringify({
@@ -35,14 +44,16 @@ function LoginPage() {
         'Content-Type': 'application/json',
       },
     });
-    console.log(response);
     const responseJson = await response.json();
     console.log(responseJson);
-    if (responseJson.success) {
-      await localStorage.setItem('tokenManager', responseJson.token);
 
+    if (responseJson.success) {
+      success('Login successfully.');
+      await localStorage.setItem('tokenManager', responseJson.token);
       if (localStorage.getItem('tokenManager')) {
-        navigate('/');
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
       }
     } else {
       setError(responseJson.message);
@@ -58,6 +69,7 @@ function LoginPage() {
 
   return (
     <DivContainer>
+      {contextHolder}
       <DivContent>
         <ContentLogin>
           <DivLogo>

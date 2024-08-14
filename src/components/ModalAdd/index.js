@@ -18,7 +18,7 @@ function ModalAdd(props) {
   const { type, dataRecord } = useContext(FormModalContext);
   const [valueCountries, setValueCountries] = useState();
   const [countriesData, setCountriesData] = useState(false);
-  const [checkImageBanner, setCheckImageBanner] = useState(false);
+  const [checkVideoTrailer, setCheckVideoTrailer] = useState(false);
   const [checkImageFilm, setCheckImageFilm] = useState(false);
   const [checkVideoFilm, setCheckVideoFilm] = useState(false);
   const [options, setOptions] = useState(undefined);
@@ -26,11 +26,10 @@ function ModalAdd(props) {
 
   const [form] = Form.useForm();
   useEffect(() => {
-    setCheckImageBanner(false);
+    setCheckVideoTrailer(false);
     setCheckImageFilm(false);
     setCheckVideoFilm(false);
   }, [dataRecord]);
-  console.log(type);
 
   useEffect(() => {
     const currentYear = new Date().getFullYear().toString();
@@ -52,6 +51,7 @@ function ModalAdd(props) {
             cast: dataRecord.cast,
             country: dataRecord.country,
             listCategoryId: dataRecord.listCategoryId,
+            listPackageIdBand: dataRecord.listPackageIdBand,
           });
         }
         break;
@@ -64,6 +64,7 @@ function ModalAdd(props) {
             cast: dataRecord.cast,
             country: dataRecord.country,
             listCategoryId: dataRecord.listCategoryId,
+            listPackageIdBand: dataRecord.listPackageIdBand,
           });
         }
         break;
@@ -74,9 +75,10 @@ function ModalAdd(props) {
         break;
       case 'film-for-series':
         if (dataRecord) {
+          console.log(dataRecord);
           form.setFieldsValue({
             filmSerialNumber: dataRecord.filmSerialNumber,
-            listSeries: dataRecord.seriesId,
+            listSeries: dataRecord.seriesId._id || dataRecord.seriesId,
           });
         }
         break;
@@ -123,7 +125,7 @@ function ModalAdd(props) {
 
   useEffect(() => {
     if (type === 'movies' || type === 'series') {
-      fetchCategory(setOptions);
+      fetchCategory(setOptions, setOptions2);
     } else if (type === 'payment') {
       fetchPackage(setOptions);
       fetchSubscriber(setOptions2);
@@ -149,14 +151,15 @@ function ModalAdd(props) {
         <FormAddModal
           handleCancel={handleCancel}
           options={options}
+          options2={options2}
           form={form}
           valueCountries={valueCountries}
           countriesData={countriesData}
           setValueCountries={setValueCountries}
-          checkImageBanner={checkImageBanner}
+          checkVideoTrailer={checkVideoTrailer}
           checkImageFilm={checkImageFilm}
           checkVideoFilm={checkVideoFilm}
-          setCheckImageBanner={setCheckImageBanner}
+          setCheckVideoTrailer={setCheckVideoTrailer}
           setCheckImageFilm={setCheckImageFilm}
           setCheckVideoFilm={setCheckVideoFilm}
         />

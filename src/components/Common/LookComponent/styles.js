@@ -7,10 +7,16 @@ export const DivLook = styled.div`
   justify-content: right;
   & > span {
     width: 50%;
+    margin-left: 1rem;
   }
+
   & > div {
     margin-left: 1rem;
     width: 30%;
+  }
+
+  & .select-email > div {
+    width: 200px !important;
   }
 `;
 

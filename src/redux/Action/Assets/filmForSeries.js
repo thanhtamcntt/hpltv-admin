@@ -4,24 +4,27 @@ import {
   API_SERIES_ADMIN,
   API_ADD_MANY_MOVIES,
 } from '../../../configs/apis';
-
 export const fetchAllFilmForSeries = createAsyncThunk(
   'fetchAllFilmForSeries',
   async (size, { rejectWithValue }) => {
-    const response = await fetch(
-      API_SERIES +
-        '/' +
-        size.value +
-        '/from-page?trash=false&limit=' +
-        process.env.REACT_APP_SIZE_PAGE +
-        '&page=' +
-        size.pageNum,
-    );
-    const data = await response.json();
-    if (!data.success) {
-      rejectWithValue(data);
+    try {
+      const response = await fetch(
+        `${API_SERIES}/${size.value}/from-page?trash=false&limit=${process.env.REACT_APP_SIZE_PAGE}&page=${size.pageNum}`,
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!data.success) {
+        return rejectWithValue(data);
+      }
+
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
     }
-    return data;
   },
 );
 

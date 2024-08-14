@@ -207,9 +207,11 @@ export const fetchDataSummaryRegister = async (
   ]);
 };
 
-export const fetchCategory = async (setOptions) => {
+export const fetchCategory = async (setOptions, setOptions2) => {
   const response = await fetch(API_CATEGORY);
   const data = await response.json();
+  const response1 = await fetch(API_GET_DATA_PACKAGE);
+  const data1 = await response1.json();
   if (data.success) {
     let newOptions = [];
     Promise.all(
@@ -221,6 +223,18 @@ export const fetchCategory = async (setOptions) => {
       ),
     );
     setOptions(newOptions);
+  }
+  if (data1.success) {
+    let newOptions = [];
+    Promise.all(
+      data1.data.map((item) =>
+        newOptions.push({
+          label: item.typePack,
+          value: item._id,
+        }),
+      ),
+    );
+    setOptions2(newOptions);
   }
 };
 

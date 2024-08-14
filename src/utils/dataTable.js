@@ -78,15 +78,15 @@ export const columns = [
       style: { fontWeight: '500' },
     }),
   },
-  {
-    title: 'Phone Number',
-    dataIndex: 'phoneNumber',
-    key: 'phoneNumber',
-    width: '20%',
-    onCell: () => ({
-      style: { fontWeight: '500' },
-    }),
-  },
+  // {
+  //   title: 'Phone Number',
+  //   dataIndex: 'phoneNumber',
+  //   key: 'phoneNumber',
+  //   width: '20%',
+  //   onCell: () => ({
+  //     style: { fontWeight: '500' },
+  //   }),
+  // },
   {
     title: 'Gender',
     dataIndex: 'sex',
