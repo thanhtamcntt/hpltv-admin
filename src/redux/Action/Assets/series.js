@@ -52,7 +52,6 @@ export const fetchAllSeriesLook = createAsyncThunk(
 export const createSeries = createAsyncThunk(
   'createSeries',
   async (data, { rejectWithValue }) => {
-    console.log(data);
     const response = await fetch(API_CREATE_SERIES, {
       method: 'POST',
       body: data,
@@ -71,7 +70,6 @@ export const createSeries = createAsyncThunk(
 export const deleteSeries = createAsyncThunk(
   'deleteSeries',
   async (data, { rejectWithValue }) => {
-    console.log(data);
     const response = await fetch(API_DELETE_SERIES + '/' + data.dataId, {
       method: 'POST',
       body: JSON.stringify({ type: data.type }),
@@ -91,7 +89,6 @@ export const deleteSeries = createAsyncThunk(
 export const updateSeries = createAsyncThunk(
   'updateSeries',
   async (data, { rejectWithValue }) => {
-    console.log(data);
     const response = await fetch(API_UPDATE_SERIES + '/' + data.Id, {
       method: 'PATCH',
       body: data.formData,
@@ -110,7 +107,6 @@ export const updateSeries = createAsyncThunk(
 export const addManySeries = createAsyncThunk(
   'addManySeries',
   async (data, { rejectWithValue }) => {
-    console.log(data);
     const formData = new FormData();
     formData.append('file', data);
     const response = await fetch(API_ADD_MANY_SERIES, {

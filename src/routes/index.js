@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import React from 'react';
+import React, { useContext } from 'react';
 import ChildrenContext from '../contexts/ChildrenContext';
 import HomePage from '../page/HomePage';
 import AssetsPage from '../page/AssetsPage';
@@ -8,12 +8,14 @@ import PaymentAndPackagePage from '../page/PaymentAndPackagePage';
 import ProfilePage from '../page/ProfilePage';
 import SettingPage from '../page/SettingPage';
 import ChatPage from '../page/ChatPage';
+import { RoleContext } from '../contexts/UserContext';
 
 function Router() {
   const { select } = React.useContext(ChildrenContext);
+  const { userInfo } = useContext(RoleContext);
   return (
     <Routes>
-      {select === 'statistics' && (
+      {select === 'statistics' && userInfo?.role !== 'admin' && (
         <Route path="/" element={<HomePage type={select} />} />
       )}
       {(select === 'series' ||
@@ -87,14 +89,10 @@ function Router() {
       {(select === 'common-questions' || select === 'customer-questions') && (
         <>
           <Route path={'/' + select} element={<SettingPage type={select} />} />
-          {/* <Route
-            path={'/' + select + '?page=:pageNum'}
-            element={<PaymentAndPackagePage type={select} />}
-          /> */}
         </>
       )}
 
-      {(select === 'user' ||
+      {((select === 'user' && userInfo?.role !== 'admin') ||
         select === 'subscriber' ||
         select === 'banned-subscriber') && (
         <Route
@@ -115,7 +113,11 @@ function Router() {
       )}
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/support-customer" element={<ChatPage />} />
-      <Route path="*" element={<Navigate to="/" replace={true} />} />
+      {userInfo?.role !== 'admin' ? (
+        <Route path="*" element={<Navigate to="/" replace={true} />} />
+      ) : (
+        <Route path="*" element={<Navigate to="/series" replace={true} />} />
+      )}
     </Routes>
   );
 }

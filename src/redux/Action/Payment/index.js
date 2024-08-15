@@ -15,7 +15,6 @@ export const fetchAllOrder = createAsyncThunk(
         size,
     );
     const data = await response.json();
-    console.log(data);
     if (!data.success) {
       rejectWithValue(data);
     }
@@ -26,7 +25,6 @@ export const fetchAllOrder = createAsyncThunk(
 export const fetchAllOrderLook = createAsyncThunk(
   'fetchAllOrderLook',
   async (data, { rejectWithValue }) => {
-    console.log(data);
     const response = await fetch(
       API_GET_DATA_PAYMENT +
         '/fetch-look?trash=false&package=' +
@@ -60,7 +58,6 @@ export const createPayment = createAsyncThunk(
       },
     });
     const json = await response.json();
-    console.log(json);
     if (!json.success) {
       rejectWithValue(json);
     }

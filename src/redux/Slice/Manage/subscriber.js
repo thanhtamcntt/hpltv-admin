@@ -24,7 +24,6 @@ export const SubscriberSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(fetchAllSubscriber.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.loading = false;
       state.data = [...action.payload.data];
       state.count = action.payload.count;
@@ -39,7 +38,6 @@ export const SubscriberSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(fetchAllSubscriberLook.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.loading = false;
       state.data = [...action.payload.data];
       state.count = action.payload.count;
@@ -54,7 +52,6 @@ export const SubscriberSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(resetPasswordSubscriber.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.loading = false;
       state.data.map((data) => {
         if (data._id === action.payload.userId) {
@@ -72,7 +69,6 @@ export const SubscriberSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(deleteSubscriber.fulfilled, (state, action) => {
-      console.log('action: ', action.payload);
       state.loading = false;
       state.data = state.data.filter((data) => data._id !== action.payload);
     });
@@ -86,7 +82,6 @@ export const SubscriberSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(postBannedSubscriber.fulfilled, (state, action) => {
-      console.log('action: ', action.payload);
       state.loading = false;
       state.data = state.data.filter((data) => data._id !== action.payload);
     });

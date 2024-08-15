@@ -60,7 +60,7 @@ function TableAssets(props) {
             <ButtonAction onClick={() => handleDetail(record)}>
               <TagAction color="processing">Detail</TagAction>
             </ButtonAction>
-            {userInfo.role === 'superAdmin' && props.type !== 'payment' && (
+            {props.type !== 'payment' && (
               <>
                 {props.type !== 'trash-movies' &&
                 props.type !== 'trash-series' &&

@@ -55,9 +55,7 @@ function FormAddQuestion(props) {
       console.error('Error:', error);
     }
   };
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
+  const onFinishFailed = (errorInfo) => {};
 
   return (
     <>

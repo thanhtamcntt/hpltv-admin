@@ -364,7 +364,7 @@ function ManageUserPage(props) {
     <>
       <DivManage>
         <DivAddAndLook user={props.type === 'user' ? true : false}>
-          {userInfo.role === 'superAdmin' && props.type === 'user' && (
+          {props.type === 'user' && (
             <DivAction>
               <Button type="primary" onClick={showModal}>
                 Add User

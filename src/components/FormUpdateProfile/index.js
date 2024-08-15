@@ -27,7 +27,6 @@ function FormUpdateProfile(props) {
           },
         });
         const json = await response.json();
-        console.log(json);
         if (json.success) {
           updateUserInfo(json.token);
           setLoading(false);
@@ -39,7 +38,6 @@ function FormUpdateProfile(props) {
       }
     } else {
       setLoading(true);
-      console.log('Success:', values);
       const response = await fetch(API_CHANGE_PASSWORD, {
         method: 'PATCH',
         body: JSON.stringify(values),
@@ -49,7 +47,6 @@ function FormUpdateProfile(props) {
         },
       });
       const json = await response.json();
-      console.log(json);
       if (json.success) {
         updateUserInfo(json.token);
         setLoading(false);
@@ -60,9 +57,7 @@ function FormUpdateProfile(props) {
       }
     }
   };
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
+  const onFinishFailed = (errorInfo) => {};
 
   if (loading) {
     return (

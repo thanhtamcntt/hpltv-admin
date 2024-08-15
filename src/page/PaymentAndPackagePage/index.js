@@ -97,9 +97,7 @@ function PaymentAndPackagePage(props) {
     setTextLook('');
     setFirstName('');
     setValuePackage('All');
-    console.log(look);
     if (!look) {
-      console.log('vào đây');
       if (props.type === 'payment') {
         Promise.all([dispatch(fetchAllOrder(pageNum))]);
       } else {
@@ -107,7 +105,6 @@ function PaymentAndPackagePage(props) {
       }
     } else {
       if (props.type === 'payment') {
-        console.log(firstNameCurrent, lastNameCurrent);
         Promise.all([
           dispatch(
             fetchAllOrderLook({
@@ -221,32 +218,30 @@ function PaymentAndPackagePage(props) {
             setDataRecord={setDataRecord}
           />
         </FormModalContext.Provider>
-        {userInfo.role === 'superAdmin' && (
-          <DivAction width={props.type !== 'payment' && true}>
-            {props.type !== 'subscription-price' && (
-              <div>
-                <Button type="primary" onClick={showModal}>
-                  Add
-                </Button>
-              </div>
-            )}
-
+        <DivAction width={props.type !== 'payment' && true}>
+          {props.type !== 'subscription-price' && (
             <div>
-              <LookInfo
-                onChangeLook={onChangeLook}
-                dataPayment={dataPayment}
-                filterOption={filterOption}
-                setValuePackage={setValuePackage}
-                setTextLook={setTextLook}
-                firstName={firstName}
-                setFirstName={setFirstName}
-                textLook={textLook}
-                valuePackage={valuePackage}
-                type={props.type}
-              />
+              <Button type="primary" onClick={showModal}>
+                Add
+              </Button>
             </div>
-          </DivAction>
-        )}
+          )}
+
+          <div>
+            <LookInfo
+              onChangeLook={onChangeLook}
+              dataPayment={dataPayment}
+              filterOption={filterOption}
+              setValuePackage={setValuePackage}
+              setTextLook={setTextLook}
+              firstName={firstName}
+              setFirstName={setFirstName}
+              textLook={textLook}
+              valuePackage={valuePackage}
+              type={props.type}
+            />
+          </div>
+        </DivAction>
       </DivAddDataPayment>
       <DivTable>
         <TableAssets

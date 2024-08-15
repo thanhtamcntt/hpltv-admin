@@ -17,7 +17,6 @@ import LogoImage from '../LogoImage';
 
 function HeaderAdmin({ bgColor, title }) {
   const { userInfo } = useContext(RoleContext);
-  console.log(userInfo);
   const items = [
     {
       key: '1',

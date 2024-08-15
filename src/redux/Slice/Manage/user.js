@@ -25,7 +25,6 @@ export const UserSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(fetchAllUser.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.loading = false;
       state.data = [...action.payload.data];
       state.count = action.payload.count;
@@ -40,7 +39,6 @@ export const UserSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(fetchAllUserLook.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.loading = false;
       state.data = [...action.payload.data];
       state.count = action.payload.count;
@@ -55,7 +53,6 @@ export const UserSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(createUser.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.loading = false;
       state.count = state.count + 1;
       state.data.unshift(action.payload);
@@ -91,7 +88,6 @@ export const UserSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(resetPasswordUser.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.loading = false;
       state.data.map((data) => {
         if (data._id === action.payload.userId) {
@@ -109,7 +105,6 @@ export const UserSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(deleteUser.fulfilled, (state, action) => {
-      console.log('action: ', action.payload);
       state.loading = false;
       state.data = state.data.filter((data) => data._id !== action.payload);
       state.count = state.count - 1;

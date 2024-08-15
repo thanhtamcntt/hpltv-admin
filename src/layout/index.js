@@ -19,7 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import { Spin } from 'antd';
 import { DivContainerWeb, DivSider } from './styles';
 import { io } from 'socket.io-client';
-import { API_CREATE_MESSAGE, API_GET_ON_MESSAGE } from '../configs/apis';
+import { API_GET_ON_MESSAGE } from '../configs/apis';
 import { RoleContext } from '../contexts/UserContext';
 
 function getItem(label, key, icon, children) {
@@ -31,36 +31,6 @@ function getItem(label, key, icon, children) {
   };
 }
 
-const items = [
-  getItem('Statistics', 'statistics', <BarChartOutlined />),
-  getItem('Assets', 'assets', <WalletOutlined />, [
-    getItem('Series', 'series'),
-    getItem('Film for series', 'film-for-series'),
-    getItem('Movies', 'movies'),
-    getItem('Category', 'category'),
-  ]),
-  getItem('Manage', 'manage', <TeamOutlined />, [
-    getItem('User', 'user'),
-    getItem('Subscriber', 'subscriber'),
-  ]),
-  getItem('Payment', 'payment', <DollarOutlined />),
-  getItem('Subscription price', 'subscription-price', <DollarOutlined />),
-  getItem('Support customer', 'support-customer', <CustomerServiceOutlined />),
-  getItem('Question', 'question', <QuestionCircleOutlined />, [
-    getItem('Common questions', 'common-questions'),
-    getItem('Customer Questions', 'customer-questions'),
-  ]),
-  getItem('Banned Account', 'banned account', <LockOutlined />, [
-    getItem('Subscriber', 'banned-subscriber'),
-  ]),
-  getItem('Trash', 'trash', <RestOutlined />, [
-    getItem('Series', 'trash-series'),
-    getItem('Movies', 'trash-movies'),
-    getItem('Film for series', 'trash-film-for-series'),
-  ]),
-  getItem('Logout', 'logout', <LogoutOutlined />),
-];
-
 function LayoutAdmin({ children }) {
   const [select, setSelect] = useState(
     window.location.pathname === '/' ||
@@ -69,9 +39,43 @@ function LayoutAdmin({ children }) {
       ? 'home'
       : window.location.pathname.slice(1),
   );
-  const [collapsed, setCollapsed] = useState(false);
 
+  const [collapsed, setCollapsed] = useState(false);
   const { userInfo } = useContext(RoleContext);
+  const items = [
+    userInfo.role === 'superAdmin' &&
+      getItem('Statistics', 'statistics', <BarChartOutlined />),
+    getItem('Assets', 'assets', <WalletOutlined />, [
+      getItem('Series', 'series'),
+      getItem('Film for series', 'film-for-series'),
+      getItem('Movies', 'movies'),
+      getItem('Category', 'category'),
+    ]),
+    getItem('Manage', 'manage', <TeamOutlined />, [
+      userInfo.role === 'superAdmin' && getItem('User', 'user'),
+      getItem('Subscriber', 'subscriber'),
+    ]),
+    getItem('Payment', 'payment', <DollarOutlined />),
+    getItem('Subscription price', 'subscription-price', <DollarOutlined />),
+    getItem(
+      'Support customer',
+      'support-customer',
+      <CustomerServiceOutlined />,
+    ),
+    getItem('Question', 'question', <QuestionCircleOutlined />, [
+      getItem('Common questions', 'common-questions'),
+      getItem('Customer Questions', 'customer-questions'),
+    ]),
+    getItem('Banned Account', 'banned account', <LockOutlined />, [
+      getItem('Subscriber', 'banned-subscriber'),
+    ]),
+    getItem('Trash', 'trash', <RestOutlined />, [
+      getItem('Series', 'trash-series'),
+      getItem('Movies', 'trash-movies'),
+      getItem('Film for series', 'trash-film-for-series'),
+    ]),
+    getItem('Logout', 'logout', <LogoutOutlined />),
+  ];
 
   const navigate = useNavigate();
 
@@ -101,7 +105,6 @@ function LayoutAdmin({ children }) {
 
     newSocket.on('delete-room', (data) => {
       if (userInfo.userId !== data.userId) {
-        console.log('delete-room', data);
         setListChat((prev) =>
           prev.filter((item) => item.roomId !== data.roomId),
         );

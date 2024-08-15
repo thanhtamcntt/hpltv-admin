@@ -262,7 +262,6 @@ export const fetchSubscriber = async (setOptions2) => {
     },
   });
   const data = await response.json();
-  console.log(data);
   if (data.success) {
     let newOptions = [];
     Promise.all(
@@ -287,7 +286,6 @@ export const fetchDataSummaryTotalAmountEachPackage = async (
     },
   });
   const json = await response.json();
-  console.log(json);
   let labels = [],
     datasets = [];
 

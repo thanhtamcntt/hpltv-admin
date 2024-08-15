@@ -17,7 +17,6 @@ export const fetchAllCommonQuestions = createAsyncThunk(
         size,
     );
     const data = await response.json();
-    console.log(data);
     if (!data.success) {
       rejectWithValue(data);
     }
@@ -28,7 +27,6 @@ export const fetchAllCommonQuestions = createAsyncThunk(
 export const createCommonQuestions = createAsyncThunk(
   'createCommonQuestions',
   async (data, { rejectWithValue }) => {
-    console.log(data);
     const response = await fetch(API_CREATE_COMMON_QUESTIONS, {
       method: 'POST',
       body: JSON.stringify(data),
@@ -47,7 +45,6 @@ export const createCommonQuestions = createAsyncThunk(
 export const updateCommonQuestions = createAsyncThunk(
   'updateCommonQuestions',
   async (data, { rejectWithValue }) => {
-    console.log(data);
     const response = await fetch(API_UPDATE_COMMON_QUESTIONS + '/' + data.Id, {
       method: 'PATCH',
       body: JSON.stringify(data.dataBody),
@@ -56,7 +53,6 @@ export const updateCommonQuestions = createAsyncThunk(
       },
     });
     const json = await response.json();
-    console.log(json);
     if (!json.success) {
       rejectWithValue(json);
     }

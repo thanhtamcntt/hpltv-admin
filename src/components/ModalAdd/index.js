@@ -75,7 +75,6 @@ function ModalAdd(props) {
         break;
       case 'film-for-series':
         if (dataRecord) {
-          console.log(dataRecord);
           form.setFieldsValue({
             filmSerialNumber: dataRecord.filmSerialNumber,
             listSeries: dataRecord.seriesId._id || dataRecord.seriesId,

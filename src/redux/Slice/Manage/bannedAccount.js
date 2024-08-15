@@ -21,7 +21,6 @@ export const SubscriberBannedSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(fetchAllSubscriberBanned.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.loading = false;
       state.data = [...action.payload.data];
       state.count = action.payload.count;
@@ -36,7 +35,6 @@ export const SubscriberBannedSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(fetchAllSubscriberBannedLook.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.loading = false;
       state.data = [...action.payload.data];
       state.count = action.payload.count;
@@ -51,7 +49,6 @@ export const SubscriberBannedSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(postRecoverSubscriber.fulfilled, (state, action) => {
-      console.log('action: ', action.payload);
       state.loading = false;
       state.data = state.data.filter((data) => data._id !== action.payload);
     });
