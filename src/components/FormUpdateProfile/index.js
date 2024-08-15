@@ -31,6 +31,10 @@ function FormUpdateProfile(props) {
         if (json.success) {
           updateUserInfo(json.token);
           setLoading(false);
+          props.success('Update profile successfully.');
+        } else {
+          setLoading(false);
+          props.error(json.message);
         }
       }
     } else {
@@ -49,6 +53,10 @@ function FormUpdateProfile(props) {
       if (json.success) {
         updateUserInfo(json.token);
         setLoading(false);
+        props.success('Change password successfully.');
+      } else {
+        setLoading(false);
+        props.error(json.message);
       }
     }
   };
@@ -100,7 +108,7 @@ function FormUpdateProfile(props) {
               label="E-mail"
               name="email"
               message="Please input your email!"
-              input={<Input />}
+              input={<Input disabled />}
             />
             <InputItem
               label="Phone Number"
@@ -109,7 +117,7 @@ function FormUpdateProfile(props) {
               input={<Input />}
             />
             <InputItem
-              label="Sex"
+              label="Gender"
               name="sex"
               input={
                 <Select

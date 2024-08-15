@@ -64,7 +64,6 @@ import { API_SERIES, API_ADD_MANY_MOVIES } from '../../configs/apis';
 
 function AssetsPage(props) {
   const [isModal, setIsModal] = useState(false);
-  const [isChangeData, setIsChangeData] = useState(false);
   const [isModalUpload, setIsModalUpload] = useState(false);
   const [dataRecord, setDataRecord] = useState(undefined);
   const [dataTable, setDataTable] = useState(undefined);
@@ -82,14 +81,19 @@ function AssetsPage(props) {
   const [dataCountries, setDataCountries] = useState();
   const [textLook, setTextLook] = useState('');
   const [valueCountries, setValueCountries] = useState('All');
-  const [isUpdate, setIsUpdate] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
 
   const { userInfo } = useContext(RoleContext);
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { look, textSearch, textCountry, change } = location.state || false;
+
+  const searchParams = new URLSearchParams(location.search);
+
+  const look = searchParams.get('look');
+  const pageCurrent = searchParams.get('page');
+  const textSearch = searchParams.get('textSearch');
+  const textCountry = searchParams.get('textCountry');
 
   const openNotification = (placement, message) => {
     notification.error({
@@ -171,8 +175,16 @@ function AssetsPage(props) {
     };
 
     setDataTable(tableData);
-    setPage(1);
-  }, [props.type, props.dataIndex, props.key, props.title, userInfo]);
+    if (pageCurrent) setPage(pageCurrent);
+    else setPage(1);
+  }, [
+    props.type,
+    props.dataIndex,
+    props.key,
+    props.title,
+    userInfo,
+    pageCurrent,
+  ]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -180,7 +192,7 @@ function AssetsPage(props) {
     setTextLook('');
     setValueCountries('All');
 
-    if (look === undefined) {
+    if (!look) {
       if (props.type === 'series') {
         Promise.all([dispatch(fetchAllSeries(pageNum))]);
       } else if (props.type === 'movies') {
@@ -198,7 +210,7 @@ function AssetsPage(props) {
           Promise.all([
             dispatch(
               fetchAllSeriesLook({
-                pageNum: 1,
+                pageNum: pageNum,
                 valueCountries: textCountry,
                 textLook: textSearch,
               }),
@@ -209,7 +221,7 @@ function AssetsPage(props) {
           Promise.all([
             dispatch(
               fetchAllMoviesLook({
-                pageNum: 1,
+                pageNum: pageNum,
                 valueCountries: textCountry,
                 textLook: textSearch,
               }),
@@ -220,7 +232,7 @@ function AssetsPage(props) {
           Promise.all([
             dispatch(
               fetchAllSeriesTrashLook({
-                pageNum: 1,
+                pageNum: pageNum,
                 valueCountries: textCountry,
                 textLook: textSearch,
               }),
@@ -231,7 +243,7 @@ function AssetsPage(props) {
           Promise.all([
             dispatch(
               fetchAllMoviesTrashLook({
-                pageNum: 1,
+                pageNum: pageNum,
                 valueCountries: textCountry,
                 textLook: textSearch,
               }),
@@ -242,7 +254,7 @@ function AssetsPage(props) {
           Promise.all([
             dispatch(
               fetchAllCategoryLook({
-                pageNum: 1,
+                pageNum: pageNum,
                 textLook: textSearch,
               }),
             ),
@@ -252,69 +264,65 @@ function AssetsPage(props) {
           break;
       }
     }
-    if (isUpdate) {
-      if (
-        props.type === 'movies' ||
-        props.type === 'series' ||
-        props.type === 'film-for-series'
-      ) {
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 1500);
-      } else {
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 100);
-      }
-    } else {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 100);
-    }
-    setIsUpdate(false);
-  }, [location.search, props.type, dispatch, page, isChangeData, change]);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 100);
+  }, [location.search, props.type, dispatch, page]);
 
   useEffect(() => {
     const fetchCategory = async () => {
-      const response = await fetch(API_SERIES);
-      const data = await response.json();
-      if (data.success) {
-        let newOptions = [];
-        Promise.all(
-          data.data.map((item, index) => {
-            if (index === 0) {
-              setDefaultValue(item._id);
-              let pageNum = getPage();
+      try {
+        const response = await fetch(API_SERIES);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-              if (props.type === 'film-for-series') {
-                Promise.all([
-                  dispatch(
-                    fetchAllFilmForSeries({
-                      pageNum: pageNum,
-                      value: item._id,
-                    }),
-                  ),
-                ]);
-              } else {
-                Promise.all([
-                  dispatch(
-                    fetchAllFilmForSeriesTrash({
-                      pageNum: pageNum,
-                      value: item._id,
-                    }),
-                  ),
-                ]);
+        const data = await response.json();
+
+        if (data.success) {
+          let newOptions = [];
+
+          await Promise.all(
+            data.data.map(async (item, index) => {
+              if (index === 0) {
+                setDefaultValue(item._id);
+                let pageNum = getPage();
+
+                if (props.type === 'film-for-series') {
+                  console.log(item._id, pageNum);
+                  Promise.all([
+                    dispatch(
+                      fetchAllFilmForSeries({
+                        pageNum: pageNum,
+                        value: item._id,
+                      }),
+                    ),
+                  ]);
+                } else {
+                  Promise.all([
+                    dispatch(
+                      fetchAllFilmForSeriesTrash({
+                        pageNum: pageNum,
+                        value: item._id,
+                      }),
+                    ),
+                  ]);
+                }
               }
-            }
-            newOptions.push({
-              label: item.title,
-              value: item._id,
-            });
-          }),
-        );
-        setDataSeries(newOptions);
+              newOptions.push({
+                label: item.title,
+                value: item._id,
+              });
+            }),
+          );
+
+          setDataSeries(newOptions);
+        }
+      } catch (error) {
+        console.error('Failed to fetch categories:', error);
       }
     };
+
     if (
       props.type === 'film-for-series' ||
       props.type === 'trash-film-for-series'
@@ -326,6 +334,10 @@ function AssetsPage(props) {
   useEffect(() => {
     setDataCountries(countries);
   }, [countries, props.type]);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, [movies, series, film, category]);
 
   const handleOnchangeInput = (e) => {
     if (e.target.files[0] !== undefined) {
@@ -415,6 +427,8 @@ function AssetsPage(props) {
       }
 
       if (props.type === 'trash-series') {
+        console.log('vào đây' + typeModal);
+
         dispatch(deleteTrashSeries({ dataId: dataId, type: typeModal }));
       }
 
@@ -434,7 +448,18 @@ function AssetsPage(props) {
 
     if (data.length - 1 === 0 && page > 1) {
       setPage((prev) => prev - 1);
-      navigate('/' + props.type + '?page=' + (page - 1));
+      if (look) {
+        navigate(
+          '/' +
+            props.type +
+            '?look=true&page=' +
+            (page - 1) +
+            '&textSearch=' +
+            textSearch +
+            '&textCountry=' +
+            textCountry,
+        );
+      } else navigate('/' + props.type + '?page=' + (page - 1));
     }
   };
 
@@ -445,7 +470,18 @@ function AssetsPage(props) {
 
   const handleOnChangePage = (page, size) => {
     setPage(page);
-    navigate('/' + props.type + '?page=' + page);
+    if (look) {
+      navigate(
+        '/' +
+          props.type +
+          '?look=true&page=' +
+          page +
+          '&textSearch=' +
+          textSearch +
+          '&textCountry=' +
+          textCountry,
+      );
+    } else navigate('/' + props.type + '?page=' + page);
   };
 
   const filterOption = (input, option) =>
@@ -500,44 +536,41 @@ function AssetsPage(props) {
     console.log(valueCountries);
     setPage(1);
     if (props.type !== 'category') {
-      navigate('/' + props.type + '?page=1', {
-        state: {
-          look: true,
-          change: !change,
-          textSearch: textLook,
-          textCountry: valueCountries,
-        },
-      });
+      navigate(
+        '/' +
+          props.type +
+          '?look=true&page=1&textSearch=' +
+          textLook +
+          '&textCountry=' +
+          valueCountries,
+      );
     } else {
-      navigate('/' + props.type + '?page=1', {
-        state: {
-          look: true,
-          change: !change,
-          textSearch: textLook,
-        },
-      });
+      navigate('/' + props.type + '?look=true&page=1&textSearch=' + textLook);
     }
   };
+
+  if (
+    isLoading ||
+    loading ||
+    ((props.type === 'film-for-series' ||
+      props.type === 'trash-film-for-series') &&
+      !dataSeries)
+  ) {
+    return (
+      <DivAssets>
+        <LoadingComponent />
+      </DivAssets>
+    );
+  }
 
   if (error) {
     return (
       <DivAssets>
-        {isLoading || loading ? (
-          <LoadingComponent />
-        ) : (
-          <DivError>
-            <TextError>
-              The server is having problems, please try again later!!!
-            </TextError>
-          </DivError>
-        )}
-      </DivAssets>
-    );
-  }
-  if (isLoading || loading) {
-    return (
-      <DivAssets>
-        <LoadingComponent />
+        <DivError>
+          <TextError>
+            The server is having problems, please try again later!!!
+          </TextError>
+        </DivError>
       </DivAssets>
     );
   }
@@ -552,9 +585,8 @@ function AssetsPage(props) {
               dataRecord: dataRecord,
               options: dataSeries,
               setDefaultValue: setDefaultValue,
-              setIsChangeData: setIsChangeData,
               filterOption: filterOption,
-              setIsUpdate: setIsUpdate,
+              setIsLoading: setIsLoading,
             }}>
             <ModalAdd
               isModal={isModal}

@@ -92,9 +92,10 @@ export const MoviesSlice = createSlice({
           data.country = action.payload.data.country;
           data.duration = action.payload.data.duration;
           data.imageUrl = action.payload.data.imageUrl;
-          data.imageUrlBanner = action.payload.data.imageUrlBanner;
+          data.videoTrailerUrl = action.payload.data.videoTrailerUrl;
           data.videoUrl = action.payload.data.videoUrl;
           data.listCategoryId = action.payload.data.listCategoryId;
+          data.listPackageIdBand = action.payload.data.listPackageIdBand;
         }
       });
     });

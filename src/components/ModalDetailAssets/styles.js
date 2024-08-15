@@ -6,13 +6,17 @@ export const ModalDetail = styled(Modal)`
 `;
 export const DivTitle = styled.div`
   border-top: 2px solid #ccc;
-  margin-top: 2rem;
+  margin-top: 0.5rem;
   text-align: center;
 `;
 export const TitleDetail = styled.h2`
-  margin-bottom: 25px;
+  margin: 10px 0;
 `;
-export const DivVideo = styled.div``;
+export const DivVideo = styled.div`
+margin-bottom: 1rem;
+  & > h2 {
+  text-align: center;
+`;
 
 export const DivVideoFilm = styled.div`
   margin-top: 1rem;

@@ -35,6 +35,10 @@ export const API_UPDATE_CATEGORY =
   'http://localhost:4000/admin/category/update-category';
 export const API_LOGIN = 'http://localhost:4000/admin/auth/login';
 export const API_GET_ALL_USER = 'http://localhost:4000/admin/manage/user';
+export const API_POST_CREATE_USER =
+  'http://localhost:4000/admin/manage/user/create';
+export const API_POST_UPDATE_USER =
+  'http://localhost:4000/admin/manage/user/update';
 export const API_GET_ALL_SUBSCRIBER =
   'http://localhost:4000/admin/manage/subscriber';
 export const API_RESET_PASSWORD =
@@ -85,5 +89,8 @@ export const API_CREATE_MESSAGE = 'http://localhost:4000/admin/message/create';
 export const API_UPDATE_MESSAGE = 'http://localhost:4000/admin/message/update';
 export const API_UPDATE_OFF_MESSAGE =
   'http://localhost:4000/admin/message/update-off';
+
+export const API_UPDATE_JOIN_MESSAGE =
+  'http://localhost:4000/admin/message/join-chat';
 
 export const API_GET_ON_MESSAGE = 'http://localhost:4000/message/get-on';

@@ -4,12 +4,14 @@ import {
   fetchAllSubscriber,
   resetPasswordSubscriber,
   postBannedSubscriber,
+  fetchAllSubscriberLook,
 } from '../../Action/Manage/subscriber';
 
 const initialState = {
   data: [],
   loading: false,
   error: null,
+  count: 0,
 };
 
 export const SubscriberSlice = createSlice({
@@ -25,11 +27,28 @@ export const SubscriberSlice = createSlice({
       console.log(action.payload);
       state.loading = false;
       state.data = [...action.payload.data];
+      state.count = action.payload.count;
+    });
+    builder.addCase(fetchAllSubscriberLook.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload.message;
+    });
+
+    // fetch all subscriber look
+    builder.addCase(fetchAllSubscriberLook.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchAllSubscriberLook.fulfilled, (state, action) => {
+      console.log(action.payload);
+      state.loading = false;
+      state.data = [...action.payload.data];
+      state.count = action.payload.count;
     });
     builder.addCase(fetchAllSubscriber.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload.message;
     });
+
     // reset password subscriber
     builder.addCase(resetPasswordSubscriber.pending, (state) => {
       state.loading = true;

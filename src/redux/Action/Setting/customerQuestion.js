@@ -15,6 +15,7 @@ export const fetchAllCustomerQuestions = createAsyncThunk(
         size,
     );
     const data = await response.json();
+    console.log(data);
     if (!data.success) {
       rejectWithValue(data);
     }
@@ -24,18 +25,22 @@ export const fetchAllCustomerQuestions = createAsyncThunk(
 
 export const resolveCustomerQuestions = createAsyncThunk(
   'resolveCustomerQuestions',
-  async (size, { rejectWithValue }) => {
+  async (dataBody, { rejectWithValue }) => {
     const response = await fetch(
-      API_RESOLVE_CUSTOMER_QUESTIONS +
-        '/from-page?limit=' +
-        process.env.REACT_APP_SIZE_PAGE +
-        '&page=' +
-        size,
+      API_RESOLVE_CUSTOMER_QUESTIONS + '/' + dataBody.explainId,
+      {
+        method: 'POST',
+        body: JSON.stringify(dataBody),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
     );
+
     const data = await response.json();
     if (!data.success) {
       rejectWithValue(data);
     }
-    return data;
+    return dataBody.explainId;
   },
 );

@@ -1,5 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchAllCustomerQuestions } from '../../Action/Setting/customerQuestion';
+import {
+  fetchAllCustomerQuestions,
+  resolveCustomerQuestions,
+} from '../../Action/Setting/customerQuestion';
 
 const initialState = {
   data: [],
@@ -23,6 +26,20 @@ export const CustomerQuestionsSlice = createSlice({
       state.data = [...action.payload.data];
     });
     builder.addCase(fetchAllCustomerQuestions.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload.message;
+    });
+
+    // explain
+    builder.addCase(resolveCustomerQuestions.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(resolveCustomerQuestions.fulfilled, (state, action) => {
+      state.loading = false;
+      state.count = state.count - 1;
+      state.data = state.data.filter((data) => data._id !== action.payload);
+    });
+    builder.addCase(resolveCustomerQuestions.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload.message;
     });

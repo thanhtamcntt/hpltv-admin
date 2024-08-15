@@ -49,8 +49,18 @@ function ModalDetailQuestions({
       open={isModalDetail}
       onOk={handleOk}
       onCancel={handleCancel}>
-      <Title>Title question: {data.title}</Title>
-      <Description>Description detail: {data.description}</Description>
+      <Title>
+        {type === 'customer-questions'
+          ? 'Title question customer'
+          : 'Title question'}
+        : {data.title}
+      </Title>
+      <Description>
+        {type === 'customer-questions'
+          ? 'Description detail question'
+          : 'Description detail'}
+        : {data.description}
+      </Description>
       {type === 'customer-questions' && (
         <>
           <TitleUser>Information of the person reporting</TitleUser>

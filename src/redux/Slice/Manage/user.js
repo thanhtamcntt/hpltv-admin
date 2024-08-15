@@ -3,12 +3,16 @@ import {
   deleteUser,
   fetchAllUser,
   resetPasswordUser,
+  createUser,
+  updateUser,
+  fetchAllUserLook,
 } from '../../Action/Manage/user';
 
 const initialState = {
   data: [],
   loading: false,
   error: null,
+  count: 0,
 };
 
 export const UserSlice = createSlice({
@@ -24,8 +28,61 @@ export const UserSlice = createSlice({
       console.log(action.payload);
       state.loading = false;
       state.data = [...action.payload.data];
+      state.count = action.payload.count;
     });
     builder.addCase(fetchAllUser.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload.message;
+    });
+
+    // fetch all users look
+    builder.addCase(fetchAllUserLook.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchAllUserLook.fulfilled, (state, action) => {
+      console.log(action.payload);
+      state.loading = false;
+      state.data = [...action.payload.data];
+      state.count = action.payload.count;
+    });
+    builder.addCase(fetchAllUserLook.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload.message;
+    });
+
+    // create a new user
+    builder.addCase(createUser.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(createUser.fulfilled, (state, action) => {
+      console.log(action.payload);
+      state.loading = false;
+      state.count = state.count + 1;
+      state.data.unshift(action.payload);
+    });
+    builder.addCase(createUser.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    // update user
+    builder.addCase(updateUser.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(updateUser.fulfilled, (state, action) => {
+      state.loading = false;
+      for (let i = 0; i < state.data.length; i++) {
+        if (state.data[i]._id === action.payload.userId) {
+          state.data[i].firstName = action.payload.data.firstName;
+          state.data[i].lastName = action.payload.data.lastName;
+          state.data[i].email = action.payload.data.email;
+          state.data[i].phoneNumber = action.payload.data.phoneNumber;
+          state.data[i].sex = action.payload.data.sex;
+          break;
+        }
+      }
+    });
+    builder.addCase(updateUser.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload.message;
     });
@@ -55,6 +112,7 @@ export const UserSlice = createSlice({
       console.log('action: ', action.payload);
       state.loading = false;
       state.data = state.data.filter((data) => data._id !== action.payload);
+      state.count = state.count - 1;
     });
     builder.addCase(deleteUser.rejected, (state, action) => {
       state.loading = false;

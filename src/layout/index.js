@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
   DollarOutlined,
-  SettingOutlined,
+  QuestionCircleOutlined,
   LogoutOutlined,
   TeamOutlined,
   BarChartOutlined,
   LockOutlined,
   RestOutlined,
   WalletOutlined,
+  CustomerServiceOutlined,
 } from '@ant-design/icons';
 import { Layout, theme } from 'antd';
 import HeaderAdmin from '../components/HeaderComponent';
@@ -34,31 +35,29 @@ const items = [
   getItem('Statistics', 'statistics', <BarChartOutlined />),
   getItem('Assets', 'assets', <WalletOutlined />, [
     getItem('Series', 'series'),
-    getItem('Movies', 'movies'),
     getItem('Film for series', 'film-for-series'),
+    getItem('Movies', 'movies'),
     getItem('Category', 'category'),
-  ]),
-  getItem('Setting', 'setting', <SettingOutlined />, [
-    getItem('Common questions', 'common-questions'),
-    getItem('Customer Questions', 'customer-questions'),
   ]),
   getItem('Manage', 'manage', <TeamOutlined />, [
     getItem('User', 'user'),
     getItem('Subscriber', 'subscriber'),
   ]),
-
+  getItem('Payment', 'payment', <DollarOutlined />),
+  getItem('Subscription price', 'subscription-price', <DollarOutlined />),
+  getItem('Support customer', 'support-customer', <CustomerServiceOutlined />),
+  getItem('Question', 'question', <QuestionCircleOutlined />, [
+    getItem('Common questions', 'common-questions'),
+    getItem('Customer Questions', 'customer-questions'),
+  ]),
   getItem('Banned Account', 'banned account', <LockOutlined />, [
     getItem('Subscriber', 'banned-subscriber'),
   ]),
-
   getItem('Trash', 'trash', <RestOutlined />, [
     getItem('Series', 'trash-series'),
     getItem('Movies', 'trash-movies'),
     getItem('Film for series', 'trash-film-for-series'),
   ]),
-  getItem('Payment', 'payment', <DollarOutlined />),
-  getItem('Subscription price', 'subscription-price', <DollarOutlined />),
-  getItem('Support customer', 'support-customer', <DollarOutlined />),
   getItem('Logout', 'logout', <LogoutOutlined />),
 ];
 
@@ -83,14 +82,14 @@ function LayoutAdmin({ children }) {
   const [input, setInput] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [visible, setVisible] = useState(true);
+  const [file, setFile] = useState();
+  const [imagePreview, setImagePreview] = useState();
 
   const newSocket = io('http://localhost:4000/admin');
 
   useEffect(() => {
     setSocket(newSocket);
     newSocket.on('chatCustomer', (newMessage) => {
-      // setMessage((prev) => [...prev, newMessage]);
-      console.log(newMessage);
       setMessage((prev) => ({
         ...prev,
         [newMessage.roomId]: [
@@ -100,41 +99,28 @@ function LayoutAdmin({ children }) {
       }));
     });
 
+    newSocket.on('delete-room', (data) => {
+      if (userInfo.userId !== data.userId) {
+        console.log('delete-room', data);
+        setListChat((prev) =>
+          prev.filter((item) => item.roomId !== data.roomId),
+        );
+      }
+    });
+
     newSocket.on('forceLeave', (roomId) => {
-      console.log(roomId);
       setVisible((prev) => ({ ...prev, [roomId]: true }));
       newSocket.emit('leaveRoom', roomId);
     });
 
     newSocket.on('room', (data) => {
-      const dataPost = {
-        roomId: data.roomId,
-        participants: {
-          adminId: userInfo.userId,
-          userId: data.userId,
-        },
-      };
+      setListChat((prev) => [...prev, data]);
 
-      const addMessage = async () => {
-        const response = await fetch(API_CREATE_MESSAGE, {
-          method: 'POST',
-          body: JSON.stringify(dataPost),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        const json = await response.json();
-        if (json.success) {
-          setListChat((prev) => [...prev, data]);
-        }
-      };
-      addMessage();
       if (listChat.length > 0) {
         setChooseChat(listChat[0].roomId);
       } else {
         setChooseChat(data.roomId);
       }
-      // console.log('data ', data);
     });
 
     return () => {
@@ -142,7 +128,7 @@ function LayoutAdmin({ children }) {
       newSocket.off('room');
       // newSocket.disconnect();
     };
-  }, [message]);
+  }, [message, listChat, userInfo]);
 
   useEffect(() => {
     setSelect(
@@ -169,6 +155,9 @@ function LayoutAdmin({ children }) {
           list.push({
             roomId: json.data[i].roomId,
             userId: json.data[i].participants.userId._id,
+            adminId: json.data[i].participants?.adminId?._id
+              ? json.data[i].participants.adminId._id
+              : '',
             firstName: json.data[i].participants.userId.firstName,
             lastName: json.data[i].participants.userId.lastName,
             userInfo: json.data[i].participants.userId,
@@ -188,7 +177,7 @@ function LayoutAdmin({ children }) {
     fetchListChat();
     setTimeout(() => {
       setIsLoading(false);
-    }, 700);
+    }, 3000);
   }, []);
 
   const {
@@ -261,6 +250,10 @@ function LayoutAdmin({ children }) {
             isLoading,
             visible,
             handleOutRoom,
+            setImagePreview,
+            imagePreview,
+            setFile,
+            file,
           }}>
           {children}
         </ChildrenContext.Provider>

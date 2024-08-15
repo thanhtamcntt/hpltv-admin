@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
   fetchAllSubscriberBanned,
+  fetchAllSubscriberBannedLook,
   postRecoverSubscriber,
 } from '../../Action/Manage/bannedAccount';
 
@@ -23,8 +24,24 @@ export const SubscriberBannedSlice = createSlice({
       console.log(action.payload);
       state.loading = false;
       state.data = [...action.payload.data];
+      state.count = action.payload.count;
     });
     builder.addCase(fetchAllSubscriberBanned.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload.message;
+    });
+
+    // fetch all subscriber banned look
+    builder.addCase(fetchAllSubscriberBannedLook.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchAllSubscriberBannedLook.fulfilled, (state, action) => {
+      console.log(action.payload);
+      state.loading = false;
+      state.data = [...action.payload.data];
+      state.count = action.payload.count;
+    });
+    builder.addCase(fetchAllSubscriberBannedLook.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload.message;
     });

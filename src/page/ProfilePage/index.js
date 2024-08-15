@@ -16,7 +16,7 @@ import {
   DivUpload,
 } from './styles';
 import LoadingComponent from '../../components/LoadingComponent';
-import { Image, Upload, Button, Form, Tabs, notification } from 'antd';
+import { Image, Upload, Button, Form, Tabs, notification, message } from 'antd';
 import { CameraOutlined, DeleteOutlined } from '@ant-design/icons';
 import FormUpdateProfile from '../../components/FormUpdateProfile';
 import LoadingPage from '../LoadingPage';
@@ -34,6 +34,21 @@ function ProfilePage() {
       message: `Notification Error`,
       description: message,
       placement,
+    });
+  };
+  const [messageApi, contextHolder] = message.useMessage();
+  const success = (text) => {
+    messageApi.open({
+      type: 'success',
+      content: text,
+      duration: 2,
+    });
+  };
+  const error = (text) => {
+    messageApi.open({
+      type: 'error',
+      content: text,
+      duration: 2,
     });
   };
 
@@ -57,20 +72,33 @@ function ProfilePage() {
     {
       key: 'update',
       label: 'Update Profile',
-      children: <FormUpdateProfile form={form} options={options} type="edit" />,
+      children: (
+        <FormUpdateProfile
+          form={form}
+          options={options}
+          type="edit"
+          error={error}
+          success={success}
+        />
+      ),
     },
     {
       key: 'change',
       label: 'Change Password',
       children: (
-        <FormUpdateProfile form={form} options={options} type="change" />
+        <FormUpdateProfile
+          form={form}
+          options={options}
+          type="change"
+          error={error}
+          success={success}
+        />
       ),
     },
   ]);
 
   useEffect(() => {
     if (userInfo) {
-      console.log(userInfo);
       setUser(userInfo);
       form.setFieldsValue({
         firstName: userInfo.firstName,
@@ -84,7 +112,6 @@ function ProfilePage() {
 
   const handleChangeAvatarUser = async (info) => {
     setLoading(true);
-    console.log(info.file);
     if (
       info.file.type !== 'image/jpeg' &&
       info.file.type !== 'image/jpg' &&
@@ -146,6 +173,7 @@ function ProfilePage() {
 
   return (
     <DivContainer>
+      {contextHolder}
       <DivProfile>
         <DivContent>
           <RowContent>
@@ -182,7 +210,7 @@ function ProfilePage() {
                 <DivInfo>
                   <Text>Email: {user.email}</Text>
                   <Text>Phone Number: {user.phoneNumber}</Text>
-                  <Text>Sex: {user.sex}</Text>
+                  <Text>Gender: {user.sex}</Text>
                 </DivInfo>
               </DivContentLeft>
             </ColLeft>

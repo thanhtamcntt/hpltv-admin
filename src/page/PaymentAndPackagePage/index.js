@@ -32,6 +32,7 @@ function PaymentAndPackagePage(props) {
   const [page, setPage] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [textLook, setTextLook] = useState('');
+  const [firstName, setFirstName] = useState('');
   const [valuePackage, setValuePackage] = useState('All');
   const [isModal, setIsModal] = useState(false);
 
@@ -39,7 +40,15 @@ function PaymentAndPackagePage(props) {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-  const { look, textSearch, textPackage } = location.state || false;
+
+  const searchParams = new URLSearchParams(location.search);
+
+  const look = searchParams.get('look');
+  const pageCurrent = searchParams.get('page');
+  const firstNameCurrent = searchParams.get('firstName');
+  const lastNameCurrent = searchParams.get('lastName');
+  const packageCurrent = searchParams.get('package');
+  const namePackage = searchParams.get('name');
 
   let data, loading, error, count;
   const payment = useSelector((state) => state.paymentSlice);
@@ -79,15 +88,18 @@ function PaymentAndPackagePage(props) {
       setDataTable(tableDataPackage);
     }
     setIsLoading(true);
-    setPage(1);
-  }, [props.type, userInfo]);
+    if (pageCurrent) setPage(pageCurrent);
+    else setPage(1);
+  }, [props.type, userInfo, packageCurrent]);
 
   useEffect(() => {
-    console.log(props.type);
     let pageNum = getPage();
     setTextLook('');
+    setFirstName('');
     setValuePackage('All');
-    if (look !== true) {
+    console.log(look);
+    if (!look) {
+      console.log('vào đây');
       if (props.type === 'payment') {
         Promise.all([dispatch(fetchAllOrder(pageNum))]);
       } else {
@@ -95,12 +107,14 @@ function PaymentAndPackagePage(props) {
       }
     } else {
       if (props.type === 'payment') {
+        console.log(firstNameCurrent, lastNameCurrent);
         Promise.all([
           dispatch(
             fetchAllOrderLook({
-              pageNum: 1,
-              valuePackage: textPackage,
-              textLook: textSearch,
+              pageNum: pageNum,
+              valuePackage: packageCurrent,
+              firstName: firstNameCurrent,
+              lastName: lastNameCurrent,
             }),
           ),
         ]);
@@ -108,8 +122,8 @@ function PaymentAndPackagePage(props) {
         Promise.all([
           dispatch(
             fetchAllPackageLook({
-              pageNum: 1,
-              textLook: textSearch,
+              pageNum: pageNum,
+              textLook: namePackage,
             }),
           ),
         ]);
@@ -119,7 +133,7 @@ function PaymentAndPackagePage(props) {
     setTimeout(() => {
       setIsLoading(false);
     }, 100);
-  }, [location.search, props.type, dispatch, page, textSearch, textPackage]);
+  }, [location.search, props.type, dispatch, page]);
 
   const filterOption = (input, option) =>
     (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
@@ -142,20 +156,44 @@ function PaymentAndPackagePage(props) {
 
   const handleOnChangePage = (page, size) => {
     setPage(page);
-    navigate('/' + props.type + '?page=' + page);
+    if (look) {
+      if (props.type === 'payment') {
+        navigate(
+          '/' +
+            props.type +
+            '?look=true&page=' +
+            page +
+            '&firstName=' +
+            firstNameCurrent +
+            '&lastName=' +
+            lastNameCurrent +
+            '&package=' +
+            packageCurrent,
+        );
+      } else {
+        navigate(
+          '/' + props.type + '?look=true&page=' + page + '&name=' + namePackage,
+        );
+      }
+    } else navigate('/' + props.type + '?page=' + page);
   };
 
   const onChangeLook = () => {
-    console.log(textLook);
-    console.log(valuePackage);
     setPage(1);
-    navigate('/' + props.type + '?page=1', {
-      state: {
-        look: true,
-        textSearch: textLook,
-        textPackage: valuePackage,
-      },
-    });
+    if (props.type === 'payment') {
+      navigate(
+        '/' +
+          props.type +
+          '?look=true&page=1&firstName=' +
+          firstName +
+          '&lastName=' +
+          textLook +
+          '&package=' +
+          valuePackage,
+      );
+    } else {
+      navigate('/' + props.type + '?look=true&page=1&name=' + textLook);
+    }
   };
   const showModal = (type) => {
     setIsModal(true);
@@ -200,6 +238,8 @@ function PaymentAndPackagePage(props) {
                 filterOption={filterOption}
                 setValuePackage={setValuePackage}
                 setTextLook={setTextLook}
+                firstName={firstName}
+                setFirstName={setFirstName}
                 textLook={textLook}
                 valuePackage={valuePackage}
                 type={props.type}

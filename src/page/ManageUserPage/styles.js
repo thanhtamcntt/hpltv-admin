@@ -1,11 +1,19 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const DivManage = styled.div``;
 
+export const DivAddAndLook = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 30px 5% 0px;
+  ${(props) =>
+    css`
+      justify-content: ${props.user ? 'space-between' : 'flex-end'};
+    `};
+`;
+
 export const DivAction = styled.div`
   display: flex;
-  margin-left: 5%;
-  margin-top: 20px;
   & button:nth-child(2) {
     margin-left: 20px;
   }
