@@ -74,7 +74,6 @@ export const deleteFilmForSeries = createAsyncThunk(
 export const updateFilmForSeries = createAsyncThunk(
   'updateFilmForSeries',
   async (data, { rejectWithValue }) => {
-    console.log(data);
     const response = await fetch(
       API_SERIES_ADMIN + '/' + data.seriesId + '/update-film/' + data.Id,
       {
@@ -96,7 +95,6 @@ export const updateFilmForSeries = createAsyncThunk(
 export const addManyFilmForSeries = createAsyncThunk(
   'addManyFilmForSeries',
   async (data, { rejectWithValue }) => {
-    console.log(data);
     const formData = new FormData();
     formData.append('file', data);
     const response = await fetch(API_ADD_MANY_MOVIES, {

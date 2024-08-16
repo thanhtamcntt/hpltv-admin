@@ -45,7 +45,6 @@ function LoginPage() {
       },
     });
     const responseJson = await response.json();
-    console.log(responseJson);
 
     if (responseJson.success) {
       success('Login successfully.');
@@ -59,9 +58,7 @@ function LoginPage() {
       setError(responseJson.message);
     }
   };
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
+  const onFinishFailed = (errorInfo) => {};
 
   const handleFocus = () => {
     setError();

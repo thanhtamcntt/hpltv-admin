@@ -50,7 +50,6 @@ export const TrashMoviesSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(postRecoverMovies.fulfilled, (state, action) => {
-      console.log('action: ', action.payload);
       state.loading = false;
       state.data = state.data.filter((data) => data._id !== action.payload);
     });
@@ -66,7 +65,6 @@ export const TrashMoviesSlice = createSlice({
     builder.addCase(deleteTrashMovies.fulfilled, (state, action) => {
       state.loading = false;
       state.count = state.count - 1;
-      console.log('action: ', action.payload);
       state.data = state.data.filter((data) => {
         return data._id !== action.payload;
       });

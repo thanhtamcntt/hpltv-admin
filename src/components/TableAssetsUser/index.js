@@ -61,7 +61,7 @@ function TableAssetsUser(props) {
             <ButtonAction onClick={() => handleDetail(record)}>
               <TagAction color="processing">Detail</TagAction>
             </ButtonAction>
-            {userInfo && userInfo.role === 'superAdmin' && (
+            {
               <>
                 {props.type !== 'banned-subscriber' ? (
                   <>
@@ -108,7 +108,7 @@ function TableAssetsUser(props) {
                   <TagAction color="error">Delete</TagAction>
                 </ButtonAction>
               </>
-            )}
+            }
           </Space>
         ),
       },

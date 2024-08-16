@@ -39,7 +39,7 @@ function TableAssetsSetting(props) {
             <ButtonAction onClick={() => handleDetail(record)}>
               <TagAction color="processing">Detail</TagAction>
             </ButtonAction>
-            {userInfo.role === 'superAdmin' && (
+            {
               <>
                 {props.type === 'common-questions' && (
                   <ButtonAction>
@@ -71,7 +71,7 @@ function TableAssetsSetting(props) {
                   </ButtonAction>
                 )}
               </>
-            )}
+            }
           </Space>
         ),
       },

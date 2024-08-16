@@ -239,9 +239,7 @@ function FormAddModal(props) {
       console.error('Error:', error);
     }
   };
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
+  const onFinishFailed = (errorInfo) => {};
 
   const filterOption = (input, option) =>
     (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
@@ -336,7 +334,6 @@ function FormAddModal(props) {
                       <Upload
                         maxCount={1}
                         beforeUpload={(file) => {
-                          console.log(file);
                           if (
                             file.type !== 'image/jpeg' &&
                             file.type !== 'image/jpg' &&
@@ -362,7 +359,6 @@ function FormAddModal(props) {
                     <Upload
                       maxCount={1}
                       beforeUpload={(file) => {
-                        console.log(file);
                         if (
                           file.type !== 'image/jpeg' &&
                           file.type !== 'image/jpg' &&

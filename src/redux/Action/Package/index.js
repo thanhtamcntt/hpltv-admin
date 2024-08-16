@@ -15,7 +15,6 @@ export const fetchAllPackage = createAsyncThunk(
         size,
     );
     const data = await response.json();
-    console.log(data);
     if (!data.success) {
       rejectWithValue(data);
     }
@@ -26,7 +25,6 @@ export const fetchAllPackage = createAsyncThunk(
 export const fetchAllPackageLook = createAsyncThunk(
   'fetchAllPackageLook',
   async (data, { rejectWithValue }) => {
-    console.log(data);
     const response = await fetch(
       API_GET_DATA_PACKAGE +
         '/fetch-look?trash=false' +

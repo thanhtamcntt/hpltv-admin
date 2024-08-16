@@ -117,7 +117,6 @@ function HomePage(props) {
   }, []);
 
   const onchangeSelect = async (value, type) => {
-    console.log(value, type);
     if (type === 'subscribers') {
       await fetchDataSummaryRegister(
         setLabel,

@@ -109,7 +109,6 @@ export const MoviesSlice = createSlice({
     //   state.loading = true;
     // });
     // builder.addCase(addManyMovies.fulfilled, (state, action) => {
-    //   console.log(action.payload);
     //   state.loading = false;
     //   state.count = action.payload.count;
     //   let data = [...action.payload.data];

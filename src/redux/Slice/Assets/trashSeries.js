@@ -48,7 +48,6 @@ export const TrashSeriesSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(postRecoverSeries.fulfilled, (state, action) => {
-      console.log('action: ', action.payload);
       state.loading = false;
       state.data = state.data.filter((data) => data._id !== action.payload);
     });

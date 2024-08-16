@@ -76,7 +76,6 @@ export const deleteMovies = createAsyncThunk(
       },
     });
     const json = await response.json();
-    console.log(json);
     if (!json.success) {
       rejectWithValue(json);
     }
@@ -87,7 +86,6 @@ export const deleteMovies = createAsyncThunk(
 export const updateMovies = createAsyncThunk(
   'updateMovies',
   async (data, { rejectWithValue }) => {
-    console.log(data);
     const response = await fetch(API_UPDATE_MOVIES + '/' + data.Id, {
       method: 'POST',
       body: data.formData,

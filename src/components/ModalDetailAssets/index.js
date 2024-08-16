@@ -12,7 +12,6 @@ import {
   DivInfo,
   ListInfo,
   ItemInfo,
-  DivImageBanner,
 } from './styles';
 
 import dayjs from 'dayjs';

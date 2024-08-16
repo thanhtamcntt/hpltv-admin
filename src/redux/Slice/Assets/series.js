@@ -79,7 +79,6 @@ export const SeriesSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(updateSeries.fulfilled, (state, action) => {
-      console.log('action: ', action.payload);
       state.loading = false;
       state.data.map((data) => {
         if (data._id === action.payload.data._id) {
@@ -107,7 +106,6 @@ export const SeriesSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(addManySeries.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.loading = false;
       state.data = [...action.payload.data];
     });

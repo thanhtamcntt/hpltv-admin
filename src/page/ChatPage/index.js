@@ -107,7 +107,6 @@ function ChatPage() {
 
     const filePreview =
       imagePreview && imagePreview[roomId] ? imagePreview[roomId] : undefined;
-    console.log(filePreview);
     setImagePreview((prev) => ({ ...prev, [roomId]: null }));
     let data = null,
       dataLength = message && message[roomId] ? message[roomId].length : 0;
@@ -168,8 +167,6 @@ function ChatPage() {
         }
 
         newMessages[roomId] = [...newMessages[roomId], newDataAdd];
-
-        console.log(newMessages[roomId]);
 
         return newMessages;
       });

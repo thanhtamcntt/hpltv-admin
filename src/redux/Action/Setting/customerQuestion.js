@@ -15,7 +15,6 @@ export const fetchAllCustomerQuestions = createAsyncThunk(
         size,
     );
     const data = await response.json();
-    console.log(data);
     if (!data.success) {
       rejectWithValue(data);
     }

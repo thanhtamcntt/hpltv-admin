@@ -131,7 +131,6 @@ function ProfilePage() {
       },
     });
     const json = await response.json();
-    console.log('avatar', json);
     if (json.success) {
       updateUserInfo(json.token);
       setLoading(false);
@@ -156,7 +155,6 @@ function ProfilePage() {
         },
       });
       const json = await response.json();
-      console.log(json);
       if (json.success) {
         updateUserInfo(json.token);
         setLoading(false);

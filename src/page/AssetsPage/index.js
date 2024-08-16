@@ -289,7 +289,6 @@ function AssetsPage(props) {
                 let pageNum = getPage();
 
                 if (props.type === 'film-for-series') {
-                  console.log(item._id, pageNum);
                   Promise.all([
                     dispatch(
                       fetchAllFilmForSeries({
@@ -427,8 +426,6 @@ function AssetsPage(props) {
       }
 
       if (props.type === 'trash-series') {
-        console.log('vào đây' + typeModal);
-
         dispatch(deleteTrashSeries({ dataId: dataId, type: typeModal }));
       }
 
@@ -532,8 +529,6 @@ function AssetsPage(props) {
   };
 
   const onChangeLook = () => {
-    console.log(textLook);
-    console.log(valueCountries);
     setPage(1);
     if (props.type !== 'category') {
       navigate(
@@ -594,13 +589,11 @@ function AssetsPage(props) {
               setDataRecord={setDataRecord}
             />
           </FormModalContext.Provider>
-          {userInfo.role === 'superAdmin' && (
-            <DivAction>
-              <Button type="primary" onClick={showModal}>
-                Add
-              </Button>
-            </DivAction>
-          )}
+          <DivAction>
+            <Button type="primary" onClick={showModal}>
+              Add
+            </Button>
+          </DivAction>
           {props.type === 'movies' && (
             <>
               <ButtonImport onClick={handleImport}>

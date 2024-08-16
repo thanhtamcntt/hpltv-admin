@@ -33,9 +33,7 @@ function FormResolveQuestion(props) {
       await dispatch(resolveCustomerQuestions(dataBody));
     }, 1500);
   };
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
+  const onFinishFailed = (errorInfo) => {};
 
   return (
     <>

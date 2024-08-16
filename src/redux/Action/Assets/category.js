@@ -49,7 +49,6 @@ export const fetchAllCategoryLook = createAsyncThunk(
 export const createCategory = createAsyncThunk(
   'createCategory',
   async (data, { rejectWithValue }) => {
-    console.log(data);
     const response = await fetch(API_CREATE_CATEGORY, {
       method: 'POST',
       body: JSON.stringify(data),
@@ -82,7 +81,6 @@ export const deleteCategory = createAsyncThunk(
 export const updateCategory = createAsyncThunk(
   'updateCategory',
   async (data, { rejectWithValue }) => {
-    console.log(data);
     const response = await fetch(API_UPDATE_CATEGORY + '/' + data.Id, {
       method: 'PATCH',
       body: JSON.stringify(data.formData),
@@ -91,7 +89,6 @@ export const updateCategory = createAsyncThunk(
       },
     });
     const json = await response.json();
-    console.log(json);
     if (!json.success) {
       rejectWithValue(json);
     }
@@ -102,7 +99,6 @@ export const updateCategory = createAsyncThunk(
 export const addManyCategory = createAsyncThunk(
   'addManyCategory',
   async (data, { rejectWithValue }) => {
-    console.log(data);
     const formData = new FormData();
     formData.append('file', data);
     const response = await fetch(API_ADD_MANY_MOVIES, {
